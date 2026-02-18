@@ -1,0 +1,66 @@
+    :root {
+      --bg: #022359;
+      --card: #e7ebef;
+      --text: #03255a;
+      --accent: #a6b3c3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(rgba(2, 35, 89, 0.72), rgba(2, 35, 89, 0.72)),
+        url("../assets/SmartWhathiqa.png") center/cover no-repeat;
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .card {
+      background: var(--card);
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(3, 37, 90, 0.25);
+      width: min(420px, 90vw);
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 24px;
+      letter-spacing: 0.5px;
+    }
+    .logo {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      margin: 0 auto 14px;
+      display: block;
+    }
+    .buttons {
+      display: grid;
+      gap: 12px;
+    }
+    button {
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: #03255a;
+      color: #ffffff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      background: #02245a;
+      border-color: #03255a;
+    }
+    .primary {
+      background: #a6b3c3;
+      color: #03255a;
+      font-weight: 600;
+    }
+    .primary:hover {
+      background: #cdd5dd;
+      border-color: #cdd5dd;
+    }

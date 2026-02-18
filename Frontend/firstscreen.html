@@ -1,0 +1,314 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>First Screen</title>
+  <style>
+    :root {
+      --bg: #022359;
+      --card: #e7ebef;
+      --text: #03255a;
+      --accent: #a6b3c3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      top: 20px;
+      background:
+        linear-gradient(rgba(10, 74, 150, 0.55), rgba(10, 74, 150, 0.55)),
+        url("../assets/SmartWhathiqa.png") center 30%/cover no-repeat;
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .card {
+      background: var(--card);
+      padding: 32px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(3, 37, 90, 0.25);
+      width: min(420px, 90vw);
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 20px;
+      font-size: 24px;
+      letter-spacing: 0.5px;
+    }
+    .logo {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      margin: 0 auto 14px;
+      display: block;
+    }
+    .buttons {
+      display: grid;
+      gap: 12px;
+    }
+    button {
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: #03255a;
+      color: #ffffff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+    }
+    button:hover {
+      transform: translateY(-1px);
+      background: #02245a;
+      border-color: #03255a;
+    }
+    .primary {
+      background: #a6b3c3;
+      color: #03255a;
+      font-weight: 600;
+    }
+    .primary:hover {
+      background: #cdd5dd;
+      border-color: #cdd5dd;
+    }
+    .secondary {
+      background: #156ab4;
+    }
+    .secondary:hover {
+      background: #1a77c7;
+      border-color: #1a77c7;
+    }
+    .hidden {
+      display: none;
+    }
+    .login-form {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      text-align: left;
+    }
+    label {
+      font-size: 14px;
+      color: #03255a;
+    }
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #cdd5dd;
+      font-size: 15px;
+    }
+    .login-title {
+      margin: 0 0 6px;
+      font-size: 20px;
+      text-align: center;
+    }
+    .code-form {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      text-align: left;
+    }
+    .code-actions {
+      display: grid;
+      gap: 8px;
+    }
+    .reset-form {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+      text-align: left;
+    }
+    .back-btn {
+      margin-top: 8px;
+    }
+    .forgot-link {
+      font-size: 13px;
+      color: #03255a;
+      text-decoration: none;
+      margin-top: -2px;
+    }
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1 id="roleTitle">Choose Role</h1>
+    <div id="roleButtons" class="buttons">
+      <button id="adminBtn" class="primary" type="button">Admin</button>
+      <button id="employeBtn" class="secondary" type="button">Employe</button>
+      <button id="directeurBtn" class="secondary" type="button">Directeur</button>
+    </div>
+    <section id="adminLogin" class="hidden">
+      <h2 class="login-title">Admin Login</h2>
+      <form class="login-form">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="admin@email.com" required />
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="••••••••" required />
+        <a id="forgotLink" class="forgot-link" href="#">Forgot password?</a>
+        <button class="primary" type="submit">Login</button>
+      </form>
+      <button id="backBtn" class="back-btn" type="button">Go Back</button>
+    </section>
+    <section id="employeLogin" class="hidden">
+      <h2 class="login-title">Employe Login</h2>
+      <form id="employeLoginForm" class="login-form">
+        <label for="employeEmail">Email</label>
+        <input id="employeEmail" name="email" type="email" placeholder="employe@email.com" required />
+        <label for="employePassword">Password</label>
+        <input id="employePassword" name="password" type="password" placeholder="••••••••" required />
+        <a id="forgotLinkEmploye" class="forgot-link" href="#">Forgot password?</a>
+        <button class="primary" type="submit">Login</button>
+      </form>
+      <button id="employeBackBtn" class="back-btn" type="button">Go Back</button>
+    </section>
+    <section id="directeurLogin" class="hidden">
+      <h2 class="login-title">Directeur Login</h2>
+      <form class="login-form">
+        <label for="directeurEmail">Email</label>
+        <input id="directeurEmail" name="email" type="email" placeholder="directeur@email.com" required />
+        <label for="directeurPassword">Password</label>
+        <input id="directeurPassword" name="password" type="password" placeholder="••••••••" required />
+        <a id="forgotLinkDirecteur" class="forgot-link" href="#">Forgot password?</a>
+        <button class="primary" type="submit">Login</button>
+      </form>
+      <button id="directeurBackBtn" class="back-btn" type="button">Go Back</button>
+    </section>
+    <section id="secureCode" class="hidden">
+      <h2 class="login-title">Secure Code</h2>
+      <form class="code-form">
+        <label for="secureCodeInput">Enter secure code</label>
+        <input id="secureCodeInput" name="secure_code" type="text" placeholder="e.g. 123456" required />
+        <div class="code-actions">
+          <button class="primary" type="submit">Continue</button>
+          <button id="codeBackBtn" type="button">Go Back</button>
+        </div>
+      </form>
+    </section>
+    <section id="resetContact" class="hidden">
+      <h2 class="login-title">Reset Access</h2>
+      <form class="reset-form">
+        <label for="resetContactInput">Email or phone number</label>
+        <input id="resetContactInput" name="reset_contact" type="text" placeholder="email or phone" required />
+        <div class="code-actions">
+          <button class="primary" type="submit">Continue</button>
+          <button id="resetBackBtn" type="button">Go Back</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <script>
+    const adminBtn = document.getElementById("adminBtn");
+    const employeBtn = document.getElementById("employeBtn");
+    const directeurBtn = document.getElementById("directeurBtn");
+    const roleButtons = document.getElementById("roleButtons");
+    const adminLogin = document.getElementById("adminLogin");
+    const employeLogin = document.getElementById("employeLogin");
+    const directeurLogin = document.getElementById("directeurLogin");
+    const roleTitle = document.getElementById("roleTitle");
+    const backBtn = document.getElementById("backBtn");
+    const employeBackBtn = document.getElementById("employeBackBtn");
+    const directeurBackBtn = document.getElementById("directeurBackBtn");
+    const forgotLink = document.getElementById("forgotLink");
+    const forgotLinkEmploye = document.getElementById("forgotLinkEmploye");
+    const forgotLinkDirecteur = document.getElementById("forgotLinkDirecteur");
+    const secureCode = document.getElementById("secureCode");
+    const codeBackBtn = document.getElementById("codeBackBtn");
+    const resetContact = document.getElementById("resetContact");
+    const resetBackBtn = document.getElementById("resetBackBtn");
+    const employeLoginForm = document.getElementById("employeLoginForm");
+    let lastLogin = "admin";
+
+    adminBtn.addEventListener("click", () => {
+      roleButtons.classList.add("hidden");
+      roleTitle.classList.add("hidden");
+      adminLogin.classList.remove("hidden");
+      lastLogin = "admin";
+    });
+
+    backBtn.addEventListener("click", () => {
+      adminLogin.classList.add("hidden");
+      roleButtons.classList.remove("hidden");
+      roleTitle.classList.remove("hidden");
+    });
+
+    employeBtn.addEventListener("click", () => {
+      roleButtons.classList.add("hidden");
+      roleTitle.classList.add("hidden");
+      employeLogin.classList.remove("hidden");
+      lastLogin = "employe";
+    });
+
+    employeBackBtn.addEventListener("click", () => {
+      employeLogin.classList.add("hidden");
+      roleButtons.classList.remove("hidden");
+      roleTitle.classList.remove("hidden");
+    });
+
+    employeLoginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      window.location.href = "dashboardemployer.html";
+    });
+
+    directeurBtn.addEventListener("click", () => {
+      roleButtons.classList.add("hidden");
+      roleTitle.classList.add("hidden");
+      directeurLogin.classList.remove("hidden");
+      lastLogin = "directeur";
+    });
+
+    directeurBackBtn.addEventListener("click", () => {
+      directeurLogin.classList.add("hidden");
+      roleButtons.classList.remove("hidden");
+      roleTitle.classList.remove("hidden");
+    });
+
+    forgotLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      lastLogin = "admin";
+      adminLogin.classList.add("hidden");
+      secureCode.classList.remove("hidden");
+    });
+
+    forgotLinkEmploye.addEventListener("click", (e) => {
+      e.preventDefault();
+      lastLogin = "employe";
+      employeLogin.classList.add("hidden");
+      resetContact.classList.remove("hidden");
+    });
+
+    forgotLinkDirecteur.addEventListener("click", (e) => {
+      e.preventDefault();
+      lastLogin = "directeur";
+      directeurLogin.classList.add("hidden");
+      resetContact.classList.remove("hidden");
+    });
+
+    codeBackBtn.addEventListener("click", () => {
+      secureCode.classList.add("hidden");
+      if (lastLogin === "employe") {
+        employeLogin.classList.remove("hidden");
+      } else if (lastLogin === "directeur") {
+        directeurLogin.classList.remove("hidden");
+      } else {
+        adminLogin.classList.remove("hidden");
+      }
+    });
+
+    resetBackBtn.addEventListener("click", () => {
+      resetContact.classList.add("hidden");
+      if (lastLogin === "employe") {
+        employeLogin.classList.remove("hidden");
+      } else if (lastLogin === "directeur") {
+        directeurLogin.classList.remove("hidden");
+      } else {
+        adminLogin.classList.remove("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
