@@ -146,45 +146,36 @@
       transform: translateX(0);
       transition: transform 200ms ease;
       display: grid;
-      grid-template-rows: auto 1fr auto;
-      padding: 18px 16px;
-      gap: 16px;
+      grid-template-rows: auto auto auto;
+      padding: 8px 12px;
+      gap: 4px;
     }
     .drawer-title {
       font-size: 18px;
       font-weight: 700;
       color: var(--white);
-      margin: 0;
+      margin: 0 0 4px 0;
     }
     .drawer-list {
-      display: grid;
-      gap: 10px;
+      gap: 0;
       padding: 0;
-      margin: 0;
+      margin: 0 0 4px 0;
       list-style: none;
     }
     .drawer-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      color: var(--white);
-      text-decoration: none;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      transition: background 160ms ease, transform 160ms ease;
-    }
-    .drawer-link:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateX(2px);
+      display: grid;
+      gap: 8px;
+      padding: 0;
+      margin: 0 0 4px 0;
+      list-style: none;
+      color: #ffffff !important;
     }
     .drawer-close {
       background: var(--white);
       color: var(--blue);
       border: none;
       border-radius: 10px;
-      padding: 10px 12px;
+      padding: 2px 8px;
       font-weight: 600;
       cursor: pointer;
     }
@@ -193,7 +184,6 @@
       color: var(--white);
       border: none;
       border-radius: 10px;
-      padding: 10px 12px;
       font-weight: 600;
       cursor: pointer;
     }
@@ -209,18 +199,21 @@
 </head>
 <body class="h-full bg-slate-900">
   <div id="app-wrapper" class="h-full w-full overflow-auto">
+    <button class="drawer-toggle fixed top-4 left-4 z-50 p-2 bg-indigo-600 text-white rounded-lg lg:hidden" onclick="toggleDrawer()">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
     <div id="drawer" class="drawer">
       <div class="drawer-backdrop" onclick="closeDrawer()"></div>
       <aside class="drawer-panel">
-        <div class="flex items-center justify-between">
-          <h2 class="drawer-title">Menu</h2>
-        </div>
-        <ul class="drawer-list">
+        <h2 class="drawer-title text-4xl mb-0">Menu</h2>
+        <ul class="drawer-list -mt-60">
           <li><a class="drawer-link" href="#">Dashboard</a></li>
           <li><a class="drawer-link" href="#">Documents</a></li>
           <li><a class="drawer-link" href="#">Upload</a></li>
           <li><a class="drawer-link" href="#">Settings</a></li>
-          <li><a class="drawer-link" href="#">Logout</a></li>
+          <li><a class="drawer-link" href="firstscreen.html">Logout</a></li>
         </ul>
           <div class="text-slate-400 text-sm">SmartWathiqa</div>
       </aside>
@@ -276,7 +269,7 @@
 
       <!-- Stats -->
       <div class="max-w-6xl mx-auto mb-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="grid stats-grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50">
             <p class="text-slate-400 text-sm mb-1">Total Documents</p>
             <p id="stat-total" class="text-2xl font-bold text-white">0</p>
@@ -298,7 +291,7 @@
 
       <!-- Documents Grid -->
       <main class="max-w-6xl mx-auto">
-        <div id="documents-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div id="documents-grid" class="grid documents-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <!-- Documents will be rendered here -->
         </div>
         
@@ -459,3 +452,24 @@
   <script src="dashboardemployer.js"></script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cf8d78606788c92',t:'MTc3MTM2ODYwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

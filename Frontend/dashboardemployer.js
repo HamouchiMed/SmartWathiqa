@@ -1,4 +1,4 @@
-    // Application state
+﻿    // Application state
     let documents = [];
     let filteredDocuments = [];
     let documentToDelete = null;
@@ -20,7 +20,7 @@
       contrat: { icon: '', bg: 'bg-emerald-500/20', text: 'text-emerald-400', border: 'border-emerald-500/30' },
       facture: { icon: '', bg: 'bg-amber-500/20', text: 'text-amber-400', border: 'border-amber-500/30' },
       rapport: { icon: '', bg: 'bg-blue-500/20', text: 'text-blue-400', border: 'border-blue-500/30' },
-      presentation: { icon: '️', bg: 'bg-purple-500/20', text: 'text-purple-400', border: 'border-purple-500/30' },
+      presentation: { icon: 'ï¸', bg: 'bg-purple-500/20', text: 'text-purple-400', border: 'border-purple-500/30' },
       autre: { icon: '', bg: 'bg-slate-500/20', text: 'text-slate-400', border: 'border-slate-500/30' }
     };
 
@@ -30,7 +30,7 @@
       doc: '',
       xls: '',
       ppt: '',
-      img: '️',
+      img: 'ï¸',
       other: ''
     };
 
@@ -132,7 +132,7 @@
       if (window.dataSdk) {
         const result = await window.dataSdk.init(dataHandler);
         if (!result.isOk) {
-          showToast('Erreur de connexion aux données', 'error');
+          showToast('Erreur de connexion aux donnÃ©es', 'error');
         }
       }
     }
@@ -218,16 +218,16 @@
         <p class="doc-description text-slate-400 text-sm mb-4 line-clamp-2">${doc.description ? escapeHtml(doc.description) : 'Aucune description'}</p>
         <div class="flex items-center justify-between text-xs text-slate-500">
           <span class="doc-date">${date}</span>
-          <span class="doc-size">${doc.size || '—'}</span>
+          <span class="doc-size">${doc.size || 'â€”'}</span>
         </div>
         <div class="flex gap-2 mt-4 pt-4 border-t border-slate-700/50">
           <button onclick="event.stopPropagation(); openEditModal(documents.find(d => d.__backendId === '${doc.__backendId}'))"
             class="flex-1 px-3 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 rounded-lg text-sm font-medium transition-colors">
-            ✏️ Modifier
+            âœï¸ Modifier
           </button>
           <button onclick="event.stopPropagation(); openDeleteModal(documents.find(d => d.__backendId === '${doc.__backendId}'))"
             class="px-3 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm font-medium transition-colors">
-            ️
+            ï¸
           </button>
         </div>
       `;
@@ -246,7 +246,7 @@
       card.querySelector('.doc-name').textContent = doc.name;
       card.querySelector('.doc-description').textContent = doc.description || 'Aucune description';
       card.querySelector('.doc-date').textContent = date;
-      card.querySelector('.doc-size').textContent = doc.size || '—';
+      card.querySelector('.doc-size').textContent = doc.size || 'â€”';
     }
 
     function escapeHtml(text) {
@@ -331,7 +331,7 @@
 
     function openDeleteModal(doc) {
       documentToDelete = doc;
-      document.getElementById('delete-doc-name').textContent = `"${doc.name}" sera définitivement supprimé.`;
+      document.getElementById('delete-doc-name').textContent = `"${doc.name}" sera dÃ©finitivement supprimÃ©.`;
       document.getElementById('delete-modal').classList.remove('hidden');
     }
 
@@ -377,7 +377,7 @@
         }
 
         if (result && result.isOk) {
-          showToast(isEditing ? 'Document modifié' : 'Document ajouté', 'success');
+          showToast(isEditing ? 'Document modifiÃ©' : 'Document ajoutÃ©', 'success');
           closeModal();
         } else {
           showToast('Une erreur est survenue', 'error');
@@ -402,7 +402,7 @@
         const result = await window.dataSdk.delete(documentToDelete);
 
         if (result.isOk) {
-          showToast('Document supprimé', 'success');
+          showToast('Document supprimÃ©', 'success');
           closeDeleteModal();
         } else {
           showToast('Erreur lors de la suppression', 'error');
@@ -422,13 +422,40 @@
       const toastIcon = document.getElementById('toast-icon');
 
       toastMessage.textContent = message;
-      toastIcon.textContent = type === 'success' ? '✅' : '❌';
+      toastIcon.textContent = type === 'success' ? 'âœ…' : 'âŒ';
 
       toast.classList.remove('hidden');
 
       setTimeout(() => {
         toast.classList.add('hidden');
       }, 3000);
+    }
+
+    // Drawer toggle for mobile
+    function toggleDrawer() {
+      const drawer = document.querySelector(".drawer-panel");
+      const backdrop = document.querySelector(".drawer-backdrop");
+      const mainContent = document.querySelector(".with-drawer");
+      
+      if (drawer.classList.contains("open")) {
+        drawer.classList.remove("open");
+        backdrop.classList.remove("open");
+        mainContent.classList.remove("sidebar-open");
+      } else {
+        drawer.classList.add("open");
+        backdrop.classList.add("open");
+        mainContent.classList.add("sidebar-open");
+      }
+    }
+    
+    function closeDrawer() {
+      const drawer = document.querySelector(".drawer-panel");
+      const backdrop = document.querySelector(".drawer-backdrop");
+      const mainContent = document.querySelector(".with-drawer");
+      
+      drawer.classList.remove("open");
+      backdrop.classList.remove("open");
+      mainContent.classList.remove("sidebar-open");
     }
 
     // Initialize app
