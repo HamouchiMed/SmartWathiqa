@@ -1,477 +1,604 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 <html lang="fr" class="h-full">
-<head>
+ <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestionnaire de Documents</title>
+  <title>Gestion des Documents</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
   <script src="/_sdk/data_sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <style>
-    * { font-family: 'Outfit', sans-serif; }
-    
+    * { font-family: 'DM Sans', sans-serif; }
     .doc-card {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
     }
-    
     .doc-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-2px);
     }
-    
-    .modal-overlay {
-      animation: fadeIn 0.2s ease-out;
+    .category-pill {
+      animation: fadeIn 0.3s ease;
     }
-    
-    .modal-content {
-      animation: slideUp 0.3s ease-out;
-    }
-    
     @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-backdrop {
+      animation: fadeInBackdrop 0.2s ease;
+    }
+    @keyframes fadeInBackdrop {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-    
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .category-badge {
-      transition: all 0.2s ease;
-    }
-    
-    .search-input:focus {
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    }
-    
-    .btn-primary {
-      transition: all 0.2s ease;
-    }
-    
-    .btn-primary:hover {
-      transform: scale(1.02);
-    }
-    
-    .empty-state {
-      animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full overflow-auto" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);"><!-- Header -->
+   <header class="sticky top-0 z-40 backdrop-blur-xl border-b" style="background: rgba(15, 23, 42, 0.8); border-color: #334155;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+     <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+       </div>
+       <div>
+        <h1 id="app-title" class="text-xl font-bold" style="color: #f1f5f9;">Gestion des Documents</h1>
+        <p id="welcome-message" class="text-sm" style="color: #94a3b8;">Organisez et gérez vos fichiers</p>
+       </div>
+      </div><button id="add-doc-btn" class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-white transition-all hover:opacity-90" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+       </svg><span class="hidden sm:inline">Nouveau Document</span> </button>
+     </div>
+    </div>
+   </header><!-- Main Content -->
+   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><!-- Stats Bar -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+     <div class="rounded-2xl p-4 border" style="background: rgba(30, 41, 59, 0.6); border-color: #334155;">
+      <div class="flex items-center gap-3">
+       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(99, 102, 241, 0.2);">
+        <svg class="w-5 h-5" style="color: #818cf8;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+       </div>
+       <div>
+        <p class="text-2xl font-bold" style="color: #f1f5f9;" id="total-docs">0</p>
+        <p class="text-xs" style="color: #94a3b8;">Total</p>
+       </div>
+      </div>
+     </div>
+     <div class="rounded-2xl p-4 border" style="background: rgba(30, 41, 59, 0.6); border-color: #334155;">
+      <div class="flex items-center gap-3">
+       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(34, 197, 94, 0.2);">
+        <svg class="w-5 h-5" style="color: #4ade80;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+       </div>
+       <div>
+        <p class="text-2xl font-bold" style="color: #f1f5f9;" id="pdf-count">0</p>
+        <p class="text-xs" style="color: #94a3b8;">PDF</p>
+       </div>
+      </div>
+     </div>
+     <div class="rounded-2xl p-4 border" style="background: rgba(30, 41, 59, 0.6); border-color: #334155;">
+      <div class="flex items-center gap-3">
+       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59, 130, 246, 0.2);">
+        <svg class="w-5 h-5" style="color: #60a5fa;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+       </div>
+       <div>
+        <p class="text-2xl font-bold" style="color: #f1f5f9;" id="image-count">0</p>
+        <p class="text-xs" style="color: #94a3b8;">Images</p>
+       </div>
+      </div>
+     </div>
+     <div class="rounded-2xl p-4 border" style="background: rgba(30, 41, 59, 0.6); border-color: #334155;">
+      <div class="flex items-center gap-3">
+       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(249, 115, 22, 0.2);">
+        <svg class="w-5 h-5" style="color: #fb923c;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+        </svg>
+       </div>
+       <div>
+        <p class="text-2xl font-bold" style="color: #f1f5f9;" id="other-count">0</p>
+        <p class="text-xs" style="color: #94a3b8;">Autres</p>
+       </div>
+      </div>
+     </div>
+    </div><!-- Filter & Search -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+     <div class="flex-1 relative">
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style="color: #64748b;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg><input type="text" id="search-input" placeholder="Rechercher un document..." class="w-full pl-12 pr-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: rgba(30, 41, 59, 0.6); border-color: #334155; color: #f1f5f9; --tw-ring-color: #6366f1;">
+     </div><select id="category-filter" class="px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: rgba(30, 41, 59, 0.6); border-color: #334155; color: #f1f5f9; --tw-ring-color: #6366f1;"> <option value="all">Toutes les catégories</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select>
+    </div><!-- Documents Grid -->
+    <div id="documents-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><!-- Documents will be rendered here -->
+    </div><!-- Empty State -->
+    <div id="empty-state" class="hidden text-center py-16">
+     <div class="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center" style="background: rgba(99, 102, 241, 0.1);">
+      <svg class="w-10 h-10" style="color: #6366f1;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+     </div>
+     <h3 class="text-xl font-semibold mb-2" style="color: #f1f5f9;">Aucun document</h3>
+     <p class="mb-6" style="color: #94a3b8;">Commencez par ajouter votre premier document</p><button id="add-first-doc" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg> Ajouter un document </button>
+    </div><!-- Limit Warning -->
+    <div id="limit-warning" class="hidden mt-4 p-4 rounded-xl border" style="background: rgba(249, 115, 22, 0.1); border-color: #f97316;">
+     <p class="text-sm font-medium" style="color: #fb923c;">⚠️ Vous avez atteint la limite de 999 documents. Veuillez en supprimer pour en ajouter de nouveaux.</p>
+    </div>
+   </main><!-- Add/Edit Modal -->
+   <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="modal-backdrop absolute inset-0" style="background: rgba(0, 0, 0, 0.7);" onclick="closeModal()"></div>
+    <div class="relative w-full max-w-md rounded-2xl border p-6" style="background: #1e293b; border-color: #334155;"><button onclick="closeModal()" class="absolute top-4 right-4 p-2 rounded-lg transition-colors hover:bg-slate-700" style="color: #94a3b8;">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg></button>
+     <h2 id="modal-title" class="text-xl font-bold mb-6" style="color: #f1f5f9;">Nouveau Document</h2>
+     <form id="doc-form" class="space-y-4">
+      <div><label for="doc-name" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Nom du document *</label> <input type="text" id="doc-name" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;" placeholder="Ex: Contrat de travail">
+      </div>
+      <div><label for="doc-type" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Type de fichier *</label> <select id="doc-type" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;"> <option value="">Sélectionner un type</option> <option value="PDF">PDF</option> <option value="Word">Word</option> <option value="Excel">Excel</option> <option value="Image">Image</option> <option value="Autre">Autre</option> </select>
+      </div>
+      <div><label for="doc-category" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Catégorie *</label> <select id="doc-category" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;"> <option value="">Sélectionner une catégorie</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select>
+      </div>
+      <div><label for="doc-size" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Taille</label> <input type="text" id="doc-size" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;" placeholder="Ex: 2.5 MB">
+      </div>
+      <div><label for="doc-description" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Description</label> <textarea id="doc-description" rows="3" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all resize-none" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;" placeholder="Description du document..."></textarea>
+      </div><button type="submit" id="submit-btn" class="w-full py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90 flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);"> <span id="submit-text">Ajouter le document</span>
+       <svg id="submit-spinner" class="hidden w-5 h-5 animate-spin" fill="none" viewbox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+       </svg></button>
+     </form>
+    </div>
+   </div><!-- Delete Confirmation Modal -->
+   <div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="modal-backdrop absolute inset-0" style="background: rgba(0, 0, 0, 0.7);" onclick="closeDeleteModal()"></div>
+    <div class="relative w-full max-w-sm rounded-2xl border p-6 text-center" style="background: #1e293b; border-color: #334155;">
+     <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style="background: rgba(239, 68, 68, 0.1);">
+      <svg class="w-8 h-8" style="color: #ef4444;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+      </svg>
+     </div>
+     <h3 class="text-lg font-bold mb-2" style="color: #f1f5f9;">Supprimer ce document ?</h3>
+     <p class="text-sm mb-6" style="color: #94a3b8;">Cette action est irréversible.</p>
+     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl font-medium border transition-colors hover:bg-slate-700" style="color: #e2e8f0; border-color: #475569;"> Annuler </button> <button id="confirm-delete-btn" class="flex-1 py-2.5 rounded-xl font-medium text-white transition-all hover:opacity-90" style="background: #ef4444;"> Supprimer </button>
+     </div>
+    </div>
+   </div><!-- Toast Notification -->
+   <div id="toast" class="hidden fixed bottom-6 right-6 z-50 px-6 py-4 rounded-xl shadow-2xl border transition-all transform" style="background: #1e293b; border-color: #334155;">
+    <div class="flex items-center gap-3">
+     <div id="toast-icon" class="w-8 h-8 rounded-full flex items-center justify-center" style="background: rgba(34, 197, 94, 0.2);">
+      <svg class="w-5 h-5" style="color: #4ade80;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+     </div>
+     <p id="toast-message" class="font-medium" style="color: #f1f5f9;">Document ajouté avec succès</p>
+    </div>
+   </div>
+  </div>
+  <script>
+    // State
+    let documents = [];
+    let editingDoc = null;
+    let deletingDoc = null;
+    let currentRecordCount = 0;
+
+    // Default config
+    const defaultConfig = {
+      app_title: 'Gestion des Documents',
+      welcome_message: 'Organisez et gérez vos fichiers',
+      background_color: '#0f172a',
+      surface_color: '#1e293b',
+      text_color: '#f1f5f9',
+      primary_action_color: '#6366f1',
+      secondary_action_color: '#94a3b8',
+      font_family: 'DM Sans',
+      font_size: 16
+    };
+
+    // Data Handler
+    const dataHandler = {
+      onDataChanged(data) {
+        documents = data;
+        currentRecordCount = data.length;
+        renderDocuments();
+        updateStats();
+      }
+    };
+
+    // Element SDK Handler
+    async function onConfigChange(config) {
+      const appTitle = document.getElementById('app-title');
+      const welcomeMsg = document.getElementById('welcome-message');
+      
+      if (appTitle) appTitle.textContent = config.app_title || defaultConfig.app_title;
+      if (welcomeMsg) welcomeMsg.textContent = config.welcome_message || defaultConfig.welcome_message;
+
+      // Apply colors
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+
+      document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+      
+      const app = document.getElementById('app');
+      if (app) app.style.background = `linear-gradient(135deg, ${bgColor} 0%, ${surfaceColor} 50%, #334155 100%)`;
+
+      // Update text colors
+      document.querySelectorAll('[style*="color: #f1f5f9"]').forEach(el => {
+        el.style.color = textColor;
+      });
+
+      // Update primary action colors (buttons)
+      document.querySelectorAll('[style*="background: linear-gradient(135deg, #6366f1"]').forEach(el => {
+        el.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${lightenColor(primaryColor, 20)} 100%)`;
+      });
     }
 
-    :root {
-      --navy: #0B3A6C;
-      --blue: #005EB8;
-      --muted: #526A7E;
-      --light: #95B1BA;
-      --very-light: #D2DCDE;
-      --green: #329C37;
-      --orange: #DA9016;
-      --white: #FDFDFD;
+    function lightenColor(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = (num >> 16) + amt;
+      const G = (num >> 8 & 0x00FF) + amt;
+      const B = (num & 0x0000FF) + amt;
+      return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
     }
 
-    .theme-bg {
-      background: var(--white) !important;
-      background-image: none !important;
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => { config.primary_action_color = value; window.elementSdk.setConfig({ primary_action_color: value }); }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => { config.secondary_action_color = value; window.elementSdk.setConfig({ secondary_action_color: value }); }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+        }
+      };
     }
 
-    .bg-slate-900 { background-color: var(--white) !important; }
-    .bg-slate-800\/50 { background-color: var(--white) !important; }
-    .bg-slate-700\/50 { background-color: var(--very-light) !important; }
-    .bg-slate-700 { background-color: var(--light) !important; }
-    .bg-slate-600 { background-color: var(--muted) !important; }
-    .bg-indigo-600 { background-color: var(--blue) !important; }
-    .hover\:bg-indigo-500:hover { background-color: #0a6bd1 !important; }
-    .bg-red-600 { background-color: var(--orange) !important; }
-    .hover\:bg-red-500:hover { background-color: #e19f33 !important; }
-    .bg-red-500\/20 { background-color: rgba(218, 144, 22, 0.2) !important; }
-    .bg-red-500\/30 { background-color: rgba(218, 144, 22, 0.3) !important; }
-
-    .text-white { color: var(--navy) !important; }
-    .text-slate-400 { color: var(--muted) !important; }
-    .text-slate-500 { color: var(--muted) !important; }
-    .text-slate-300 { color: var(--navy) !important; }
-    .text-emerald-400 { color: var(--green) !important; }
-    .text-amber-400 { color: var(--orange) !important; }
-    .text-blue-400 { color: var(--blue) !important; }
-    .text-red-400 { color: var(--orange) !important; }
-
-    .border-slate-700\/50 { border-color: rgba(82, 106, 126, 0.4) !important; }
-    .border-slate-600 { border-color: rgba(82, 106, 126, 0.6) !important; }
-    .hover\:border-indigo-500\/50:hover { border-color: rgba(0, 94, 184, 0.5) !important; }
-    .focus\:border-indigo-500:focus { border-color: var(--blue) !important; }
-
-    .shadow-indigo-500\/30 { box-shadow: 0 12px 30px rgba(0, 94, 184, 0.3) !important; }
-
-    .btn-primary, .btn-primary * {
-      color: var(--white) !important;
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['app_title', config.app_title || defaultConfig.app_title],
+        ['welcome_message', config.welcome_message || defaultConfig.welcome_message]
+      ]);
     }
 
-    input, textarea, select {
-      color: var(--navy) !important;
-      background-color: var(--very-light) !important;
-    }
-    input::placeholder, textarea::placeholder {
-      color: var(--muted) !important;
+    // Initialize SDKs
+    async function init() {
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities,
+          mapToEditPanelValues
+        });
+      }
+
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init(dataHandler);
+        if (!result.isOk) {
+          showToast('Erreur de connexion', 'error');
+        }
+      }
+
+      setupEventListeners();
     }
 
-    .text-slate-600 { color: var(--muted) !important; }
-    .text-amber-200 { color: var(--orange) !important; }
+    // Get document type icon
+    function getTypeIcon(type) {
+      const icons = {
+        'PDF': `<svg class="w-6 h-6" style="color: #ef4444;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>`,
+        'Word': `<svg class="w-6 h-6" style="color: #3b82f6;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`,
+        'Excel': `<svg class="w-6 h-6" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>`,
+        'Image': `<svg class="w-6 h-6" style="color: #a855f7;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>`,
+        'Autre': `<svg class="w-6 h-6" style="color: #f59e0b;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`
+      };
+      return icons[type] || icons['Autre'];
+    }
 
-    .drawer {
-      position: fixed;
-      inset: 0;
-      z-index: 60;
-      pointer-events: auto;
+    // Get category color
+    function getCategoryColor(category) {
+      const colors = {
+        'Travail': { bg: 'rgba(59, 130, 246, 0.2)', text: '#60a5fa' },
+        'Personnel': { bg: 'rgba(168, 85, 247, 0.2)', text: '#c084fc' },
+        'Finance': { bg: 'rgba(34, 197, 94, 0.2)', text: '#4ade80' },
+        'Juridique': { bg: 'rgba(239, 68, 68, 0.2)', text: '#f87171' },
+        'Autre': { bg: 'rgba(249, 115, 22, 0.2)', text: '#fb923c' }
+      };
+      return colors[category] || colors['Autre'];
     }
-    .drawer-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(11, 58, 108, 0.25);
-      opacity: 0;
-      transition: opacity 160ms ease;
+
+    // Format date
+    function formatDate(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
     }
-    .drawer-backdrop { display: none; }
-    .drawer-panel {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: min(280px, 80vw);
-      background: var(--blue);
-      border-right: 1px solid rgba(0, 94, 184, 0.6);
-      transform: translateX(0);
-      transition: transform 200ms ease;
-      display: grid;
-      grid-template-rows: auto auto auto;
-      padding: 8px 12px;
-      gap: 4px;
-    }
-    .drawer-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--white);
-      margin: 0 0 4px 0;
-    }
-    .drawer-list {
-      gap: 0;
-      padding: 0;
-      margin: 0 0 4px 0;
-      list-style: none;
-    }
-    .drawer-link {
-      display: grid;
-      gap: 8px;
-      padding: 0;
-      margin: 0 0 4px 0;
-      list-style: none;
-      color: #ffffff !important;
-    }
-    .drawer-close {
-      background: var(--white);
-      color: var(--blue);
-      border: none;
-      border-radius: 10px;
-      padding: 2px 8px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .menu-btn {
-      background: var(--blue);
-      color: var(--white);
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .with-drawer {
-      padding-left: min(280px, 80vw);
-    }
-    @media (max-width: 700px) {
-      .with-drawer {
-        padding-left: min(220px, 75vw);
+
+    // Render documents
+    function renderDocuments() {
+      const grid = document.getElementById('documents-grid');
+      const emptyState = document.getElementById('empty-state');
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const categoryFilter = document.getElementById('category-filter').value;
+
+      let filteredDocs = documents.filter(doc => {
+        const matchesSearch = doc.name.toLowerCase().includes(searchTerm) || 
+                              (doc.description && doc.description.toLowerCase().includes(searchTerm));
+        const matchesCategory = categoryFilter === 'all' || doc.category === categoryFilter;
+        return matchesSearch && matchesCategory;
+      });
+
+      if (documents.length === 0) {
+        grid.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      grid.classList.remove('hidden');
+      emptyState.classList.add('hidden');
+
+      // Update existing or create new elements
+      const existingCards = new Map([...grid.children].map(el => [el.dataset.id, el]));
+
+      filteredDocs.forEach(doc => {
+        const catColor = getCategoryColor(doc.category);
+        
+        if (existingCards.has(doc.__backendId)) {
+          // Update existing card
+          const card = existingCards.get(doc.__backendId);
+          card.querySelector('.doc-name').textContent = doc.name;
+          card.querySelector('.doc-type-icon').innerHTML = getTypeIcon(doc.type);
+          card.querySelector('.doc-category').textContent = doc.category;
+          card.querySelector('.doc-category').style.background = catColor.bg;
+          card.querySelector('.doc-category').style.color = catColor.text;
+          card.querySelector('.doc-date').textContent = formatDate(doc.createdAt);
+          card.querySelector('.doc-size').textContent = doc.size || '-';
+          existingCards.delete(doc.__backendId);
+        } else {
+          // Create new card
+          const card = document.createElement('div');
+          card.className = 'doc-card rounded-2xl border p-5 cursor-pointer';
+          card.style.cssText = 'background: rgba(30, 41, 59, 0.6); border-color: #334155;';
+          card.dataset.id = doc.__backendId;
+          card.innerHTML = `
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center doc-type-icon" style="background: rgba(99, 102, 241, 0.1);">
+                ${getTypeIcon(doc.type)}
+              </div>
+              <div class="flex gap-1">
+                <button onclick="event.stopPropagation(); editDocument('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-slate-600" style="color: #94a3b8;" aria-label="Modifier">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                </button>
+                <button onclick="event.stopPropagation(); confirmDelete('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-red-900/30" style="color: #f87171;" aria-label="Supprimer">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <h3 class="doc-name text-lg font-semibold mb-2 truncate" style="color: #f1f5f9;">${doc.name}</h3>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="doc-category category-pill px-3 py-1 rounded-full text-xs font-medium" style="background: ${catColor.bg}; color: ${catColor.text};">${doc.category}</span>
+            </div>
+            <div class="flex items-center justify-between text-sm" style="color: #64748b;">
+              <span class="doc-date">${formatDate(doc.createdAt)}</span>
+              <span class="doc-size">${doc.size || '-'}</span>
+            </div>
+          `;
+          grid.appendChild(card);
+        }
+      });
+
+      // Remove cards not in filtered list
+      existingCards.forEach(card => card.remove());
+
+      // Show limit warning if needed
+      const limitWarning = document.getElementById('limit-warning');
+      if (currentRecordCount >= 999) {
+        limitWarning.classList.remove('hidden');
+      } else {
+        limitWarning.classList.add('hidden');
       }
     }
-  </style>
-</head>
-<body class="h-full bg-slate-900">
-  <div id="app-wrapper" class="h-full w-full overflow-auto">
-    <button class="drawer-toggle fixed top-4 left-4 z-50 p-2 bg-indigo-600 text-white rounded-lg lg:hidden" onclick="toggleDrawer()">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-      </svg>
-    </button>
-    <div id="drawer" class="drawer">
-      <div class="drawer-backdrop" onclick="closeDrawer()"></div>
-      <aside class="drawer-panel">
-        <h2 class="drawer-title text-4xl mb-0">Menu</h2>
-        <ul class="drawer-list -mt-60">
-          <li><a class="drawer-link" href="#">Dashboard</a></li>
-          <li><a class="drawer-link" href="#">Documents</a></li>
-          <li><a class="drawer-link" href="#">Upload</a></li>
-          <li><a class="drawer-link" href="#">Settings</a></li>
-          <li><a class="drawer-link" href="firstscreen.html">Logout</a></li>
-        </ul>
-          <div class="text-slate-400 text-sm">SmartWathiqa</div>
-      </aside>
-    </div>
-    <!-- Main Container -->
-    <div class="min-h-full w-full bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 p-6 theme-bg with-drawer">
+
+    // Update statistics
+    function updateStats() {
+      document.getElementById('total-docs').textContent = documents.length;
+      document.getElementById('pdf-count').textContent = documents.filter(d => d.type === 'PDF').length;
+      document.getElementById('image-count').textContent = documents.filter(d => d.type === 'Image').length;
+      document.getElementById('other-count').textContent = documents.filter(d => !['PDF', 'Image'].includes(d.type)).length;
+    }
+
+    // Modal functions
+    function openModal(doc = null) {
+      editingDoc = doc;
+      const modal = document.getElementById('modal');
+      const title = document.getElementById('modal-title');
+      const submitText = document.getElementById('submit-text');
+      const form = document.getElementById('doc-form');
+
+      if (doc) {
+        title.textContent = 'Modifier le document';
+        submitText.textContent = 'Enregistrer';
+        document.getElementById('doc-name').value = doc.name;
+        document.getElementById('doc-type').value = doc.type;
+        document.getElementById('doc-category').value = doc.category;
+        document.getElementById('doc-size').value = doc.size || '';
+        document.getElementById('doc-description').value = doc.description || '';
+      } else {
+        title.textContent = 'Nouveau Document';
+        submitText.textContent = 'Ajouter le document';
+        form.reset();
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+      editingDoc = null;
+    }
+
+    function editDocument(id) {
+      const doc = documents.find(d => d.__backendId === id);
+      if (doc) openModal(doc);
+    }
+
+    function confirmDelete(id) {
+      deletingDoc = documents.find(d => d.__backendId === id);
+      document.getElementById('delete-modal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.add('hidden');
+      deletingDoc = null;
+    }
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      const toastIcon = document.getElementById('toast-icon');
+
+      toastMessage.textContent = message;
       
-      <!-- Header -->
-      <header class="max-w-6xl mx-auto mb-8">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 id="app-title" class="text-3xl font-bold text-white mb-2"> Gestionnaire de Documents</h1>
-            <p id="welcome-message" class="text-slate-400">Bienvenue dans votre espace documents</p>
-          </div>
-          <div class="flex items-center gap-3 flex-wrap">
-            <button id="add-doc-btn" onclick="openAddModal()" class="btn-primary bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg shadow-indigo-500/30">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            <span id="add-button-text">Nouveau Document</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      if (type === 'success') {
+        toastIcon.style.background = 'rgba(34, 197, 94, 0.2)';
+        toastIcon.innerHTML = `<svg class="w-5 h-5" style="color: #4ade80;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`;
+      } else {
+        toastIcon.style.background = 'rgba(239, 68, 68, 0.2)';
+        toastIcon.innerHTML = `<svg class="w-5 h-5" style="color: #f87171;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
+      }
 
-      <!-- Search and Filters -->
-      <div class="max-w-6xl mx-auto mb-8">
-        <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-slate-700/50">
-          <div class="flex flex-col md:flex-row gap-4">
-            <!-- Search -->
-            <div class="flex-1 relative">
-              <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-              </svg>
-              <input type="text" id="search-input" placeholder="Rechercher un document..." 
-                class="search-input w-full pl-12 pr-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
-                oninput="filterDocuments()">
-            </div>
-            
-            <!-- Category Filter -->
-            <select id="category-filter" onchange="filterDocuments()" 
-              class="px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white focus:outline-none focus:border-indigo-500 cursor-pointer">
-              <option value="all">Toutes les catégories</option>
-              <option value="contrat"> Contrats</option>
-              <option value="facture"> Factures</option>
-              <option value="rapport"> Rapports</option>
-              <option value="presentation">️ Présentations</option>
-              <option value="autre"> Autres</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
 
-      <!-- Stats -->
-      <div class="max-w-6xl mx-auto mb-8">
-        <div class="grid stats-grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50">
-            <p class="text-slate-400 text-sm mb-1">Total Documents</p>
-            <p id="stat-total" class="text-2xl font-bold text-white">0</p>
-          </div>
-          <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50">
-            <p class="text-slate-400 text-sm mb-1">Contrats</p>
-            <p id="stat-contrats" class="text-2xl font-bold text-emerald-400">0</p>
-          </div>
-          <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50">
-            <p class="text-slate-400 text-sm mb-1">Factures</p>
-            <p id="stat-factures" class="text-2xl font-bold text-amber-400">0</p>
-          </div>
-          <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4 border border-slate-700/50">
-            <p class="text-slate-400 text-sm mb-1">Rapports</p>
-            <p id="stat-rapports" class="text-2xl font-bold text-blue-400">0</p>
-          </div>
-        </div>
-      </div>
+    // Setup event listeners
+    function setupEventListeners() {
+      // Add document buttons
+      document.getElementById('add-doc-btn').addEventListener('click', () => {
+        if (currentRecordCount >= 999) {
+          showToast('Limite de 999 documents atteinte', 'error');
+          return;
+        }
+        openModal();
+      });
 
-      <!-- Documents Grid -->
-      <main class="max-w-6xl mx-auto">
-        <div id="documents-grid" class="grid documents-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Documents will be rendered here -->
-        </div>
+      document.getElementById('add-first-doc').addEventListener('click', () => {
+        if (currentRecordCount >= 999) {
+          showToast('Limite de 999 documents atteinte', 'error');
+          return;
+        }
+        openModal();
+      });
+
+      // Form submission
+      document.getElementById('doc-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        <!-- Empty State -->
-        <div id="empty-state" class="hidden text-center py-16">
-          <div class="empty-state inline-block mb-6">
-            <svg class="w-24 h-24 text-slate-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-semibold text-slate-400 mb-2">Aucun document</h3>
-          <p class="text-slate-500 mb-6">Commencez par ajouter votre premier document</p>
-          <button onclick="openAddModal()" class="btn-primary bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold inline-flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            Ajouter un document
-          </button>
-        </div>
+        const submitBtn = document.getElementById('submit-btn');
+        const submitText = document.getElementById('submit-text');
+        const submitSpinner = document.getElementById('submit-spinner');
 
-        <!-- No Results -->
-        <div id="no-results" class="hidden text-center py-16">
-          <svg class="w-16 h-16 text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-          </svg>
-          <h3 class="text-xl font-semibold text-slate-400 mb-2">Aucun résultat</h3>
-          <p class="text-slate-500">Essayez de modifier vos critères de recherche</p>
-        </div>
-      </main>
+        submitBtn.disabled = true;
+        submitText.classList.add('hidden');
+        submitSpinner.classList.remove('hidden');
 
-      <!-- Limit Warning -->
-      <div id="limit-warning" class="hidden max-w-6xl mx-auto mt-6">
-        <div class="bg-amber-500/20 border border-amber-500/50 rounded-xl p-4 text-amber-200 text-center">
-          ⚠️ Limite de 999 documents atteinte. Veuillez supprimer des documents pour en ajouter de nouveaux.
-        </div>
-      </div>
-    </div>
+        const docData = {
+          name: document.getElementById('doc-name').value.trim(),
+          type: document.getElementById('doc-type').value,
+          category: document.getElementById('doc-category').value,
+          size: document.getElementById('doc-size').value.trim(),
+          description: document.getElementById('doc-description').value.trim(),
+          createdAt: editingDoc ? editingDoc.createdAt : new Date().toISOString()
+        };
 
-    <!-- Add/Edit Modal -->
-    <div id="modal" class="hidden fixed inset-0 z-70">
-      <div class="modal-overlay absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal()"></div>
-      <div class="flex items-center justify-center min-h-full p-4">
-        <div class="modal-content relative bg-slate-800 rounded-2xl w-full max-w-lg p-6 border border-slate-700 shadow-2xl">
-          <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-          
-          <h2 id="modal-title" class="text-2xl font-bold text-white mb-6">Nouveau Document</h2>
-          
-          <form id="doc-form" onsubmit="handleSubmit(event)">
-            <input type="hidden" id="doc-id">
-            
-            <div class="space-y-4">
-              <div>
-                <label class="block text-slate-300 text-sm font-medium mb-2">Nom du document *</label>
-                <input type="text" id="doc-name" required
-                  class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
-                  placeholder="Ex: Contrat client 2024">
-              </div>
-              
-              <div>
-                <label class="block text-slate-300 text-sm font-medium mb-2">Catégorie *</label>
-                <select id="doc-category" required
-                  class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white focus:outline-none focus:border-indigo-500 cursor-pointer">
-                  <option value="">Sélectionner une catégorie</option>
-                  <option value="contrat"> Contrat</option>
-                  <option value="facture"> Facture</option>
-                  <option value="rapport"> Rapport</option>
-                  <option value="presentation">️ Présentation</option>
-                  <option value="autre"> Autre</option>
-                </select>
-              </div>
-              
-              <div>
-                <label class="block text-slate-300 text-sm font-medium mb-2">Type de fichier</label>
-                <select id="doc-type"
-                  class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white focus:outline-none focus:border-indigo-500 cursor-pointer">
-                  <option value="pdf">PDF</option>
-                  <option value="doc">Word (DOC)</option>
-                  <option value="xls">Excel (XLS)</option>
-                  <option value="ppt">PowerPoint (PPT)</option>
-                  <option value="img">Image</option>
-                  <option value="other">Autre</option>
-                </select>
-              </div>
-              
-              <div>
-                <label class="block text-slate-300 text-sm font-medium mb-2">Taille</label>
-                <input type="text" id="doc-size"
-                  class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
-                  placeholder="Ex: 2.5 MB">
-              </div>
-              
-              <div>
-                <label class="block text-slate-300 text-sm font-medium mb-2">Description</label>
-                <textarea id="doc-description" rows="3"
-                  class="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 resize-none"
-                  placeholder="Description optionnelle du document..."></textarea>
-              </div>
-            </div>
-            
-            <div class="flex gap-3 mt-6">
-              <button type="button" onclick="closeModal()" 
-                class="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-medium transition-colors">
-                Annuler
-              </button>
-              <button type="submit" id="submit-btn"
-                class="flex-1 btn-primary px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-medium shadow-lg shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed">
-                <span id="submit-text">Ajouter</span>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+        try {
+          let result;
+          if (editingDoc) {
+            result = await window.dataSdk.update({ ...editingDoc, ...docData });
+          } else {
+            if (currentRecordCount >= 999) {
+              showToast('Limite de 999 documents atteinte', 'error');
+              return;
+            }
+            result = await window.dataSdk.create(docData);
+          }
 
-    <!-- Delete Confirmation Modal -->
-    <div id="delete-modal" class="hidden fixed inset-0 z-70">
-      <div class="modal-overlay absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
-      <div class="flex items-center justify-center min-h-full p-4">
-        <div class="modal-content relative bg-slate-800 rounded-2xl w-full max-w-md p-6 border border-slate-700 shadow-2xl text-center">
-          <div class="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-white mb-2">Supprimer le document ?</h3>
-          <p id="delete-doc-name" class="text-slate-400 mb-6">Ce document sera définitivement supprimé.</p>
-          
-          <div class="flex gap-3">
-            <button onclick="closeDeleteModal()" 
-              class="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-medium transition-colors">
-              Annuler
-            </button>
-            <button onclick="confirmDelete()" id="confirm-delete-btn"
-              class="flex-1 px-4 py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-              Supprimer
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+          if (result.isOk) {
+            showToast(editingDoc ? 'Document modifié' : 'Document ajouté');
+            closeModal();
+          } else {
+            showToast('Une erreur est survenue', 'error');
+          }
+        } catch (err) {
+          showToast('Une erreur est survenue', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitText.classList.remove('hidden');
+          submitSpinner.classList.add('hidden');
+        }
+      });
 
-    <!-- Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
-      <div class="bg-slate-800 border border-slate-700 rounded-xl px-5 py-3 shadow-2xl flex items-center gap-3">
-        <span id="toast-icon"></span>
-        <span id="toast-message" class="text-white"></span>
-      </div>
-    </div>
-  </div>
+      // Delete confirmation
+      document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+        if (!deletingDoc) return;
 
-  <script>
-    // drawer is always open
+        const btn = document.getElementById('confirm-delete-btn');
+        btn.disabled = true;
+        btn.textContent = 'Suppression...';
+
+        try {
+          const result = await window.dataSdk.delete(deletingDoc);
+          if (result.isOk) {
+            showToast('Document supprimé');
+            closeDeleteModal();
+          } else {
+            showToast('Erreur lors de la suppression', 'error');
+          }
+        } catch (err) {
+          showToast('Erreur lors de la suppression', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Supprimer';
+        }
+      });
+
+      // Search and filter
+      document.getElementById('search-input').addEventListener('input', renderDocuments);
+      document.getElementById('category-filter').addEventListener('change', renderDocuments);
+    }
+
+    // Initialize app
+    init();
   </script>
-  <script src="dashboardemployer.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cf8d78606788c92',t:'MTc3MTM2ODYwNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d01b27ed5fc11e6',t:'MTc3MTQ2MTQ2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
