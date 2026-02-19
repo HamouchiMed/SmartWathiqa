@@ -41,6 +41,10 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
      <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
+       <button id="drawer-toggle" class="p-2 rounded-lg transition-colors hover:bg-gray-100 lg:hidden" style="color: #1e293b;">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+       </button>
        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
@@ -54,7 +58,23 @@
        </svg><span class="hidden sm:inline">Nouveau Document</span> </button>
      </div>
     </div>
-   </header><!-- Main Content -->
+   </header><!-- Drawer Menu -->
+   <div id="drawer-backdrop" class="hidden fixed inset-0 z-30 lg:hidden" style="background: rgba(0, 0, 0, 0.3);" onclick="closeDrawer()"></div>
+   <div id="drawer" class="fixed left-0 top-0 h-screen z-40 w-64 transform -translate-x-full transition-transform duration-300 lg:hidden" style="background: #ffffff; border-right: 1px solid #e2e8f0;">
+    <div class="p-6 border-b" style="border-color: #e2e8f0;">
+     <button onclick="closeDrawer()" class="p-2 rounded-lg transition-colors hover:bg-gray-100 float-right" style="color: #1e293b;">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+     </button>
+     <h2 class="text-lg font-bold" style="color: #1e293b;">Menu</h2>
+    </div>
+    <nav class="p-4 space-y-2">
+     <a href="#" class="block px-4 py-3 rounded-lg transition-colors hover:bg-gray-100" style="color: #1e293b;">📊 Tableau de bord</a>
+     <a href="#" class="block px-4 py-3 rounded-lg transition-colors hover:bg-gray-100" style="color: #1e293b;">📁 Mes documents</a>
+     <a href="#" class="block px-4 py-3 rounded-lg transition-colors hover:bg-gray-100" style="color: #1e293b;">⚙️ Paramètres</a>
+     <a href="#" class="block px-4 py-3 rounded-lg transition-colors hover:bg-gray-100" style="color: #1e293b;">ℹ️ À propos</a>
+    </nav>
+   </div><!-- Main Content -->
    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><!-- Stats Bar -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
      <div class="rounded-2xl p-4 border" style="background: #f8fafc; border-color: #e2e8f0;">
@@ -501,8 +521,24 @@
       setTimeout(() => toast.classList.add('hidden'), 3000);
     }
 
+    // Drawer functions
+    function openDrawer() {
+      document.getElementById('drawer').classList.remove('-translate-x-full');
+      document.getElementById('drawer-backdrop').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawer').classList.add('-translate-x-full');
+      document.getElementById('drawer-backdrop').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
     // Setup event listeners
     function setupEventListeners() {
+      // Drawer toggle
+      document.getElementById('drawer-toggle').addEventListener('click', openDrawer);
+
       // Add document buttons
       document.getElementById('add-doc-btn').addEventListener('click', () => {
         if (currentRecordCount >= 999) {
