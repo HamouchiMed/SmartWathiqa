@@ -36,8 +36,8 @@
   <style>body { box-sizing: border-box; }</style>
  </head>
  <body class="h-full">
-  <div id="app" class="h-full overflow-auto" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);"><!-- Header -->
-   <header class="sticky top-0 z-40 backdrop-blur-xl border-b" style="background: rgba(15, 23, 42, 0.8); border-color: #334155;">
+  <div id="app" class="h-full overflow-auto" style="background: #ffffff;"><!-- Header -->
+   <header class="sticky top-0 z-40 backdrop-blur-xl border-b" style="background: #ffffff; border-color: #e2e8f0;">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
      <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -46,8 +46,8 @@
         </svg>
        </div>
        <div>
-        <h1 id="app-title" class="text-xl font-bold" style="color: #f1f5f9;">Gestion des Documents</h1>
-        <p id="welcome-message" class="text-sm" style="color: #94a3b8;">Organisez et gérez vos fichiers</p>
+        <h1 id="app-title" class="text-xl font-bold mb-2" style="color: #1e293b;">Gestion des Documents</h1>
+        <p id="welcome-message" class="text-sm" style="color: #64748b;">Organisez et gérez vos fichiers</p>
        </div>
       </div><button id="add-doc-btn" class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-white transition-all hover:opacity-90" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -57,93 +57,93 @@
    </header><!-- Main Content -->
    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><!-- Stats Bar -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-     <div class="rounded-2xl p-4 border" style="background: rgba(30, 41, 59, 0.6); border-color: #334155;">
+     <div class="rounded-2xl p-4 border" style="background: #f8fafc; border-color: #e2e8f0;">
       <div class="flex items-center gap-3">
-       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(99, 102, 241, 0.2);">
+       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(99, 102, 241, 0.15);">
         <svg class="w-5 h-5" style="color: #818cf8;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
        </div>
        <div>
-        <p class="text-2xl font-bold" style="color: #f1f5f9;" id="total-docs">0</p>
-        <p class="text-xs" style="color: #94a3b8;">Total</p>
+        <p class="text-2xl font-bold" style="color: #1e293b;" id="total-docs">0</p>
+        <p class="text-xs" style="color: #64748b;">Total</p>
        </div>
       </div>
      </div>
-     <div class="rounded-2xl p-4 border" style="background: rgba(30, 41, 59, 0.6); border-color: #334155;">
+     <div class="rounded-2xl p-4 border" style="background: #f8fafc; border-color: #e2e8f0;">
       <div class="flex items-center gap-3">
-       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(34, 197, 94, 0.2);">
+       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(34, 197, 94, 0.15);">
         <svg class="w-5 h-5" style="color: #4ade80;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
        </div>
        <div>
-        <p class="text-2xl font-bold" style="color: #f1f5f9;" id="pdf-count">0</p>
-        <p class="text-xs" style="color: #94a3b8;">PDF</p>
+        <p class="text-2xl font-bold" style="color: #1e293b;" id="pdf-count">0</p>
+        <p class="text-xs" style="color: #64748b;">PDF</p>
        </div>
       </div>
      </div>
-     <div class="rounded-2xl p-4 border" style="background: rgba(30, 41, 59, 0.6); border-color: #334155;">
+     <div class="rounded-2xl p-4 border" style="background: #f8fafc; border-color: #e2e8f0;">
       <div class="flex items-center gap-3">
-       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59, 130, 246, 0.2);">
+       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59, 130, 246, 0.15);">
         <svg class="w-5 h-5" style="color: #60a5fa;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
        </div>
        <div>
-        <p class="text-2xl font-bold" style="color: #f1f5f9;" id="image-count">0</p>
-        <p class="text-xs" style="color: #94a3b8;">Images</p>
+        <p class="text-2xl font-bold" style="color: #1e293b;" id="image-count">0</p>
+        <p class="text-xs" style="color: #64748b;">Images</p>
        </div>
       </div>
      </div>
-     <div class="rounded-2xl p-4 border" style="background: rgba(30, 41, 59, 0.6); border-color: #334155;">
+     <div class="rounded-2xl p-4 border" style="background: #f8fafc; border-color: #e2e8f0;">
       <div class="flex items-center gap-3">
-       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(249, 115, 22, 0.2);">
+       <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(249, 115, 22, 0.15);">
         <svg class="w-5 h-5" style="color: #fb923c;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
         </svg>
        </div>
        <div>
-        <p class="text-2xl font-bold" style="color: #f1f5f9;" id="other-count">0</p>
-        <p class="text-xs" style="color: #94a3b8;">Autres</p>
+        <p class="text-2xl font-bold" style="color: #1e293b;" id="other-count">0</p>
+        <p class="text-xs" style="color: #64748b;">Autres</p>
        </div>
       </div>
      </div>
     </div><!-- Filter & Search -->
     <div class="flex flex-col sm:flex-row gap-4 mb-6">
      <div class="flex-1 relative">
-      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style="color: #64748b;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg><input type="text" id="search-input" placeholder="Rechercher un document..." class="w-full pl-12 pr-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: rgba(30, 41, 59, 0.6); border-color: #334155; color: #f1f5f9; --tw-ring-color: #6366f1;">
-     </div><select id="category-filter" class="px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: rgba(30, 41, 59, 0.6); border-color: #334155; color: #f1f5f9; --tw-ring-color: #6366f1;"> <option value="all">Toutes les catégories</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select>
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style="color: #94a3b8;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg><input type="text" id="search-input" placeholder="Rechercher un document..." class="w-full pl-12 pr-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"><style>#search-input::placeholder { color: #cbd5e1; }</style>
+     </div><select id="category-filter" class="px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="all">Toutes les catégories</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select>
     </div><!-- Documents Grid -->
     <div id="documents-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><!-- Documents will be rendered here -->
     </div><!-- Empty State -->
     <div id="empty-state" class="hidden text-center py-16">
-     <div class="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center" style="background: rgba(99, 102, 241, 0.1);">
+     <div class="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
       <svg class="w-10 h-10" style="color: #6366f1;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
      </div>
-     <h3 class="text-xl font-semibold mb-2" style="color: #f1f5f9;">Aucun document</h3>
-     <p class="mb-6" style="color: #94a3b8;">Commencez par ajouter votre premier document</p><button id="add-first-doc" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+     <h3 class="text-xl font-semibold mb-2" style="color: #1e293b;">Aucun document</h3>
+     <p class="mb-6" style="color: #64748b;">Commencez par ajouter votre premier document</p><button id="add-first-doc" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
       </svg> Ajouter un document </button>
     </div><!-- Limit Warning -->
-    <div id="limit-warning" class="hidden mt-4 p-4 rounded-xl border" style="background: rgba(249, 115, 22, 0.1); border-color: #f97316;">
-     <p class="text-sm font-medium" style="color: #fb923c;">⚠️ Vous avez atteint la limite de 999 documents. Veuillez en supprimer pour en ajouter de nouveaux.</p>
+    <div id="limit-warning" class="hidden mt-4 p-4 rounded-xl border" style="background: rgba(249, 115, 22, 0.1); border-color: #fbbf24;">
+     <p class="text-sm font-medium" style="color: #d97706;">⚠️ Vous avez atteint la limite de 999 documents. Veuillez en supprimer pour en ajouter de nouveaux.</p>
     </div>
    </main><!-- Add/Edit Modal -->
    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="modal-backdrop absolute inset-0" style="background: rgba(0, 0, 0, 0.7);" onclick="closeModal()"></div>
-    <div class="relative w-full max-w-md rounded-2xl border p-6" style="background: #1e293b; border-color: #334155;"><button onclick="closeModal()" class="absolute top-4 right-4 p-2 rounded-lg transition-colors hover:bg-slate-700" style="color: #94a3b8;">
+    <div class="modal-backdrop absolute inset-0" style="background: rgba(0, 0, 0, 0.5);" onclick="closeModal()"></div>
+    <div class="relative w-full max-w-md rounded-2xl border p-6" style="background: #ffffff; border-color: #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);"><button onclick="closeModal()" class="absolute top-4 right-4 p-2 rounded-lg transition-colors hover:bg-gray-100" style="color: #94a3b8;">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg></button>
-     <h2 id="modal-title" class="text-xl font-bold mb-6" style="color: #f1f5f9;">Nouveau Document</h2>
+     <h2 id="modal-title" class="text-xl font-bold mb-6" style="color: #1e293b;">Nouveau Document</h2>
      <form id="doc-form" class="space-y-4">
-      <div><label for="doc-name" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Nom du document *</label> <input type="text" id="doc-name" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;" placeholder="Ex: Contrat de travail">
+      <div><label for="doc-name" class="block text-sm font-medium mb-2" style="color: #334155;">Nom du document *</label> <input type="text" id="doc-name" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;" placeholder="Ex: Contrat de travail"><style>#doc-name::placeholder { color: #cbd5e1; }</style>
       </div>
-      <div><label for="doc-type" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Type de fichier *</label> <select id="doc-type" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;"> <option value="">Sélectionner un type</option> <option value="PDF">PDF</option> <option value="Word">Word</option> <option value="Excel">Excel</option> <option value="Image">Image</option> <option value="Autre">Autre</option> </select>
+      <div><label for="doc-type" class="block text-sm font-medium mb-2" style="color: #334155;">Type de fichier *</label> <select id="doc-type" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner un type</option> <option value="PDF">PDF</option> <option value="Word">Word</option> <option value="Excel">Excel</option> <option value="Image">Image</option> <option value="Autre">Autre</option> </select>
       </div>
-      <div><label for="doc-category" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Catégorie *</label> <select id="doc-category" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;"> <option value="">Sélectionner une catégorie</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select>
+      <div><label for="doc-category" class="block text-sm font-medium mb-2" style="color: #334155;">Catégorie *</label> <select id="doc-category" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner une catégorie</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select>
       </div>
-      <div><label for="doc-size" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Taille</label> <input type="text" id="doc-size" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;" placeholder="Ex: 2.5 MB">
+      <div><label for="doc-size" class="block text-sm font-medium mb-2" style="color: #334155;">Taille</label> <input type="text" id="doc-size" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;" placeholder="Ex: 2.5 MB"><style>#doc-size::placeholder { color: #cbd5e1; }</style>
       </div>
-      <div><label for="doc-description" class="block text-sm font-medium mb-2" style="color: #e2e8f0;">Description</label> <textarea id="doc-description" rows="3" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all resize-none" style="background: rgba(15, 23, 42, 0.6); border-color: #475569; color: #f1f5f9; --tw-ring-color: #6366f1;" placeholder="Description du document..."></textarea>
+      <div><label for="doc-description" class="block text-sm font-medium mb-2" style="color: #334155;">Description</label> <textarea id="doc-description" rows="3" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all resize-none" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;" placeholder="Description du document..."><style>#doc-description::placeholder { color: #cbd5e1; }</style></textarea>
       </div><button type="submit" id="submit-btn" class="w-full py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90 flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);"> <span id="submit-text">Ajouter le document</span>
        <svg id="submit-spinner" class="hidden w-5 h-5 animate-spin" fill="none" viewbox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
        </svg></button>
@@ -151,25 +151,25 @@
     </div>
    </div><!-- Delete Confirmation Modal -->
    <div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-    <div class="modal-backdrop absolute inset-0" style="background: rgba(0, 0, 0, 0.7);" onclick="closeDeleteModal()"></div>
-    <div class="relative w-full max-w-sm rounded-2xl border p-6 text-center" style="background: #1e293b; border-color: #334155;">
+    <div class="modal-backdrop absolute inset-0" style="background: rgba(0, 0, 0, 0.5);" onclick="closeDeleteModal()"></div>
+    <div class="relative w-full max-w-sm rounded-2xl border p-6 text-center" style="background: #ffffff; border-color: #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
      <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style="background: rgba(239, 68, 68, 0.1);">
       <svg class="w-8 h-8" style="color: #ef4444;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
       </svg>
      </div>
-     <h3 class="text-lg font-bold mb-2" style="color: #f1f5f9;">Supprimer ce document ?</h3>
-     <p class="text-sm mb-6" style="color: #94a3b8;">Cette action est irréversible.</p>
-     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl font-medium border transition-colors hover:bg-slate-700" style="color: #e2e8f0; border-color: #475569;"> Annuler </button> <button id="confirm-delete-btn" class="flex-1 py-2.5 rounded-xl font-medium text-white transition-all hover:opacity-90" style="background: #ef4444;"> Supprimer </button>
+     <h3 class="text-lg font-bold mb-2" style="color: #1e293b;">Supprimer ce document ?</h3>
+     <p class="text-sm mb-6" style="color: #64748b;">Cette action est irréversible.</p>
+     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl font-medium border transition-colors hover:bg-gray-100" style="color: #334155; border-color: #e2e8f0;"> Annuler </button> <button id="confirm-delete-btn" class="flex-1 py-2.5 rounded-xl font-medium text-white transition-all hover:opacity-90" style="background: #ef4444;"> Supprimer </button>
      </div>
     </div>
    </div><!-- Toast Notification -->
-   <div id="toast" class="hidden fixed bottom-6 right-6 z-50 px-6 py-4 rounded-xl shadow-2xl border transition-all transform" style="background: #1e293b; border-color: #334155;">
+   <div id="toast" class="hidden fixed bottom-6 right-6 z-50 px-6 py-4 rounded-xl shadow-2xl border transition-all transform" style="background: #ffffff; border-color: #e2e8f0; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
     <div class="flex items-center gap-3">
      <div id="toast-icon" class="w-8 h-8 rounded-full flex items-center justify-center" style="background: rgba(34, 197, 94, 0.2);">
       <svg class="w-5 h-5" style="color: #4ade80;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
       </svg>
      </div>
-     <p id="toast-message" class="font-medium" style="color: #f1f5f9;">Document ajouté avec succès</p>
+     <p id="toast-message" class="font-medium" style="color: #1e293b;">Document ajouté avec succès</p>
     </div>
    </div>
   </div>
@@ -383,31 +383,31 @@
           // Create new card
           const card = document.createElement('div');
           card.className = 'doc-card rounded-2xl border p-5 cursor-pointer';
-          card.style.cssText = 'background: rgba(30, 41, 59, 0.6); border-color: #334155;';
+          card.style.cssText = 'background: #ffffff; border-color: #e2e8f0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);';
           card.dataset.id = doc.__backendId;
           card.innerHTML = `
             <div class="flex items-start justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center doc-type-icon" style="background: rgba(99, 102, 241, 0.1);">
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center doc-type-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
                 ${getTypeIcon(doc.type)}
               </div>
               <div class="flex gap-1">
-                <button onclick="event.stopPropagation(); editDocument('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-slate-600" style="color: #94a3b8;" aria-label="Modifier">
+                <button onclick="event.stopPropagation(); editDocument('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-gray-100" style="color: #94a3b8;" aria-label="Modifier">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                   </svg>
                 </button>
-                <button onclick="event.stopPropagation(); confirmDelete('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-red-900/30" style="color: #f87171;" aria-label="Supprimer">
+                <button onclick="event.stopPropagation(); confirmDelete('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-red-100" style="color: #f87171;" aria-label="Supprimer">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                   </svg>
                 </button>
               </div>
             </div>
-            <h3 class="doc-name text-lg font-semibold mb-2 truncate" style="color: #f1f5f9;">${doc.name}</h3>
+            <h3 class="doc-name text-lg font-semibold mb-2 truncate" style="color: #1e293b;">${doc.name}</h3>
             <div class="flex items-center gap-2 mb-3">
               <span class="doc-category category-pill px-3 py-1 rounded-full text-xs font-medium" style="background: ${catColor.bg}; color: ${catColor.text};">${doc.category}</span>
             </div>
-            <div class="flex items-center justify-between text-sm" style="color: #64748b;">
+            <div class="flex items-center justify-between text-sm" style="color: #94a3b8;">
               <span class="doc-date">${formatDate(doc.createdAt)}</span>
               <span class="doc-size">${doc.size || '-'}</span>
             </div>
