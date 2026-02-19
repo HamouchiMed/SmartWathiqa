@@ -194,7 +194,7 @@
      <div class="flex-1 relative">
       <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style="color: #94a3b8;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg><input type="text" id="search-input" placeholder="Rechercher un document..." class="w-full pl-12 pr-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"><style>#search-input::placeholder { color: #cbd5e1; }</style>
-     </div><select id="category-filter" class="px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="all">Toutes les catégories</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select>
+     </div><select id="category-filter" class="px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="all">Toutes les catégories</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select><input type="date" id="date-filter" class="px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;">
     </div><!-- Documents Grid -->
     <div id="documents-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><!-- Documents will be rendered here -->
     </div><!-- Empty State -->
@@ -430,11 +430,20 @@
       const searchTerm = document.getElementById('search-input').value.toLowerCase();
       const categoryFilter = document.getElementById('category-filter').value;
 
+      const dateFilter = document.getElementById('date-filter').value;
+
       let filteredDocs = documents.filter(doc => {
         const matchesSearch = doc.name.toLowerCase().includes(searchTerm) || 
                               (doc.description && doc.description.toLowerCase().includes(searchTerm));
         const matchesCategory = categoryFilter === 'all' || doc.category === categoryFilter;
-        return matchesSearch && matchesCategory;
+        
+        let matchesDate = true;
+        if (dateFilter) {
+          const docDate = new Date(doc.createdAt).toISOString().split('T')[0];
+          matchesDate = docDate === dateFilter;
+        }
+        
+        return matchesSearch && matchesCategory && matchesDate;
       });
 
       if (documents.length === 0) {
@@ -682,6 +691,7 @@
       // Search and filter
       document.getElementById('search-input').addEventListener('input', renderDocuments);
       document.getElementById('category-filter').addEventListener('change', renderDocuments);
+      document.getElementById('date-filter').addEventListener('change', renderDocuments);
     }
 
     // Initialize app
