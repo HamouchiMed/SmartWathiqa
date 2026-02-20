@@ -1,0 +1,17 @@
+{
+  "name": "smartwathiqa-database",
+  "version": "1.0.0",
+  "description": "Database setup for SmartWathiqa document management system",
+  "main": "setup.js",
+  "scripts": {
+    "setup": "node setup.js",
+    "test": "node test.js",
+    "test-connection": "node -e \"require('./connection'); console.log('Connection test passed');\""
+  },
+  "dependencies": {
+    "pg": "^8.11.0"
+  },
+  "keywords": ["database", "postgresql", "smartwathiqa"],
+  "author": "",
+  "license": "ISC"
+}   

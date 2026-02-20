@@ -6,7 +6,7 @@
   <title>Gestion des Documents</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <script src="/_sdk/element_sdk.js"></script>
-  <script src="/_sdk/data_sdk.js"></script>
+  <script src="api-client.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -289,6 +289,35 @@
       }
     };
 
+    // Load documents from API
+    async function loadDocumentsFromAPI() {
+      try {
+        const result = await window.dataSdk.getAll();
+        if (result.isOk) {
+          documents = result.data.map(doc => ({
+            ...doc,
+            __backendId: doc.id.toString(),
+            createdAt: doc.created_at,
+            type: doc.file_type,
+            size: doc.file_size,
+            category: doc.category_name,
+            name: doc.name,
+            description: doc.description,
+            fileName: doc.file_name
+          }));
+          currentRecordCount = documents.length;
+          renderDocuments();
+          updateStats();
+        } else {
+          console.error('Failed to load documents:', result.error);
+          showToast('Erreur lors du chargement des documents', 'error');
+        }
+      } catch (error) {
+        console.error('Error loading documents:', error);
+        showToast('Erreur lors du chargement des documents', 'error');
+      }
+    }
+
     // Element SDK Handler
     async function onConfigChange(config) {
       const appTitle = document.getElementById('app-title');
@@ -387,7 +416,10 @@
 
       if (window.dataSdk) {
         const result = await window.dataSdk.init(dataHandler);
-        if (!result.isOk) {
+        if (result.isOk) {
+          // Load documents from API after successful initialization
+          await loadDocumentsFromAPI();
+        } else {
           showToast('Erreur de connexion', 'error');
         }
       }
@@ -665,6 +697,8 @@
           if (result.isOk) {
             showToast(editingDoc ? 'Document modifié' : 'Document ajouté avec succès');
             closeModal();
+            // Reload documents from API
+            await loadDocumentsFromAPI();
           } else {
             showToast('Une erreur est survenue', 'error');
           }
@@ -690,6 +724,8 @@
           if (result.isOk) {
             showToast('Document supprimé');
             closeDeleteModal();
+            // Reload documents from API
+            await loadDocumentsFromAPI();
           } else {
             showToast('Erreur lors de la suppression', 'error');
           }
