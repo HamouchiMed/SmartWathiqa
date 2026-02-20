@@ -7,13 +7,51 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="card">
+  <main class="card" id="role-selection">
     <h1>Choose Role</h1>
     <div class="buttons">
-      <button class="primary" type="button">Admin</button>
-      <button type="button">Employe</button>
-      <button type="button">Directeur</button>
+      <button class="primary" type="button" onclick="selectRole('Admin')">Admin</button>
+      <button type="button" onclick="selectRole('Employe')">Employe</button>
+      <button type="button" onclick="selectRole('Directeur')">Directeur</button>
     </div>
   </main>
+  <main class="card" id="login-screen" style="display: none;">
+    <h1>Login as <span id="selected-role"></span></h1>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="primary">Login</button>
+      <button type="button" onclick="backToRoleSelection()">Back</button>
+    </form>
+  </main>
+  <script>
+    let selectedRole = '';
+
+    function selectRole(role) {
+      selectedRole = role;
+      document.getElementById('role-selection').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'block';
+      document.getElementById('selected-role').textContent = role;
+    }
+
+    function backToRoleSelection() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('role-selection').style.display = 'block';
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      // For now, redirect to dashboard; later integrate with API
+      window.location.href = 'dashboardemployer.html';
+    });
+  </script>
 </body>
 </html>
