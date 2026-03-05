@@ -1,0 +1,151 @@
+/* Settings Page Styles */
+
+/* Drawer styles */
+#drawer {
+  background: rgb(0, 94, 184);
+}
+
+#drawer .border-b {
+  border-color: #5B9FD9;
+  background: rgb(0, 94, 184);
+}
+
+#drawer h2 {
+  color: #ffffff;
+}
+
+#drawer .border-bottom {
+  border-bottom: 1px solid #5B9FD9;
+}
+
+#drawer .w-12.h-12.rounded-full {
+  background: #ffffff;
+  color: #005EB8;
+}
+
+#drawer .text-white.font-semibold.text-sm {
+  color: #ffffff;
+}
+
+#drawer .text-blue-100.text-xs {
+  color: #ffffff;
+}
+
+#drawer nav {
+  border-bottom: 1px solid #5B9FD9;
+}
+
+#drawer .text-blue-100.text-xs.font-semibold {
+  color: #ffffff;
+}
+
+#drawer a {
+  color: #ffffff;
+}
+
+#drawer .border-top {
+  border-top: 1px solid #5B9FD9;
+}
+
+#drawer button {
+  color: #ffffff;
+}
+
+/* Main content styles */
+main {
+  margin-left: 18rem; /* 72 * 0.25rem = 18rem for lg:ml-72 */
+}
+
+@media (max-width: 1024px) {
+  main {
+    margin-left: 0;
+  }
+}
+
+/* Profile settings card */
+.bg-white.rounded-2xl.border.border-gray-200.p-8 {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+/* Storage progress bar */
+.w-full.bg-gray-200.rounded-full.h-3 {
+  background: #e5e7eb;
+  border-radius: 9999px;
+  height: 0.75rem;
+}
+
+.bg-blue-600.h-3.rounded-full {
+  background: #2563eb;
+  height: 0.75rem;
+  border-radius: 9999px;
+}
+
+/* Storage stats cards */
+.text-center.p-4.bg-gray-50.rounded-xl {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.text-2xl.font-bold.text-blue-600 {
+  color: #2563eb;
+}
+
+.text-2xl.font-bold.text-green-600 {
+  color: #16a34a;
+}
+
+.text-2xl.font-bold.text-purple-600 {
+  color: #9333ea;
+}
+
+.text-sm.text-gray-600 {
+  color: #6b7280;
+}
+
+/* Form inputs */
+input[type="text"],
+input[type="email"],
+input[type="tel"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus {
+  outline: none;
+  ring: 2px;
+  ring-color: #3b82f6;
+  border-color: transparent;
+}
+
+/* Labels */
+label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #drawer {
+    transform: translateX(-100%);
+  }
+
+  #drawer.open {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-left: 0;
+  }
+}

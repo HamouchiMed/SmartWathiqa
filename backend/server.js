@@ -245,6 +245,62 @@ app.post('/api/documents/:id/favorite', async (req, res) => {
   }
 });
 
+// Get dashboard statistics
+app.get('/api/dashboard/stats', async (req, res) => {
+  try {
+    const { user_id = 1 } = req.query;
+
+    // Get total documents count
+    const totalResult = await pool.query(
+      'SELECT COUNT(*) as total FROM documents WHERE user_id = $1',
+      [user_id]
+    );
+
+    // Get document type counts
+    const typeResult = await pool.query(`
+      SELECT
+        COUNT(CASE WHEN LOWER(file_type) LIKE '%pdf%' THEN 1 END) as pdf_count,
+        COUNT(CASE WHEN LOWER(file_type) LIKE '%jpg%' OR LOWER(file_type) LIKE '%jpeg%' OR LOWER(file_type) LIKE '%png%' OR LOWER(file_type) LIKE '%gif%' OR LOWER(file_type) LIKE '%bmp%' OR LOWER(file_type) LIKE '%tiff%' THEN 1 END) as image_count,
+        COUNT(CASE WHEN LOWER(file_type) NOT LIKE '%pdf%' AND LOWER(file_type) NOT LIKE '%jpg%' AND LOWER(file_type) NOT LIKE '%jpeg%' AND LOWER(file_type) NOT LIKE '%png%' AND LOWER(file_type) NOT LIKE '%gif%' AND LOWER(file_type) NOT LIKE '%bmp%' AND LOWER(file_type) NOT LIKE '%tiff%' THEN 1 END) as other_count
+      FROM documents
+      WHERE user_id = $1
+    `, [user_id]);
+
+    const stats = {
+      total: parseInt(totalResult.rows[0].total),
+      pdf: parseInt(typeResult.rows[0].pdf_count),
+      images: parseInt(typeResult.rows[0].image_count),
+      other: parseInt(typeResult.rows[0].other_count)
+    };
+
+    res.json({ success: true, data: stats });
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch dashboard statistics' });
+  }
+});
+
+// Get recent documents for dashboard
+app.get('/api/dashboard/recent', async (req, res) => {
+  try {
+    const { user_id = 1, limit = 5 } = req.query;
+
+    const result = await pool.query(`
+      SELECT d.*, c.name as category_name, c.color as category_color
+      FROM documents d
+      LEFT JOIN categories c ON d.category_id = c.id
+      WHERE d.user_id = $1
+      ORDER BY d.created_at DESC
+      LIMIT $2
+    `, [user_id, parseInt(limit)]);
+
+    res.json({ success: true, data: result.rows });
+  } catch (error) {
+    console.error('Error fetching recent documents:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch recent documents' });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'API is running', timestamp: new Date().toISOString() });

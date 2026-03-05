@@ -10,60 +10,36 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'DM Sans', sans-serif; }
-    .doc-card {
-      transition: all 0.2s ease;
-    }
-    .doc-card:hover {
-      transform: translateY(-2px);
-    }
-    .category-pill {
-      animation: fadeIn 0.3s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .modal-backdrop {
-      animation: fadeInBackdrop 0.2s ease;
-    }
-    @keyframes fadeInBackdrop {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
- </head>
+  <link rel="stylesheet" href="dashboardemployer.css">
  <body class="h-full">
-  <div id="app" class="h-full overflow-auto" style="background: #ffffff;"><!-- Header -->
-   <header class="sticky top-0 z-40 backdrop-blur-xl border-b" style="background: #ffffff; border-color: #e2e8f0;">
+  <div id="app" class="h-full overflow-auto"><!-- Header -->
+   <header class="sticky top-0 z-40 backdrop-blur-xl border-b">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
      <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
        <div>
-        <h1 id="app-title" class="text-xl font-bold mb-2" style="color: #1e293b;">Gestion des Documents</h1>
-        <p id="welcome-message" class="text-sm" style="color: #64748b;">Organisez et gérez vos fichiers</p>
+        <h1 id="app-title" class="text-xl font-bold mb-2">Gestion des Documents</h1>
+        <p id="welcome-message" class="text-sm">Organisez et gérez vos fichiers</p>
        </div>
       </div>
       <div class="flex items-center gap-3">
-       <button id="add-doc-btn" class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-white transition-all hover:opacity-90" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+       <button id="add-doc-btn" class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-white transition-all hover:opacity-90">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg><span class="hidden sm:inline">Nouveau Document</span> </button>
       </div>
      </div>
     </div>
    </header><!-- Drawer Menu -->
-   <div id="drawer" class="fixed left-0 top-0 h-screen z-40 w-72 overflow-y-auto" style="background: rgb(0, 94, 184);">
+   <div id="drawer" class="fixed left-0 top-0 h-screen z-40 w-72 overflow-y-auto">
     <!-- Header -->
-    <div class="p-6 border-b" style="border-color: #5B9FD9; background: rgb(0, 94, 184)">
-     <h2 class="text-lg font-bold" style="color: #ffffff;">SmartWathiqa</h2>
+    <div class="p-6 border-b">
+     <h2 class="text-lg font-bold">SmartWathiqa</h2>
     </div>
 
     <!-- User Profile Section -->
-    <div class="p-6" style="border-bottom: 1px solid #5B9FD9;">
+    <div class="p-6">
      <div class="flex items-center gap-3 mb-4">
-      <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: #ffffff; color: #005EB8;">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center">
        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
        </svg>
       </div>
@@ -75,68 +51,34 @@
     </div>
 
     <!-- Main Navigation -->
-    <nav class="p-4" style="border-bottom: 1px solid #5B9FD9;">
+    <nav class="p-4">
      <p class="text-blue-100 text-xs font-semibold mb-3 px-2 uppercase">Navigation</p>
-     <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style="color: #ffffff;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+     <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 11l4-4m0 0l-4-4m4 4l4 4m0-4l-4-4" />
       </svg>
       <span>Tableau de bord</span>
      </a>
-     <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style="color: #ffffff;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+     <a href="documents.html" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
       </svg>
       <span>Mes documents</span>
      </a>
-     <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style="color: #ffffff;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-      <span>Galerie</span>
-     </a>
     </nav>
 
-    <!-- Favorites Section -->
-    <div class="p-4" style="border-bottom: 1px solid #5B9FD9;">
-     <p class="text-blue-100 text-xs font-semibold mb-3 px-2 uppercase">Favoris</p>
-     <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg transition-colors" style="color: #ffffff; font-size: 14px;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
-      <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-      </svg>
-      <span>Documents importants</span>
-     </a>
-     <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg transition-colors" style="color: #ffffff; font-size: 14px;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
-      <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-      </svg>
-      <span>Contrats</span>
-     </a>
-    </div>
-
-    <!-- Recent Documents Section -->
-    <div class="p-4" style="border-bottom: 1px solid #5B9FD9;">
-     <p class="text-blue-100 text-xs font-semibold mb-3 px-2 uppercase">Récemment accédés</p>
-     <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg transition-colors mb-2" style="color: #ffffff; font-size: 14px;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-      <span class="truncate">Rapport_Q4_2025.pdf</span>
-     </a>
-     <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg transition-colors mb-2" style="color: #ffffff; font-size: 14px;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-      <span class="truncate">Contrat_Client_XYZ.docx</span>
-     </a>
-     <a href="#" class="flex items-center gap-3 px-4 py-2 rounded-lg transition-colors" style="color: #ffffff; font-size: 14px;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-      <span class="truncate">Budget_2026.xlsx</span>
-     </a>
-    </div>
-
     <!-- Footer -->
-    <div class="p-4" style="border-top: 1px solid #5B9FD9;">
-     <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style="color: #ffffff;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+    <div class="p-4">
+     <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
       <span>Paramètres</span>
      </a>
+     <button onclick="logout()" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors w-full text-left mt-2" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='transparent'">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+      </svg>
+      <span>Déconnexion</span>
+     </button>
     </div>
    </div><!-- Main Content -->
    <main class="ml-72 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><!-- Stats Bar -->
@@ -189,14 +131,148 @@
        </div>
       </div>
      </div>
-    </div><!-- Filter & Search -->
-    <div class="flex flex-col sm:flex-row gap-4 mb-6">
-     <div class="flex-1 relative">
-      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" style="color: #94a3b8;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg><input type="text" id="search-input" placeholder="Rechercher un document..." class="w-full pl-12 pr-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"><style>#search-input::placeholder { color: #cbd5e1; }</style>
-     </div><select id="category-filter" class="px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="all">Toutes les catégories</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select><input type="date" id="date-filter" class="px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;">
-    </div><!-- Documents Grid -->
-    <div id="documents-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><!-- Documents will be rendered here -->
+    </div><!-- Quick Actions -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+     <button class="flex items-center gap-3 p-4 rounded-2xl border transition-all hover:shadow-lg hover:scale-105" style="background: #f8fafc; border-color: #e2e8f0;" onclick="openModal()">
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(99, 102, 241, 0.15);">
+       <svg class="w-6 h-6" style="color: #6366f1;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+       </svg>
+      </div>
+      <div class="text-left">
+       <h3 class="font-semibold" style="color: #1e293b;">Télécharger</h3>
+       <p class="text-sm" style="color: #64748b;">Ajouter un document</p>
+      </div>
+     </button>
+     <button class="flex items-center gap-3 p-4 rounded-2xl border transition-all hover:shadow-lg hover:scale-105" style="background: #f8fafc; border-color: #e2e8f0;" onclick="showRecentActivity()">
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(34, 197, 94, 0.15);">
+       <svg class="w-6 h-6" style="color: #22c55e;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+       </svg>
+      </div>
+      <div class="text-left">
+       <h3 class="font-semibold" style="color: #1e293b;">Activité récente</h3>
+       <p class="text-sm" style="color: #64748b;">Voir les dernières actions</p>
+      </div>
+     </button>
+     <button class="flex items-center gap-3 p-4 rounded-2xl border transition-all hover:shadow-lg hover:scale-105" style="background: #f8fafc; border-color: #e2e8f0;" onclick="showStorageUsage()">
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(249, 115, 22, 0.15);">
+       <svg class="w-6 h-6" style="color: #f97316;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+       </svg>
+      </div>
+      <div class="text-left">
+       <h3 class="font-semibold" style="color: #1e293b;">Stockage</h3>
+       <p class="text-sm" style="color: #64748b;">Gérer l'espace</p>
+      </div>
+     </button>
+    </div><!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+     <div class="rounded-2xl border p-6" style="background: #f8fafc; border-color: #e2e8f0;">
+      <h3 class="text-lg font-semibold mb-4" style="color: #1e293b;">Répartition par type</h3>
+      <div class="space-y-3">
+       <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+         <div class="w-4 h-4 rounded" style="background: #ef4444;"></div>
+         <span class="text-sm" style="color: #64748b;">PDF</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="pdf-bar" class="h-full rounded-full transition-all duration-500" style="background: #ef4444; width: 0%;"></div>
+         </div>
+         <span class="text-sm font-medium w-8 text-right" id="pdf-percent">0%</span>
+        </div>
+       </div>
+       <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+         <div class="w-4 h-4 rounded" style="background: #3b82f6;"></div>
+         <span class="text-sm" style="color: #64748b;">Word</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="word-bar" class="h-full rounded-full transition-all duration-500" style="background: #3b82f6; width: 0%;"></div>
+         </div>
+         <span class="text-sm font-medium w-8 text-right" id="word-percent">0%</span>
+        </div>
+       </div>
+       <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+         <div class="w-4 h-4 rounded" style="background: #22c55e;"></div>
+         <span class="text-sm" style="color: #64748b;">Excel</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="excel-bar" class="h-full rounded-full transition-all duration-500" style="background: #22c55e; width: 0%;"></div>
+         </div>
+         <span class="text-sm font-medium w-8 text-right" id="excel-percent">0%</span>
+        </div>
+       </div>
+       <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+         <div class="w-4 h-4 rounded" style="background: #a855f7;"></div>
+         <span class="text-sm" style="color: #64748b;">Images</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="image-bar" class="h-full rounded-full transition-all duration-500" style="background: #a855f7; width: 0%;"></div>
+         </div>
+         <span class="text-sm font-medium w-8 text-right" id="image-percent">0%</span>
+        </div>
+       </div>
+       <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+         <div class="w-4 h-4 rounded" style="background: #f59e0b;"></div>
+         <span class="text-sm" style="color: #64748b;">Autres</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div id="other-bar" class="h-full rounded-full transition-all duration-500" style="background: #f59e0b; width: 0%;"></div>
+         </div>
+         <span class="text-sm font-medium w-8 text-right" id="other-percent">0%</span>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="rounded-2xl border p-6" style="background: #f8fafc; border-color: #e2e8f0;">
+      <h3 class="text-lg font-semibold mb-4" style="color: #1e293b;">Activité récente</h3>
+      <div id="recent-activity" class="space-y-3">
+       <div class="flex items-center gap-3 p-3 rounded-lg" style="background: #ffffff;">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: rgba(99, 102, 241, 0.15);">
+         <svg class="w-4 h-4" style="color: #6366f1;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+         </svg>
+        </div>
+        <div class="flex-1">
+         <p class="text-sm font-medium" style="color: #1e293b;">Nouveau document ajouté</p>
+         <p class="text-xs" style="color: #64748b;">Rapport Annuel 2024.pdf • il y a 2h</p>
+        </div>
+       </div>
+       <div class="flex items-center gap-3 p-3 rounded-lg" style="background: #ffffff;">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: rgba(34, 197, 94, 0.15);">
+         <svg class="w-4 h-4" style="color: #22c55e;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+         </svg>
+        </div>
+        <div class="flex-1">
+         <p class="text-sm font-medium" style="color: #1e293b;">Document consulté</p>
+         <p class="text-xs" style="color: #64748b;">Contrat de Partenariat.docx • il y a 4h</p>
+        </div>
+       </div>
+       <div class="flex items-center gap-3 p-3 rounded-lg" style="background: #ffffff;">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: rgba(239, 68, 68, 0.15);">
+         <svg class="w-4 h-4" style="color: #ef4444;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+         </svg>
+        </div>
+        <div class="flex-1">
+         <p class="text-sm font-medium" style="color: #1e293b;">Document supprimé</p>
+         <p class="text-xs" style="color: #64748b;">Ancien_rapport.pdf • il y a 1j</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Recent Documents -->
+    <div class="rounded-2xl border p-6 mb-8" style="background: #f8fafc; border-color: #e2e8f0;">
+     <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold" style="color: #1e293b;">Documents récents</h3>
+      <a href="documents.html" class="text-sm font-medium transition-colors hover:underline" style="color: #6366f1;">Voir tout</a>
+     </div>
+     <div id="recent-documents-list" class="space-y-2"><!-- Recent documents will be rendered here as a list -->
+     </div>
     </div><!-- Empty State -->
     <div id="empty-state" class="hidden text-center py-16">
      <div class="w-20 h-20 mx-auto mb-6 rounded-2xl flex items-center justify-center" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
@@ -291,30 +367,50 @@
 
     // Load documents from API
     async function loadDocumentsFromAPI() {
+      console.log('Loading dashboard data from database...');
+
       try {
-        const result = await window.dataSdk.getAll();
-        if (result.isOk) {
-          documents = result.data.map(doc => ({
-            ...doc,
-            __backendId: doc.id.toString(),
-            createdAt: doc.created_at,
-            type: doc.file_type,
-            size: doc.file_size,
-            category: doc.category_name,
-            name: doc.name,
-            description: doc.description,
-            fileName: doc.file_name
-          }));
-          currentRecordCount = documents.length;
-          renderDocuments();
-          updateStats();
+        // Fetch dashboard statistics from API
+        const statsResponse = await smartWathiqaAPI.getDashboardStats();
+
+        if (statsResponse.isOk) {
+          const stats = statsResponse.data;
+          console.log('Dashboard stats loaded:', stats);
+
+          // Update the statistics display
+          document.getElementById('total-docs').textContent = stats.total;
+          document.getElementById('pdf-count').textContent = stats.pdf;
+          document.getElementById('image-count').textContent = stats.images;
+          document.getElementById('other-count').textContent = stats.other;
+
+          // Update chart bars if they exist
+          updateChartBars(stats);
         } else {
-          console.error('Failed to load documents:', result.error);
-          showToast('Erreur lors du chargement des documents', 'error');
+          console.error('Failed to load dashboard stats:', statsResponse.error);
+          showToast('Erreur lors du chargement des statistiques', 'error');
+        }
+
+        // Fetch recent documents from API
+        const recentResponse = await smartWathiqaAPI.getRecentDocuments({ limit: 5 });
+
+        if (recentResponse.isOk) {
+          const recentDocs = recentResponse.data;
+          console.log('Recent documents loaded:', recentDocs);
+
+          // Store recent documents globally for rendering
+          window.recentDocuments = recentDocs;
+
+          // Render recent documents
+          renderRecentDocumentsFromAPI(recentDocs);
+
+          showToast('Données du tableau de bord mises à jour', 'success');
+        } else {
+          console.error('Failed to load recent documents:', recentResponse.error);
+          showToast('Erreur lors du chargement des documents récents', 'error');
         }
       } catch (error) {
-        console.error('Error loading documents:', error);
-        showToast('Erreur lors du chargement des documents', 'error');
+        console.error('Error loading dashboard data:', error);
+        showToast('Erreur de connexion à la base de données', 'error');
       }
     }
 
@@ -422,6 +518,9 @@
         } else {
           showToast('Erreur de connexion', 'error');
         }
+      } else {
+        // Load sample documents directly if no dataSdk
+        await loadDocumentsFromAPI();
       }
 
       setupEventListeners();
@@ -458,93 +557,75 @@
     }
 
     // Render documents
-    function renderDocuments() {
-      const grid = document.getElementById('documents-grid');
-      const emptyState = document.getElementById('empty-state');
-      const searchTerm = document.getElementById('search-input').value.toLowerCase();
-      const categoryFilter = document.getElementById('category-filter').value;
-
-      const dateFilter = document.getElementById('date-filter').value;
-
-      let filteredDocs = documents.filter(doc => {
-        const matchesSearch = doc.name.toLowerCase().includes(searchTerm) || 
-                              (doc.description && doc.description.toLowerCase().includes(searchTerm));
-        const matchesCategory = categoryFilter === 'all' || doc.category === categoryFilter;
-        
-        let matchesDate = true;
-        if (dateFilter) {
-          const docDate = new Date(doc.createdAt).toISOString().split('T')[0];
-          matchesDate = docDate === dateFilter;
+    function renderRecentDocuments() {
+      // Legacy function - now calls the API-based rendering
+      if (window.recentDocuments) {
+        renderRecentDocumentsFromAPI(window.recentDocuments);
+      } else {
+        // Fallback to empty state
+        const list = document.getElementById('recent-documents-list');
+        if (list) {
+          list.innerHTML = '<p class="text-sm text-center py-4" style="color: #64748b;">Chargement...</p>';
         }
-        
-        return matchesSearch && matchesCategory && matchesDate;
-      });
+      }
+    }
 
-      if (documents.length === 0) {
-        grid.classList.add('hidden');
-        emptyState.classList.remove('hidden');
+    // Render recent documents from API data
+    function renderRecentDocumentsFromAPI(recentDocs) {
+      const list = document.getElementById('recent-documents-list');
+      if (!list) return;
+
+      list.innerHTML = '';
+
+      if (!recentDocs || recentDocs.length === 0) {
+        list.innerHTML = '<p class="text-sm text-center py-4" style="color: #64748b;">Aucun document récent</p>';
         return;
       }
 
-      grid.classList.remove('hidden');
-      emptyState.classList.add('hidden');
-
-      // Update existing or create new elements
-      const existingCards = new Map([...grid.children].map(el => [el.dataset.id, el]));
-
-      filteredDocs.forEach(doc => {
-        const catColor = getCategoryColor(doc.category);
-        
-        if (existingCards.has(doc.__backendId)) {
-          // Update existing card
-          const card = existingCards.get(doc.__backendId);
-          card.querySelector('.doc-name').textContent = doc.name;
-          card.querySelector('.doc-type-icon').innerHTML = getTypeIcon(doc.type);
-          card.querySelector('.doc-category').textContent = doc.category;
-          card.querySelector('.doc-category').style.background = catColor.bg;
-          card.querySelector('.doc-category').style.color = catColor.text;
-          card.querySelector('.doc-date').textContent = formatDate(doc.createdAt);
-          card.querySelector('.doc-size').textContent = doc.size || '-';
-          existingCards.delete(doc.__backendId);
-        } else {
-          // Create new card
-          const card = document.createElement('div');
-          card.className = 'doc-card rounded-2xl border p-5 cursor-pointer';
-          card.style.cssText = 'background: #ffffff; border-color: #e2e8f0; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);';
-          card.dataset.id = doc.__backendId;
-          card.innerHTML = `
-            <div class="flex items-start justify-between mb-4">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center doc-type-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
-                ${getTypeIcon(doc.type)}
-              </div>
-              <div class="flex gap-1">
-                <button onclick="event.stopPropagation(); editDocument('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-gray-100" style="color: #94a3b8;" aria-label="Modifier">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                  </svg>
-                </button>
-                <button onclick="event.stopPropagation(); confirmDelete('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-red-100" style="color: #f87171;" aria-label="Supprimer">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                  </svg>
-                </button>
-              </div>
+      recentDocs.forEach(doc => {
+        // Normalize file type for icon display
+        const normalizedType = normalizeFileType(doc.file_type);
+        const catColor = getCategoryColor(doc.category_name || 'Autre');
+        const item = document.createElement('div');
+        item.className = 'flex items-center gap-4 p-3 rounded-lg transition-colors hover:bg-gray-50 cursor-pointer';
+        item.style.cssText = 'background: #ffffff; border: 1px solid #f1f5f9;';
+        item.onclick = () => viewDocument(doc.id);
+        item.innerHTML = `
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(99, 102, 241, 0.1);">
+            ${getTypeIcon(normalizedType)}
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="text-sm font-medium truncate" style="color: #1e293b;">${doc.name}</h4>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="category-pill px-2 py-0.5 rounded text-xs font-medium" style="background: ${catColor.bg}; color: ${catColor.text};">${doc.category_name || 'Autre'}</span>
+              <span class="text-xs" style="color: #64748b;">${formatDate(doc.created_at)}</span>
             </div>
-            <h3 class="doc-name text-lg font-semibold mb-2 truncate" style="color: #1e293b;">${doc.name}</h3>
-            <div class="flex items-center gap-2 mb-3">
-              <span class="doc-category category-pill px-3 py-1 rounded-full text-xs font-medium" style="background: ${catColor.bg}; color: ${catColor.text};">${doc.category}</span>
-            </div>
-            <div class="flex items-center justify-between text-sm" style="color: #94a3b8;">
-              <span class="doc-date">${formatDate(doc.createdAt)}</span>
-              <span class="doc-size">${doc.size || '-'}</span>
-            </div>
-          `;
-          grid.appendChild(card);
-        }
+          </div>
+          <div class="text-xs text-right" style="color: #64748b;">
+            <div>${doc.file_size || '-'}</div>
+          </div>
+        `;
+        list.appendChild(item);
       });
+    }
 
-      // Remove cards not in filtered list
-      existingCards.forEach(card => card.remove());
+    // Normalize file type from database to display format
+    function normalizeFileType(fileType) {
+      if (!fileType) return 'Autre';
+
+      const type = fileType.toLowerCase();
+      if (type.includes('pdf')) return 'PDF';
+      if (type.includes('doc') || type.includes('word')) return 'Word';
+      if (type.includes('xls') || type.includes('excel')) return 'Excel';
+      if (type.includes('jpg') || type.includes('jpeg') || type.includes('png') || type.includes('gif') || type.includes('bmp') || type.includes('tiff')) return 'Image';
+      return 'Autre';
+    }
+
+    function renderDocuments() {
+      // For dashboard, we don't need the full grid anymore since we have the recent documents list
+      // This function is kept for compatibility but now just updates the recent documents
+      renderRecentDocuments();
+    }
 
       // Show limit warning if needed
       const limitWarning = document.getElementById('limit-warning');
@@ -553,14 +634,65 @@
       } else {
         limitWarning.classList.add('hidden');
       }
+    
+
+    // Update chart bars based on statistics
+    function updateChartBars(stats) {
+      const total = stats.total;
+      if (total > 0) {
+        const pdfPercent = Math.round((stats.pdf / total) * 100);
+        const imagePercent = Math.round((stats.images / total) * 100);
+        const otherPercent = Math.round((stats.other / total) * 100);
+
+        // Update chart bars if they exist in the DOM
+        const pdfBar = document.getElementById('pdf-bar');
+        const imageBar = document.getElementById('image-bar');
+        const otherBar = document.getElementById('other-bar');
+
+        if (pdfBar) pdfBar.style.width = `${pdfPercent}%`;
+        if (imageBar) imageBar.style.width = `${imagePercent}%`;
+        if (otherBar) otherBar.style.width = `${otherPercent}%`;
+
+        // Update percentages if they exist
+        const pdfPercentEl = document.getElementById('pdf-percent');
+        const imagePercentEl = document.getElementById('image-percent');
+        const otherPercentEl = document.getElementById('other-percent');
+
+        if (pdfPercentEl) pdfPercentEl.textContent = `${pdfPercent}%`;
+        if (imagePercentEl) imagePercentEl.textContent = `${imagePercent}%`;
+        if (otherPercentEl) otherPercentEl.textContent = `${otherPercent}%`;
+      }
     }
 
-    // Update statistics
+    // Update statistics (legacy function - now stats are updated directly from API)
     function updateStats() {
-      document.getElementById('total-docs').textContent = documents.length;
-      document.getElementById('pdf-count').textContent = documents.filter(d => d.type === 'PDF').length;
-      document.getElementById('image-count').textContent = documents.filter(d => d.type === 'Image').length;
-      document.getElementById('other-count').textContent = documents.filter(d => !['PDF', 'Image'].includes(d.type)).length;
+      // Statistics are now updated directly in loadDocumentsFromAPI()
+      // This function is kept for backward compatibility
+      console.log('updateStats called - stats are managed by loadDocumentsFromAPI()');
+    }
+
+    // Quick action functions
+    function showRecentActivity() {
+      showToast('Affichage de l\'activité récente', 'info');
+      // Could expand this to show a detailed activity modal
+    }
+
+    function showStorageUsage() {
+      const totalSize = documents.reduce((sum, doc) => {
+        const size = doc.size || '0 MB';
+        const numSize = parseFloat(size.replace(/[^\d.]/g, '')) || 0;
+        return sum + numSize;
+      }, 0);
+
+      showToast(`Espace utilisé: ${totalSize.toFixed(1)} MB sur 100 MB`, 'info');
+      // Could expand this to show a detailed storage modal
+    }
+
+    function viewDocument(id) {
+      // For database documents, show a toast and could expand to show document preview
+      showToast(`Ouverture du document ID: ${id}`, 'info');
+      // Could expand this to fetch document details and show preview modal
+      // For now, just show the document ID
     }
 
     // Modal functions
@@ -743,8 +875,306 @@
       document.getElementById('date-filter').addEventListener('change', renderDocuments);
     }
 
-    // Initialize app
-    init();
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d01b27ed5fc11e6',t:'MTc3MTQ2MTQ2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    // Logout function
+    function logout() {
+      if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+        // Clear any stored session data
+        localStorage.clear();
+        sessionStorage.clear();
+
+        // Show logout message
+        alert('Vous avez été déconnecté avec succès.');
+
+        // Redirect to login page
+        window.location.href = 'firstscreen.html';
+      }
+    }
+
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+          <div class="flex items-center">
+            <img src="../assets/SmartWhathiqa.png" alt="SmartWathiqa Logo" class="h-8 w-auto">
+            <h1 class="ml-3 text-xl font-semibold text-gray-900">SmartWathiqa</h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <button id="logoutBtn" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+              <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex h-screen bg-gray-50">
+      <!-- Sidebar -->
+      <nav id="sidebar" class="bg-white shadow-lg w-64 min-h-screen transition-all duration-300 ease-in-out">
+        <div class="p-6">
+          <div class="flex items-center mb-8">
+            <img src="../assets/SmartWhathiqa.png" alt="SmartWathiqa Logo" class="h-8 w-auto">
+            <span class="ml-3 text-lg font-semibold text-gray-900">SmartWathiqa</span>
+          </div>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200 active" data-page="dashboard">
+                <i class="fas fa-tachometer-alt mr-3"></i>Tableau de bord
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200" data-page="documents">
+                <i class="fas fa-file-alt mr-3"></i>Documents
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200" data-page="settings">
+                <i class="fas fa-cog mr-3"></i>Paramètres
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-auto">
+        <!-- Dashboard Content -->
+        <div id="dashboardContent" class="p-8">
+          <!-- Welcome Section -->
+          <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Bienvenue sur SmartWathiqa</h2>
+            <p class="text-gray-600">Gérez vos documents et suivez vos statistiques en temps réel.</p>
+          </div>
+
+          <!-- Statistics Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                  <i class="fas fa-file-alt text-xl"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-600">Total Documents</p>
+                  <p class="text-2xl font-bold text-gray-900" id="totalDocs">0</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                  <i class="fas fa-check-circle text-xl"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-600">Documents Validés</p>
+                  <p class="text-2xl font-bold text-gray-900" id="validatedDocs">0</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                  <i class="fas fa-clock text-xl"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-600">En Attente</p>
+                  <p class="text-2xl font-bold text-gray-900" id="pendingDocs">0</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-red-100 text-red-600">
+                  <i class="fas fa-times-circle text-xl"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm font-medium text-gray-600">Rejetés</p>
+                  <p class="text-2xl font-bold text-gray-900" id="rejectedDocs">0</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions Rapides</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button class="quick-action-btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition-colors duration-200">
+                <i class="fas fa-plus mr-2"></i>Ajouter Document
+              </button>
+              <button class="quick-action-btn bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition-colors duration-200">
+                <i class="fas fa-search mr-2"></i>Rechercher
+              </button>
+              <button class="quick-action-btn bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg font-medium transition-colors duration-200">
+                <i class="fas fa-chart-bar mr-2"></i>Rapports
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Documents -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-lg font-semibold text-gray-900">Documents Récents</h3>
+              <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                Voir tout
+              </button>
+            </div>
+            <div id="recentDocuments" class="space-y-4">
+              <!-- Documents will be loaded here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Content -->
+        <div id="documentsContent" class="p-8 hidden">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8">Gestion des Documents</h2>
+          <p class="text-gray-600">Cette section sera développée prochainement.</p>
+        </div>
+
+        <!-- Settings Content -->
+        <div id="settingsContent" class="p-8 hidden">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8">Paramètres</h2>
+          <p class="text-gray-600">Cette section sera développée prochainement.</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Document Modal -->
+    <div id="addDocumentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Ajouter un Document</h3>
+            <button class="modal-close text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <form id="addDocumentForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Titre du Document</label>
+              <input type="text" id="documentTitle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Type de Document</label>
+              <select id="documentType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <option value="">Sélectionner un type</option>
+                <option value="contrat">Contrat</option>
+                <option value="facture">Facture</option>
+                <option value="certificat">Certificat</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Fichier</label>
+              <input type="file" id="documentFile" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" accept=".pdf,.doc,.docx,.jpg,.png" required>
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button type="button" class="modal-close px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200">
+                Annuler
+              </button>
+              <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700">
+                Ajouter
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Rechercher des Documents</h3>
+            <button class="modal-close text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <form id="searchForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Mot-clé</label>
+              <input type="text" id="searchKeyword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Entrez un mot-clé...">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Type de Document</label>
+              <select id="searchType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Tous les types</option>
+                <option value="contrat">Contrat</option>
+                <option value="facture">Facture</option>
+                <option value="certificat">Certificat</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+              <select id="searchStatus" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Tous les statuts</option>
+                <option value="validé">Validé</option>
+                <option value="en_attente">En attente</option>
+                <option value="rejeté">Rejeté</option>
+              </select>
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button type="button" class="modal-close px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200">
+                Annuler
+              </button>
+              <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700">
+                Rechercher
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reports Modal -->
+    <div id="reportsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+      <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-900">Générer un Rapport</h3>
+            <button class="modal-close text-gray-400 hover:text-gray-600">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <form id="reportsForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Type de Rapport</label>
+              <select id="reportType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <option value="">Sélectionner un type</option>
+                <option value="statistiques">Statistiques générales</option>
+                <option value="documents">Rapport des documents</option>
+                <option value="performance">Rapport de performance</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Période</label>
+              <select id="reportPeriod" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <option value="">Sélectionner une période</option>
+                <option value="semaine">Cette semaine</option>
+                <option value="mois">Ce mois</option>
+                <option value="trimestre">Ce trimestre</option>
+                <option value="annee">Cette année</option>
+              </select>
+            </div>
+            <div class="flex justify-end space-x-3">
+              <button type="button" class="modal-close px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200">
+                Annuler
+              </button>
+              <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 border border-transparent rounded-md hover:bg-purple-700">
+                Générer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="api-client.js"></script>
+    <script src="dashboardemployer.js"></script>
+  </body>
 </html>

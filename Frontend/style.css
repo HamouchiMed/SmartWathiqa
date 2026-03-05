@@ -1,8 +1,12 @@
     :root {
       --bg: #022359;
-      --card: #e7ebef;
+      --card: #ffffff;
       --text: #03255a;
       --accent: #a6b3c3;
+      --primary: #03255a;
+      --secondary: #a6b3c3;
+      --shadow: rgba(3, 37, 90, 0.15);
+      --border-radius: 12px;
     }
     * { box-sizing: border-box; }
     body {
@@ -10,77 +14,110 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      background:
-        linear-gradient(rgba(2, 35, 89, 0.72), rgba(2, 35, 89, 0.72)),
-        url("../assets/SmartWhathiqa.png") center/cover no-repeat;
+      background: linear-gradient(135deg, rgba(2, 35, 89, 0.9), rgba(3, 37, 90, 0.8)), url('../assets/SmartWhathiqa.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
       color: var(--text);
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .card {
       background: var(--card);
-      padding: 32px;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(3, 37, 90, 0.25);
-      width: min(420px, 90vw);
+      padding: 40px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 20px 40px var(--shadow), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      width: min(450px, 90vw);
       text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      animation: fadeIn 0.5s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     h1 {
-      margin: 0 0 20px;
-      font-size: 24px;
-      letter-spacing: 0.5px;
-    }
-    .logo {
-      width: 96px;
-      height: 96px;
-      object-fit: contain;
-      margin: 0 auto 14px;
-      display: block;
-    }
-    .buttons {
-      display: grid;
-      gap: 12px;
-    }
-    button {
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: #03255a;
-      color: #ffffff;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
-    }
-    button:hover {
-      transform: translateY(-1px);
-      background: #02245a;
-      border-color: #03255a;
-    }
-    .primary {
-      background: #a6b3c3;
-      color: #03255a;
+      margin: 0 0 30px;
+      font-size: 28px;
       font-weight: 600;
-    }
-    .primary:hover {
-      background: #cdd5dd;
-      border-color: #cdd5dd;
+      letter-spacing: 0.5px;
+      color: var(--primary);
     }
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 24px;
       text-align: left;
+      position: relative;
     }
     label {
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
       font-weight: 500;
+      font-size: 14px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     input {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #a6b3c3;
-      border-radius: 8px;
+      padding: 16px 20px;
+      border: 2px solid var(--accent);
+      border-radius: var(--border-radius);
       font-size: 16px;
+      background: #f8f9fa;
+      transition: all 0.3s ease;
+      outline: none;
     }
     input:focus {
-      outline: none;
-      border-color: #03255a;
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(3, 37, 90, 0.1);
+    }
+    input::placeholder {
+      color: #adb5bd;
+    }
+    button {
+      width: 100%;
+      padding: 16px;
+      border-radius: var(--border-radius);
+      border: none;
+      background: linear-gradient(135deg, var(--primary), #02245a);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(3, 37, 90, 0.2);
+      margin-top: 10px;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(3, 37, 90, 0.3);
+      background: linear-gradient(135deg, #02245a, var(--primary));
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .forgot-password {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .forgot-password a {
+      display: inline-block;
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      border-radius: var(--border-radius);
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .forgot-password a:hover {
+      background: var(--accent);
+      color: var(--primary);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(166, 179, 195, 0.3);
     }

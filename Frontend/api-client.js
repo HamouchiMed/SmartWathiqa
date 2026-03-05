@@ -99,6 +99,24 @@ class SmartWathiqaAPI {
   async healthCheck() {
     return this.request('/health');
   }
+
+  // Dashboard Statistics
+  async getDashboardStats(filters = {}) {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) params.append(key, value);
+    });
+    return this.request(`/dashboard/stats?${params}`);
+  }
+
+  // Recent Documents for Dashboard
+  async getRecentDocuments(filters = {}) {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) params.append(key, value);
+    });
+    return this.request(`/dashboard/recent?${params}`);
+  }
 }
 
 // Initialize the API client
