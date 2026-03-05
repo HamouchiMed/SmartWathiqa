@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 const pool = require('../database/connection');
 
 const app = express();
@@ -9,6 +10,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload());
 
 // Routes
 
@@ -78,16 +80,32 @@ app.get('/api/documents', async (req, res) => {
 // Create a new document
 app.post('/api/documents', async (req, res) => {
   try {
-    const {
-      name,
-      fileName,
-      filePath,
-      fileSize,
-      fileType,
-      category,
-      description,
-      user_id = 1
-    } = req.body;
+    // Handle both JSON and FormData requests
+    let docData = {
+      name: req.body.name,
+      fileName: req.body.fileName,
+      filePath: req.body.filePath || null,
+      fileSize: req.body.fileSize,
+      fileType: req.body.fileType,
+      category: req.body.category,
+      description: req.body.description,
+      user_id: req.body.user_id || 1
+    };
+
+    // If file is uploaded via FormData, update the file info
+    if (req.files && req.files.file) {
+      const file = req.files.file;
+      docData.fileName = file.name;
+      docData.fileSize = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+      docData.fileType = req.body.fileType || file.mimetype;
+    }
+
+    const { name, fileName, filePath, fileSize, fileType, category, description, user_id } = docData;
+
+    // Validate required fields
+    if (!name) {
+      return res.status(400).json({ success: false, error: 'Document name is required' });
+    }
 
     // Get category ID if category name is provided
     let categoryId = null;
@@ -116,10 +134,10 @@ app.post('/api/documents', async (req, res) => {
       VALUES ($1, $2, $3, $4)
     `, [result.rows[0].id, user_id, 'created', `Document "${name}" created`]);
 
-    res.json({ success: true, data: result.rows[0] });
+    res.json({ success: true, data: result.rows[0], message: 'Document created successfully' });
   } catch (error) {
     console.error('Error creating document:', error);
-    res.status(500).json({ success: false, error: 'Failed to create document' });
+    res.status(500).json({ success: false, error: 'Failed to create document', details: error.message });
   }
 });
 

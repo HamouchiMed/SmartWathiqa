@@ -464,26 +464,46 @@ function setupEventListeners() {
     submitText.classList.add('hidden');
     submitSpinner.classList.remove('hidden');
 
-    const docData = {
-      name: document.getElementById('doc-name').value.trim(),
-      type: document.getElementById('doc-type').value,
-      category: document.getElementById('doc-category').value,
-      size: file ? (file.size / (1024 * 1024)).toFixed(2) + ' MB' : document.getElementById('doc-size').value.trim(),
-      description: document.getElementById('doc-description').value.trim(),
-      createdAt: editingDoc ? editingDoc.createdAt : new Date().toISOString(),
-      fileName: file ? file.name : undefined
-    };
-
     try {
       let result;
+      
       if (editingDoc) {
-        result = await window.dataSdk.update({ ...editingDoc, ...docData });
+        // Update document - send metadata only
+        const docData = {
+          name: document.getElementById('doc-name').value.trim(),
+          category: document.getElementById('doc-category').value,
+          description: document.getElementById('doc-description').value.trim(),
+          id: editingDoc.id
+        };
+        result = await smartWathiqaAPI.updateDocument(editingDoc.id, docData);
       } else {
+        // Create new document - use FormData to send file
         if (currentRecordCount >= 999) {
           showToast('Limite de 999 documents atteinte', 'error');
+          submitBtn.disabled = false;
+          submitText.classList.remove('hidden');
+          submitSpinner.classList.add('hidden');
           return;
         }
-        result = await window.dataSdk.create(docData);
+
+        const formData = new FormData();
+        formData.append('name', document.getElementById('doc-name').value.trim());
+        formData.append('fileType', document.getElementById('doc-type').value);
+        formData.append('category', document.getElementById('doc-category').value);
+        formData.append('description', document.getElementById('doc-description').value.trim());
+        formData.append('file', file);
+        formData.append('user_id', 1);
+
+        // Send to API with FormData
+        const endpoint = `${smartWathiqaAPI.baseURL}/documents`;
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: formData
+          // Don't set Content-Type, browser will set it with boundary
+        });
+
+        const data = await response.json();
+        result = response.ok ? { isOk: true, data } : { isOk: false, error: data.error };
       }
 
       if (result.isOk) {
@@ -492,10 +512,11 @@ function setupEventListeners() {
         // Reload documents from API
         await loadDocumentsFromAPI();
       } else {
-        showToast('Une erreur est survenue', 'error');
+        showToast(result.error || 'Une erreur est survenue', 'error');
       }
     } catch (err) {
-      showToast('Une erreur est survenue', 'error');
+      console.error('Error:', err);
+      showToast(err.message || 'Une erreur est survenue', 'error');
     } finally {
       submitBtn.disabled = false;
       submitText.classList.remove('hidden');
