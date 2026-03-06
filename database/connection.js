@@ -1,25 +1,37 @@
-const { Pool } = require('pg');
+﻿const path = require('path');
+const mysql = require(path.join(__dirname, '..', 'backend', 'node_modules', 'mysql2', 'promise'));
+require(path.join(__dirname, '..', 'backend', 'node_modules', 'dotenv')).config({
+  path: path.join(__dirname, '..', 'backend', '.env')
+});
 
-// Database configuration
-const dbConfig = {
-  connectionString: 'postgresql://neondb_owner:npg_i7uBOMJlUqD0@ep-patient-shape-ai8367hr-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require',
-  ssl: {
-    rejectUnauthorized: false
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || '127.0.0.1',
+  port: Number(process.env.DB_PORT || 3306),
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'smartwathiqa',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+async function query(sql, params = []) {
+  const mysqlSql = sql.replace(/\$\d+/g, '?');
+  const [rows] = await pool.query(mysqlSql, params);
+
+  if (Array.isArray(rows)) {
+    return { rows };
   }
-};
 
-// Create connection pool
-const pool = new Pool(dbConfig);
+  return {
+    rows: [],
+    insertId: rows.insertId,
+    affectedRows: rows.affectedRows
+  };
+}
 
-// Test connection
-pool.on('connect', () => {
-  console.log('Connected to PostgreSQL database');
-});
+async function end() {
+  await pool.end();
+}
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
-});
-
-// Export pool for use in other modules
-module.exports = pool;
+module.exports = { query, end };

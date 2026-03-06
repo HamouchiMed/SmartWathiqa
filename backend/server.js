@@ -37,7 +37,7 @@ app.get('/api/documents', async (req, res) => {
 
     // Add search filter
     if (search) {
-      query += ` AND (d.name ILIKE $${paramIndex} OR d.description ILIKE $${paramIndex})`;
+      query += ` AND (d.name LIKE $${paramIndex} OR d.description LIKE $${paramIndex})`;
       params.push(`%${search}%`);
       paramIndex++;
     }
@@ -49,16 +49,16 @@ app.get('/api/documents', async (req, res) => {
 
       switch (date_filter) {
         case 'today':
-          dateCondition = `d.created_at::date = CURRENT_DATE`;
+          dateCondition = `d.created_at >= CURDATE() AND d.created_at < DATE_ADD(CURDATE(), INTERVAL 1 DAY)`;
           break;
         case 'week':
-          dateCondition = `d.created_at >= CURRENT_DATE - INTERVAL '7 days'`;
+          dateCondition = `d.created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)`;
           break;
         case 'month':
-          dateCondition = `d.created_at >= CURRENT_DATE - INTERVAL '30 days'`;
+          dateCondition = `d.created_at >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)`;
           break;
         case 'year':
-          dateCondition = `d.created_at >= CURRENT_DATE - INTERVAL '1 year'`;
+          dateCondition = `d.created_at >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)`;
           break;
       }
 
@@ -117,24 +117,26 @@ app.post('/api/documents', async (req, res) => {
       categoryId = categoryResult.rows[0]?.id;
     }
 
-    const result = await pool.query(`
+    const insertResult = await pool.query(`
       INSERT INTO documents (
         user_id, name, file_name, file_path, file_size, file_type,
         category_id, category_name, description
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING *
     `, [
       user_id, name, fileName, filePath, fileSize, fileType,
       categoryId, category, description
     ]);
+    const lastIdResult = await pool.query('SELECT LAST_INSERT_ID() AS id');
+    const createdResult = await pool.query('SELECT * FROM documents WHERE id = $1', [lastIdResult.rows[0].id]);
+    const createdDocument = createdResult.rows[0];
 
     // Log the action
     await pool.query(`
       INSERT INTO document_history (document_id, user_id, action, details)
       VALUES ($1, $2, $3, $4)
-    `, [result.rows[0].id, user_id, 'created', `Document "${name}" created`]);
+    `, [createdDocument.id, user_id, 'created', `Document "${name}" created`]);
 
-    res.json({ success: true, data: result.rows[0], message: 'Document created successfully' });
+    res.json({ success: true, data: createdDocument, message: 'Document created successfully' });
   } catch (error) {
     console.error('Error creating document:', error);
     res.status(500).json({ success: false, error: 'Failed to create document', details: error.message });
@@ -162,13 +164,13 @@ app.put('/api/documents/:id', async (req, res) => {
       categoryId = categoryResult.rows[0]?.id;
     }
 
-    const result = await pool.query(`
+    const updateResult = await pool.query(`
       UPDATE documents
       SET name = $1, category_id = $2, category_name = $3, description = $4, updated_at = CURRENT_TIMESTAMP
       WHERE id = $5 AND user_id = $6
-      RETURNING *
     `, [name, categoryId, category, description, id, user_id]);
 
+    const result = await pool.query('SELECT * FROM documents WHERE id = $1 AND user_id = $2', [id, user_id]);
     if (result.rows.length === 0) {
       return res.status(404).json({ success: false, error: 'Document not found' });
     }
@@ -246,7 +248,7 @@ app.post('/api/documents/:id/favorite', async (req, res) => {
       await pool.query(`
         INSERT INTO favorites (user_id, document_id)
         VALUES ($1, $2)
-        ON CONFLICT (user_id, document_id) DO NOTHING
+        ON DUPLICATE KEY UPDATE user_id = user_id
       `, [user_id, id]);
     } else {
       // Remove from favorites
@@ -333,7 +335,7 @@ app.use((error, req, res, next) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 SmartWathiqa API server running on port ${PORT}`);
-  console.log(`📊 Connected to Neon PostgreSQL database`);
+  console.log(`📊 Connected to local MySQL database`);
 });
 
 module.exports = app;
