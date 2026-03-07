@@ -1,0 +1,156 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramètres Admin - SmartWathiqa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <div class="flex min-h-screen">
+    <aside class="w-64 bg-[#005EB8] text-white p-4">
+      <div class="mb-4">
+        <h2 class="text-lg font-bold">SmartWathiqa</h2>
+      </div>
+      <nav class="space-y-1.5 text-sm">
+        <a href="dashboardadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Tableau de bord</a>
+        <a href="alldocuments.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Documents</a>
+        <a href="parametreadmin.html" class="block px-3 py-2.5 rounded-lg bg-white/20">Paramètres</a>
+        <button onclick="logout()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/15">Déconnexion</button>
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-3 md:p-4 space-y-4">
+      <header class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5">
+        <h1 class="text-xl font-bold text-slate-900">Paramètres Admin</h1>
+        <p class="text-slate-600 mt-1 text-sm">Personnalisez les paramètres de l'espace administrateur.</p>
+      </header>
+
+      <section class="grid grid-cols-1 gap-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">Sécurité Admin</h2>
+          <div class="space-y-3 text-sm">
+            <label class="flex items-center justify-between gap-2 border rounded-lg px-3 py-2">
+              <span>Exiger confirmation suppression</span>
+              <input id="cfg-confirm-delete" type="checkbox" checked>
+            </label>
+            <label class="flex items-center justify-between gap-2 border rounded-lg px-3 py-2">
+              <span>Afficher alertes sécurité</span>
+              <input id="cfg-security-alerts" type="checkbox" checked>
+            </label>
+            <label class="flex items-center justify-between gap-2 border rounded-lg px-3 py-2">
+              <span>Autoriser export CSV</span>
+              <input id="cfg-export" type="checkbox" checked>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">Système</h2>
+          <div class="space-y-2 text-sm text-slate-700">
+            <p>DB: <span id="sys-db" class="font-medium">-</span></p>
+            <p>Taille DB: <span id="sys-db-size" class="font-medium">-</span></p>
+            <p>Stockage fichiers: <span id="sys-files" class="font-medium">-</span></p>
+            <p>Uptime API: <span id="sys-uptime" class="font-medium">-</span></p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">Actions</h2>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="saveAdminSettings()" class="px-3 py-2 rounded bg-[#005EB8] text-white text-sm">Enregistrer</button>
+            <button onclick="resetAdminSettings()" class="px-3 py-2 rounded border border-slate-300 text-sm">Réinitialiser</button>
+            <button onclick="refreshSystemHealth()" class="px-3 py-2 rounded border border-slate-300 text-sm">Actualiser état</button>
+          </div>
+          <p id="save-msg" class="text-sm text-emerald-700 mt-3"></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const API_BASES = ['http://localhost:3001/api', 'http://127.0.0.1:3001/api'];
+    const SETTINGS_KEY = 'adminSettingsSmartWathiqa';
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      sessionStorage.clear();
+      window.location.href = 'firstscreen.html';
+    }
+
+    function fmtUptime(seconds) {
+      const s = Number(seconds || 0);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      return `${h}h ${m}m`;
+    }
+
+    async function apiGet(path) {
+      let lastErr = 'Serveur indisponible';
+      for (const base of API_BASES) {
+        try {
+          const r = await fetch(base + path);
+          const t = await r.text();
+          const j = t ? JSON.parse(t) : null;
+          if (!r.ok || !j?.success) {
+            lastErr = j?.error || `HTTP ${r.status}`;
+            continue;
+          }
+          return j.data;
+        } catch (e) {
+          lastErr = e.message;
+        }
+      }
+      throw new Error(lastErr);
+    }
+
+    function loadAdminSettings() {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      const cfg = raw ? JSON.parse(raw) : {
+        confirmDelete: true,
+        securityAlerts: true,
+        exportCsv: true
+      };
+
+      document.getElementById('cfg-confirm-delete').checked = !!cfg.confirmDelete;
+      document.getElementById('cfg-security-alerts').checked = !!cfg.securityAlerts;
+      document.getElementById('cfg-export').checked = !!cfg.exportCsv;
+    }
+
+    function saveAdminSettings() {
+      const cfg = {
+        confirmDelete: document.getElementById('cfg-confirm-delete').checked,
+        securityAlerts: document.getElementById('cfg-security-alerts').checked,
+        exportCsv: document.getElementById('cfg-export').checked
+      };
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(cfg));
+      document.getElementById('save-msg').textContent = 'Paramètres enregistrés.';
+      setTimeout(() => { document.getElementById('save-msg').textContent = ''; }, 2200);
+    }
+
+    function resetAdminSettings() {
+      localStorage.removeItem(SETTINGS_KEY);
+      loadAdminSettings();
+      document.getElementById('save-msg').textContent = 'Paramètres réinitialisés.';
+      setTimeout(() => { document.getElementById('save-msg').textContent = ''; }, 2200);
+    }
+
+    async function refreshSystemHealth() {
+      try {
+        const data = await apiGet('/admin/system-health');
+        document.getElementById('sys-db').textContent = data.db_status || '-';
+        document.getElementById('sys-db-size').textContent = `${data.db_size_mb ?? 0} MB`;
+        document.getElementById('sys-files').textContent = `${data.uploads_size_mb ?? 0} MB`;
+        document.getElementById('sys-uptime').textContent = fmtUptime(data.api_uptime_seconds);
+      } catch (e) {
+        document.getElementById('sys-db').textContent = 'indisponible';
+      }
+    }
+
+    loadAdminSettings();
+    refreshSystemHealth();
+  </script>
+</body>
+</html>

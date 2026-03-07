@@ -42,6 +42,16 @@ class SmartWathiqaAPI {
     return this.request(`/documents?${params}`);
   }
 
+  async getDocument(id, userId = 1) {
+    return this.request(`/documents/${id}?user_id=${userId}`);
+  }
+
+  getFileUrl(filePath) {
+    if (!filePath) return '';
+    if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath;
+    return `${this.baseURL.replace('/api', '')}${filePath}`;
+  }
+
   async createDocument(docData) {
     // Transform frontend data to API format
     const apiData = {
@@ -116,6 +126,15 @@ class SmartWathiqaAPI {
       if (value) params.append(key, value);
     });
     return this.request(`/dashboard/recent?${params}`);
+  }
+
+  // Recent Activity for Dashboard
+  async getRecentActivity(filters = {}) {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) params.append(key, value);
+    });
+    return this.request(`/dashboard/activity?${params}`);
   }
 }
 

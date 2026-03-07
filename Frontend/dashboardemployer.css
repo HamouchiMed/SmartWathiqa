@@ -34,6 +34,140 @@ body {
   line-height: 1.5;
 }
 
+/* Compact layout for laptop screens */
+html {
+  font-size: 14px;
+}
+
+#drawer {
+  width: 16rem !important;
+}
+
+main.ml-72 {
+  margin-left: 16rem !important;
+  padding-top: 1rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+header .max-w-7xl {
+  padding-top: 0.6rem !important;
+  padding-bottom: 0.6rem !important;
+  margin-left: 16rem !important;
+  max-width: calc(100% - 16rem) !important;
+}
+
+header h1 {
+  font-size: 18px;
+  margin-bottom: 0.15rem;
+}
+
+header p {
+  font-size: 12px;
+}
+
+#add-doc-btn {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.rounded-2xl {
+  border-radius: 0.75rem !important;
+  padding: 0.9rem !important;
+}
+
+.grid.gap-4,
+.grid.gap-6,
+.grid.gap-8 {
+  gap: 0.75rem !important;
+}
+
+main .mb-8 {
+  margin-bottom: 0.5rem !important;
+}
+
+#recent-documents-list {
+  max-height: 170px;
+  overflow-y: auto;
+}
+
+@media (max-height: 900px) {
+  header .max-w-7xl {
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+
+  main.ml-72 {
+    padding-top: 0.35rem !important;
+  }
+
+  .rounded-2xl {
+    padding: 0.65rem !important;
+  }
+
+  main .mb-8 {
+    margin-bottom: 0.35rem !important;
+  }
+
+  .text-2xl {
+    font-size: 1.15rem !important;
+  }
+
+  #recent-documents-list {
+    max-height: 140px;
+  }
+}
+
+input,
+select,
+textarea,
+button {
+  font-size: 13px !important;
+}
+
+.w-12.h-12 {
+  width: 2.2rem !important;
+  height: 2.2rem !important;
+}
+
+.w-10.h-10 {
+  width: 2rem !important;
+  height: 2rem !important;
+}
+
+.text-2xl {
+  font-size: 1.35rem !important;
+}
+
+.text-xl {
+  font-size: 1.1rem !important;
+}
+
+.text-lg {
+  font-size: 1rem !important;
+}
+
+@media (max-width: 1400px) {
+  #drawer {
+    width: 15rem !important;
+  }
+
+  main.ml-72 {
+    margin-left: 15rem !important;
+  }
+
+  header .max-w-7xl {
+    margin-left: 15rem !important;
+    max-width: calc(100% - 15rem) !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  header .max-w-7xl {
+    margin-left: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
 #app {
   background: #ffffff;
   min-height: 100vh;
@@ -88,19 +222,19 @@ header p {
 
 /* Drawer Styles */
 #drawer {
-  background: #ffffff;
-  border-right: 1px solid var(--border-color);
-  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+  background: rgb(0, 94, 184);
+  border-right: 1px solid #5B9FD9;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.08);
   z-index: 50;
 }
 
 #drawer .p-6:first-child {
-  border-bottom-color: var(--border-color);
-  background: rgba(99, 102, 241, 0.1);
+  border-bottom-color: #5B9FD9;
+  background: rgb(0, 94, 184);
 }
 
 #drawer h2 {
-  color: #1a1a1a;
+  color: #ffffff;
   font-size: 18px;
   font-weight: 700;
   margin: 0;
@@ -108,7 +242,7 @@ header p {
 }
 
 #drawer nav p {
-  color: #999999;
+  color: #ffffff;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -116,7 +250,7 @@ header p {
 }
 
 #drawer a, #drawer button {
-  color: #666666;
+  color: #ffffff;
   text-decoration: none;
   transition: all 0.2s ease;
   border: none;
@@ -127,8 +261,8 @@ header p {
 }
 
 #drawer a:hover, #drawer button:hover {
-  color: #1a1a1a;
-  background: rgba(99, 102, 241, 0.1) !important;
+  color: #ffffff;
+  background: rgba(0, 94, 184, 0.5) !important;
 }
 
 #drawer a span, #drawer button span {
@@ -136,11 +270,11 @@ header p {
 }
 
 #drawer .p-6 .text-white {
-  color: #1a1a1a;
+  color: #ffffff;
 }
 
 #drawer .text-blue-100 {
-  color: #999999;
+  color: #ffffff;
 }
 
 /* Main Content */

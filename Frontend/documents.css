@@ -43,6 +43,90 @@ body {
   box-sizing: border-box;
 }
 
+/* Compact layout for 14-inch laptop screens */
+html {
+  font-size: 14px;
+}
+
+#drawer {
+  width: 16rem !important;
+}
+
+main.ml-72 {
+  margin-left: 16rem !important;
+  padding-top: 1rem !important;
+}
+
+header .max-w-7xl {
+  padding-top: 0.6rem !important;
+  padding-bottom: 0.6rem !important;
+  margin-left: 16rem !important;
+  max-width: calc(100% - 16rem) !important;
+}
+
+#app-title {
+  font-size: 18px !important;
+}
+
+#welcome-message {
+  font-size: 12px !important;
+}
+
+.rounded-2xl {
+  border-radius: 0.75rem !important;
+  padding: 0.9rem !important;
+}
+
+.grid.gap-4,
+.grid.gap-6,
+.grid.gap-8 {
+  gap: 0.75rem !important;
+}
+
+input,
+select,
+textarea,
+button {
+  font-size: 13px !important;
+}
+
+.w-12.h-12 {
+  width: 2.2rem !important;
+  height: 2.2rem !important;
+}
+
+.w-10.h-10 {
+  width: 2rem !important;
+  height: 2rem !important;
+}
+
+.text-2xl {
+  font-size: 1.35rem !important;
+}
+
+.text-xl {
+  font-size: 1.1rem !important;
+}
+
+.text-lg {
+  font-size: 1rem !important;
+}
+
+@media (max-width: 1400px) {
+  #drawer {
+    width: 15rem !important;
+  }
+
+  main.ml-72 {
+    margin-left: 15rem !important;
+  }
+
+  header .max-w-7xl {
+    margin-left: 15rem !important;
+    max-width: calc(100% - 15rem) !important;
+  }
+}
+
 /* Header styles */
 .sticky.top-0.z-40.backdrop-blur-xl.border-b {
   background: #ffffff;
@@ -377,6 +461,11 @@ label[for="size-filter"] {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  header .max-w-7xl {
+    margin-left: 0 !important;
+    max-width: 100% !important;
+  }
+
   #drawer {
     transform: translateX(-100%);
   }

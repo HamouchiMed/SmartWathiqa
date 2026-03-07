@@ -1,0 +1,404 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin - SmartWathiqa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <div class="flex min-h-screen">
+    <aside class="w-64 bg-[#005EB8] text-white p-4">
+      <div class="mb-4">
+        <h2 class="text-lg font-bold">SmartWathiqa</h2>
+      </div>
+      <nav class="space-y-1.5 text-sm">
+        <a href="dashboardadmin.html" class="block px-3 py-2.5 rounded-lg bg-white/20">Tableau de bord</a>
+        <a href="alldocuments.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Documents</a>
+        <a href="parametreadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Paramètres</a>
+        <button onclick="logout()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/15">Déconnexion</button>
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-3 md:p-4">
+      <header class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 mb-4">
+        <h1 class="text-xl font-bold text-slate-900">Espace Admin</h1>
+        <p class="text-slate-600 mt-1 text-sm">Bienvenue dans le tableau de bord administrateur.</p>
+      </header>
+
+      <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-3">
+          <p class="text-xs text-slate-500">Total documents</p>
+          <p id="kpi-total-docs" class="text-xl font-bold text-slate-900">0</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-3">
+          <p class="text-xs text-slate-500">Total utilisateurs</p>
+          <p id="kpi-total-users" class="text-xl font-bold text-slate-900">0</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-3">
+          <p class="text-xs text-slate-500">Documents aujourd'hui</p>
+          <p id="kpi-docs-today" class="text-xl font-bold text-slate-900">0</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-3">
+          <p class="text-xs text-slate-500">Connexions échouées</p>
+          <p id="kpi-failed-logins" class="text-xl font-bold text-slate-900">0</p>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-3">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-semibold text-slate-900">File d'approbation</h2>
+            <span id="pending-count" class="text-xs px-2 py-1 rounded bg-amber-100 text-amber-800">0 en attente</span>
+          </div>
+          <div id="pending-list" class="space-y-2 text-sm"></div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-3">
+          <h2 class="font-semibold text-slate-900 mb-3">Santé du système</h2>
+          <div class="space-y-2 text-sm text-slate-700">
+            <p>DB: <span id="health-db" class="font-medium">-</span></p>
+            <p>Taille DB: <span id="health-db-size" class="font-medium">-</span></p>
+            <p>Stockage fichiers: <span id="health-upload-size" class="font-medium">-</span></p>
+            <p>Uptime API: <span id="health-uptime" class="font-medium">-</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-3">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-semibold text-slate-900">Gestion des utilisateurs</h2>
+            <button onclick="createUser()" class="text-xs px-3 py-1.5 rounded bg-[#005EB8] text-white">Créer utilisateur</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 border-b">
+                  <th class="py-2">Nom</th>
+                  <th class="py-2">Email</th>
+                  <th class="py-2">Rôle</th>
+                  <th class="py-2">Docs</th>
+                  <th class="py-2">Action</th>
+                </tr>
+              </thead>
+              <tbody id="users-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-3">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-semibold text-slate-900">Journal d'audit</h2>
+            <button onclick="loadAudit()" class="text-xs px-3 py-1.5 rounded border border-slate-300">Actualiser</button>
+          </div>
+          <div id="audit-list" class="space-y-2 text-sm"></div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-xl border border-slate-200 p-3 mb-4">
+        <h2 class="font-semibold text-slate-900 mb-3">Actions rapides</h2>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="createUser()" class="px-3 py-2 rounded bg-[#005EB8] text-white text-sm">Créer utilisateur</button>
+          <button onclick="resetUserPasswordPrompt()" class="px-3 py-2 rounded bg-[#005EB8] text-white text-sm">Reset mot de passe</button>
+          <button onclick="exportCsv()" class="px-3 py-2 rounded bg-[#005EB8] text-white text-sm">Exporter rapports</button>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-xl border border-slate-200 p-3">
+        <h2 class="font-semibold text-slate-900 mb-3">Alertes</h2>
+        <div id="alerts-list" class="space-y-2 text-sm"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const API_BASES = ['http://localhost:3001/api', 'http://127.0.0.1:3001/api'];
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      sessionStorage.clear();
+      window.location.href = 'firstscreen.html';
+    }
+
+    async function apiGet(path) {
+      let lastError = 'Serveur indisponible';
+      for (const base of API_BASES) {
+        try {
+          const resp = await fetch(base + path);
+          const txt = await resp.text();
+          let json = null;
+          try {
+            json = txt ? JSON.parse(txt) : null;
+          } catch (_) {
+            json = null;
+          }
+          if (!json) {
+            lastError = resp.status === 404 || (txt && txt.startsWith('<!DOCTYPE'))
+              ? 'Route API introuvable. Redémarrez le backend.'
+              : `Réponse serveur invalide (HTTP ${resp.status})`;
+            continue;
+          }
+          if (!resp.ok || !json?.success) {
+            lastError = json?.error || `HTTP ${resp.status}`;
+            continue;
+          }
+          return json.data;
+        } catch (e) {
+          lastError = e.message;
+        }
+      }
+      throw new Error(lastError);
+    }
+
+    async function apiPost(path, body) {
+      let lastError = 'Serveur indisponible';
+      for (const base of API_BASES) {
+        try {
+          const resp = await fetch(base + path, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body || {})
+          });
+          const txt = await resp.text();
+          let json = null;
+          try {
+            json = txt ? JSON.parse(txt) : null;
+          } catch (_) {
+            json = null;
+          }
+          if (!json) {
+            lastError = resp.status === 404 || (txt && txt.startsWith('<!DOCTYPE'))
+              ? 'Route API introuvable. Redémarrez le backend.'
+              : `Réponse serveur invalide (HTTP ${resp.status})`;
+            continue;
+          }
+          if (!resp.ok || !json?.success) {
+            lastError = json?.error || `HTTP ${resp.status}`;
+            continue;
+          }
+          return json.data;
+        } catch (e) {
+          lastError = e.message;
+        }
+      }
+      throw new Error(lastError);
+    }
+
+    async function apiDelete(path) {
+      let lastError = 'Serveur indisponible';
+      for (const base of API_BASES) {
+        try {
+          const resp = await fetch(base + path, { method: 'DELETE' });
+          const txt = await resp.text();
+          let json = null;
+          try {
+            json = txt ? JSON.parse(txt) : null;
+          } catch (_) {
+            json = null;
+          }
+          if (!json) {
+            lastError = resp.status === 404 || (txt && txt.startsWith('<!DOCTYPE'))
+              ? 'Route suppression introuvable. Redémarrez le backend.'
+              : `Réponse serveur invalide (HTTP ${resp.status})`;
+            continue;
+          }
+          if (!resp.ok || !json?.success) {
+            lastError = json?.error || `HTTP ${resp.status}`;
+            continue;
+          }
+          return json.data;
+        } catch (e) {
+          lastError = e.message;
+        }
+      }
+      throw new Error(lastError);
+    }
+
+    function fmtDate(v) {
+      if (!v) return '-';
+      const d = new Date(v);
+      if (Number.isNaN(d.getTime())) return '-';
+      return d.toLocaleString('fr-FR');
+    }
+
+    function fmtUptime(seconds) {
+      const s = Number(seconds || 0);
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      return `${h}h ${m}m`;
+    }
+
+    async function loadOverview() {
+      const data = await apiGet('/admin/overview');
+      document.getElementById('kpi-total-docs').textContent = data.total_documents ?? 0;
+      document.getElementById('kpi-total-users').textContent = data.total_users ?? 0;
+      document.getElementById('kpi-docs-today').textContent = data.documents_today ?? 0;
+      document.getElementById('kpi-failed-logins').textContent = data.failed_logins ?? 0;
+
+      const alerts = document.getElementById('alerts-list');
+      if (!data.alerts || data.alerts.length === 0) {
+        alerts.innerHTML = '<p class="text-slate-500">Aucune alerte.</p>';
+      } else {
+        alerts.innerHTML = data.alerts.map(a => {
+          const cls = a.level === 'danger' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200';
+          return `<div class="border rounded p-2 ${cls}">${a.message}</div>`;
+        }).join('');
+      }
+    }
+
+    async function loadPendingApprovals() {
+      const data = await apiGet('/admin/pending-approvals?limit=8');
+      const list = document.getElementById('pending-list');
+      document.getElementById('pending-count').textContent = `${data.length} en attente`;
+      if (!data.length) {
+        list.innerHTML = '<p class="text-slate-500">Aucun document en attente.</p>';
+        return;
+      }
+      list.innerHTML = data.map(row => `
+        <div class="border border-slate-200 rounded p-2 flex items-center justify-between gap-2">
+          <div>
+            <p class="font-medium text-slate-900">${row.name || 'Sans nom'}</p>
+            <p class="text-xs text-slate-500">${row.owner_email || '-'} • ${fmtDate(row.created_at)}</p>
+          </div>
+          <button onclick="approveDoc(${row.id})" class="px-2 py-1 rounded bg-emerald-600 text-white text-xs">Valider</button>
+        </div>
+      `).join('');
+    }
+
+    async function approveDoc(id) {
+      try {
+        await apiPost(`/admin/pending-approvals/${id}/approve`, {});
+        await Promise.all([loadPendingApprovals(), loadAudit(), loadOverview()]);
+      } catch (e) {
+        alert('Erreur validation: ' + e.message);
+      }
+    }
+
+    async function loadUsers() {
+      const data = await apiGet('/admin/users');
+      const tbody = document.getElementById('users-table');
+      if (!data.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="py-2 text-slate-500">Aucun utilisateur</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(u => `
+        <tr class="border-b">
+          <td class="py-2 pr-2">${u.name || '-'}</td>
+          <td class="py-2 pr-2">${u.email || '-'}</td>
+          <td class="py-2 pr-2">${u.role || '-'}</td>
+          <td class="py-2 pr-2">${u.documents_count || 0}</td>
+          <td class="py-2">
+            <button onclick="resetPassword(${u.id})" class="px-2 py-1 rounded border border-slate-300 text-xs">Reset</button>
+            <button onclick="deleteUser(${u.id})" class="px-2 py-1 rounded border border-red-300 text-red-700 text-xs ml-1">Supprimer</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function createUser() {
+      const name = prompt('Nom utilisateur');
+      if (!name) return;
+      const email = prompt('Email');
+      if (!email) return;
+      const role = (prompt('Rôle (employer/directeur/admin)', 'employer') || 'employer').trim();
+      const password = prompt('Mot de passe');
+      if (!password) return;
+
+      try {
+        await apiPost('/admin/users', { name, email, role, password });
+        await Promise.all([loadUsers(), loadOverview()]);
+      } catch (e) {
+        alert('Erreur création utilisateur: ' + e.message);
+      }
+    }
+
+    async function resetPassword(userId) {
+      const newPassword = prompt('Nouveau mot de passe');
+      if (!newPassword) return;
+      try {
+        await apiPost(`/admin/users/${userId}/reset-password`, { newPassword });
+        alert('Mot de passe mis à jour.');
+      } catch (e) {
+        alert('Erreur reset mot de passe: ' + e.message);
+      }
+    }
+
+    async function resetUserPasswordPrompt() {
+      const userId = prompt('ID utilisateur');
+      if (!userId) return;
+      await resetPassword(Number(userId));
+    }
+
+    async function deleteUser(userId) {
+      if (!confirm('Supprimer cet utilisateur ?')) return;
+      try {
+        try {
+          await apiDelete(`/admin/users/${userId}`);
+        } catch (_) {
+          await apiPost(`/admin/users/${userId}/delete`, {});
+        }
+        await Promise.all([loadUsers(), loadOverview()]);
+      } catch (e) {
+        alert('Erreur suppression utilisateur: ' + e.message);
+      }
+    }
+
+    async function loadAudit() {
+      const data = await apiGet('/admin/audit?limit=12');
+      const list = document.getElementById('audit-list');
+      if (!data.length) {
+        list.innerHTML = '<p class="text-slate-500">Aucune activité.</p>';
+        return;
+      }
+      list.innerHTML = data.map(a => `
+        <div class="border border-slate-200 rounded p-2">
+          <p class="font-medium text-slate-900">${a.action || '-'} • ${a.document_name || '-'}</p>
+          <p class="text-xs text-slate-500">${a.actor_email || '-'} • ${fmtDate(a.created_at)}</p>
+        </div>
+      `).join('');
+    }
+
+    async function loadSystemHealth() {
+      const data = await apiGet('/admin/system-health');
+      document.getElementById('health-db').textContent = data.db_status || '-';
+      document.getElementById('health-db-size').textContent = `${data.db_size_mb ?? 0} MB`;
+      document.getElementById('health-upload-size').textContent = `${data.uploads_size_mb ?? 0} MB`;
+      document.getElementById('health-uptime').textContent = fmtUptime(data.api_uptime_seconds);
+    }
+
+    function exportCsv() {
+      const primary = API_BASES[0] + '/admin/export/documents.csv';
+      const secondary = API_BASES[1] + '/admin/export/documents.csv';
+      const win = window.open(primary, '_blank');
+      setTimeout(() => {
+        try {
+          if (!win || win.closed) {
+            window.open(secondary, '_blank');
+          }
+        } catch (_) {
+          window.open(secondary, '_blank');
+        }
+      }, 500);
+    }
+
+    async function init() {
+      const jobs = [
+        loadOverview(),
+        loadPendingApprovals(),
+        loadUsers(),
+        loadAudit(),
+        loadSystemHealth()
+      ];
+      const results = await Promise.allSettled(jobs);
+      const hasError = results.some(r => r.status === 'rejected');
+      if (hasError) {
+        document.getElementById('alerts-list').innerHTML =
+          '<div class="border rounded p-2 bg-red-50 text-red-700 border-red-200">Connexion backend indisponible. Démarrez le serveur API puis actualisez la page.</div>';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

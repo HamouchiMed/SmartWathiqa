@@ -1,0 +1,229 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tous les Documents - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <div class="flex min-h-screen">
+    <aside class="w-64 bg-[#005EB8] text-white p-4">
+      <div class="mb-4">
+        <h2 class="text-lg font-bold">SmartWathiqa</h2>
+      </div>
+
+      <nav class="space-y-1.5 text-sm">
+        <a href="dashboardadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Tableau de bord</a>
+        <a href="alldocuments.html" class="block px-3 py-2.5 rounded-lg bg-white/20">Documents</a>
+        <a href="parametreadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Paramètres</a>
+        <button onclick="logout()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/15">Déconnexion</button>
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-3 md:p-4">
+      <div class="bg-white rounded-2xl border border-slate-200 p-3 md:p-4">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
+        <div>
+          <h1 class="text-xl font-bold text-slate-900">Tous les documents</h1>
+          <p class="text-slate-600 text-sm">Liste globale des documents (employé, directeur et futurs utilisateurs).</p>
+        </div>
+        <div class="flex gap-2">
+          <a href="dashboardadmin.html" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50">Retour Admin</a>
+          <button onclick="loadDocuments()" class="px-4 py-2 rounded-lg bg-[#005EB8] text-white hover:opacity-90">Actualiser</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+        <input id="searchInput" type="text" placeholder="Rechercher (nom, description, email...)" class="w-full rounded-lg border border-slate-300 bg-white text-slate-900 px-3 py-2" />
+        <select id="roleFilter" class="w-full rounded-lg border border-slate-300 bg-white text-slate-900 px-3 py-2">
+          <option value="all">Tous les rôles</option>
+          <option value="employer">Employé</option>
+          <option value="directeur">Directeur</option>
+        </select>
+        <select id="categoryFilter" class="w-full rounded-lg border border-slate-300 bg-white text-slate-900 px-3 py-2">
+          <option value="all">Toutes les catégories</option>
+          <option value="Travail">Travail</option>
+          <option value="Ressources Humaines">Ressources Humaines</option>
+          <option value="Finance">Finance</option>
+          <option value="Juridique">Juridique</option>
+          <option value="Commercial">Commercial</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Projets">Projets</option>
+          <option value="IT / Technique">IT / Technique</option>
+          <option value="Personnel">Personnel</option>
+          <option value="Archive">Archive</option>
+          <option value="Autre">Autre</option>
+        </select>
+      </div>
+
+      <div class="overflow-x-auto border border-slate-200 rounded-xl">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-50 text-slate-700">
+            <tr>
+              <th class="text-left px-4 py-3">Nom</th>
+              <th class="text-left px-4 py-3">Catégorie</th>
+              <th class="text-left px-4 py-3">Type</th>
+              <th class="text-left px-4 py-3">Propriétaire</th>
+              <th class="text-left px-4 py-3">Rôle</th>
+              <th class="text-left px-4 py-3">Créé le</th>
+              <th class="text-left px-4 py-3">Action</th>
+            </tr>
+          </thead>
+          <tbody id="docsBody" class="divide-y divide-slate-200 bg-white"></tbody>
+        </table>
+      </div>
+
+      <p id="statusText" class="text-slate-500 mt-3">Chargement...</p>
+    </div>
+    </main>
+  </div>
+
+  <script>
+    const API_BASES = ['http://localhost:3001/api', 'http://127.0.0.1:3001/api'];
+    let currentDocuments = [];
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      sessionStorage.clear();
+      window.location.href = 'firstscreen.html';
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    const roleFilter = document.getElementById('roleFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
+
+    searchInput.addEventListener('input', debounce(loadDocuments, 250));
+    roleFilter.addEventListener('change', loadDocuments);
+    categoryFilter.addEventListener('change', loadDocuments);
+
+    function debounce(fn, delay) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+      };
+    }
+
+    function getFileUrl(filePath) {
+      if (!filePath) return '';
+      if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath;
+      return API_BASES[0].replace('/api', '') + filePath;
+    }
+
+    function formatDate(value) {
+      if (!value) return '—';
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return '—';
+      return d.toLocaleString('fr-FR');
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    function renderTable() {
+      const body = document.getElementById('docsBody');
+      const status = document.getElementById('statusText');
+
+      if (!currentDocuments.length) {
+        body.innerHTML = '<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">Aucun document trouvé.</td></tr>';
+        status.textContent = '0 document';
+        return;
+      }
+
+      body.innerHTML = currentDocuments.map((doc) => {
+        const viewUrl = getFileUrl(doc.file_path);
+        const canView = Boolean(viewUrl);
+
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="px-4 py-3 font-medium text-slate-900">${escapeHtml(doc.name || 'Sans nom')}</td>
+            <td class="px-4 py-3 text-slate-700">${escapeHtml(doc.category_name || doc.category || '—')}</td>
+            <td class="px-4 py-3 text-slate-700">${escapeHtml(doc.file_type || '—')}</td>
+            <td class="px-4 py-3 text-slate-700">${escapeHtml(doc.owner_email || doc.owner_name || '—')}</td>
+            <td class="px-4 py-3 text-slate-700">${escapeHtml(doc.owner_role || '—')}</td>
+            <td class="px-4 py-3 text-slate-700">${formatDate(doc.created_at)}</td>
+            <td class="px-4 py-3">
+              ${canView
+                ? `<a class="inline-block px-3 py-1.5 rounded-md bg-[#005EB8] text-white hover:opacity-90" href="${viewUrl}" target="_blank" rel="noopener noreferrer">Voir</a>`
+                : '<span class="text-slate-400">Pas de fichier</span>'}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      status.textContent = `${currentDocuments.length} document(s)`;
+    }
+
+    async function fetchAdminDocuments(queryString) {
+      let lastError = 'Serveur indisponible';
+      for (const base of API_BASES) {
+        try {
+          const response = await fetch(`${base}/admin/documents?${queryString}`);
+          const raw = await response.text();
+          let json = null;
+          try {
+            json = raw ? JSON.parse(raw) : null;
+          } catch (_) {
+            json = null;
+          }
+
+          if (!json) {
+            if (response.status === 404 || raw.startsWith('<!DOCTYPE')) {
+              lastError = 'Route admin introuvable. Redémarrez le backend.';
+            } else {
+              lastError = `Réponse serveur invalide (HTTP ${response.status})`;
+            }
+            continue;
+          }
+
+          if (!response.ok || !json.success) {
+            lastError = json.error || `HTTP ${response.status}`;
+            if (response.status === 404) {
+              lastError = 'Route admin introuvable. Redémarrez le backend.';
+            }
+            continue;
+          }
+          return { ok: true, data: Array.isArray(json.data) ? json.data : [] };
+        } catch (error) {
+          lastError = error.message || String(error);
+        }
+      }
+      return { ok: false, error: lastError };
+    }
+
+    async function loadDocuments() {
+      const status = document.getElementById('statusText');
+      status.textContent = 'Chargement...';
+
+      const params = new URLSearchParams();
+      const search = searchInput.value.trim();
+      const role = roleFilter.value;
+      const category = categoryFilter.value;
+
+      if (search) params.set('search', search);
+      if (role && role !== 'all') params.set('role', role);
+      if (category && category !== 'all') params.set('category', category);
+
+      try {
+        const result = await fetchAdminDocuments(params.toString());
+        if (!result.ok) {
+          throw new Error(result.error || 'Erreur de chargement');
+        }
+        currentDocuments = result.data;
+
+        renderTable();
+      } catch (error) {
+        currentDocuments = [];
+        renderTable();
+        status.textContent = `Erreur: ${error.message}`;
+      }
+    }
+
+    loadDocuments();
+  </script>
+</body>
+</html>

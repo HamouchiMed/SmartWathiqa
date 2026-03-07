@@ -1,4 +1,4 @@
-// Documents Page JavaScript
+﻿// Documents Page JavaScript
 
 // State
 let documents = [];
@@ -6,6 +6,18 @@ let editingDoc = null;
 let deletingDoc = null;
 let currentRecordCount = 0;
 let selectedDocuments = new Set();
+
+function getStoredFavoriteIds() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem('favoriteDocIds') || '[]').map(String));
+  } catch {
+    return new Set();
+  }
+}
+
+function persistFavoriteIds(idsSet) {
+  localStorage.setItem('favoriteDocIds', JSON.stringify([...idsSet]));
+}
 
 // Default config
 const defaultConfig = {
@@ -37,17 +49,26 @@ async function loadDocumentsFromAPI() {
     const result = await window.dataSdk.getAll();
 
     if (result.isOk) {
+      const storedFavorites = getStoredFavoriteIds();
       // Transform API data to frontend format
       documents = result.data.map(doc => ({
+        id: doc.id,
         __backendId: doc.id.toString(),
         createdAt: doc.created_at,
         type: getFileTypeFromExtension(doc.file_name),
         size: formatFileSize(doc.file_size),
-        category: doc.category || 'Autre',
+        category: doc.category_name || doc.category || 'Autre',
         name: doc.name,
         description: doc.description,
-        fileName: doc.file_name
+        fileName: doc.file_name,
+        filePath: doc.file_path || '',
+        isFavorite: Boolean(doc.is_favorite) || storedFavorites.has(String(doc.id))
       }));
+
+      const mergedFavorites = new Set(
+        documents.filter(d => d.isFavorite).map(d => String(d.id || d.__backendId))
+      );
+      persistFavoriteIds(mergedFavorites);
 
       currentRecordCount = documents.length;
       console.log('Documents loaded from database:', documents.length);
@@ -150,13 +171,20 @@ function getFileTypeFromExtension(fileName) {
 }
 
 function formatFileSize(bytes) {
-  if (!bytes) return '-';
+  if (bytes === null || bytes === undefined || bytes === '') return '-';
 
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  if (bytes === 0) return '0 Bytes';
+  // If backend already returns a formatted size like "2.34 MB", keep it.
+  if (typeof bytes === 'string' && /[a-zA-Z]/.test(bytes)) {
+    return bytes;
+  }
 
-  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-  return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+  const value = Number(bytes);
+  if (!Number.isFinite(value) || value < 0) return '-';
+  if (value === 0) return '0 Bytes';
+
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.min(Math.floor(Math.log(value) / Math.log(1024)), sizes.length - 1);
+  return `${Math.round((value / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
 }
 
 // Element SDK Handler
@@ -298,8 +326,17 @@ function formatDate(isoString) {
   return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
+function updateFavoritesModeUI() {
+  const isFavoritesMode = (window.location.hash || '').toLowerCase() === '#favoris';
+  const filtersPanel = document.getElementById('filters-panel');
+  if (filtersPanel) {
+    filtersPanel.style.display = isFavoritesMode ? 'none' : '';
+  }
+}
+
 // Render documents
 function renderDocuments() {
+  updateFavoritesModeUI();
   const grid = document.getElementById('documents-grid');
   const emptyState = document.getElementById('empty-state');
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
@@ -311,10 +348,12 @@ function renderDocuments() {
   const sizeFilter = document.getElementById('size-filter').value;
 
   let filteredDocs = documents.filter(doc => {
+    const favoritesOnly = (window.location.hash || '').toLowerCase() === '#favoris';
     const matchesSearch = doc.name.toLowerCase().includes(searchTerm) ||
                           (doc.description && doc.description.toLowerCase().includes(searchTerm));
     const matchesCategory = categoryFilter === 'all' || doc.category === categoryFilter;
     const matchesType = typeFilter === 'all' || doc.type === typeFilter;
+    const matchesFavorites = !favoritesOnly || doc.isFavorite;
 
     // Date range filter
     let matchesDateRange = true;
@@ -339,7 +378,7 @@ function renderDocuments() {
       matchesSize = docSize <= maxSize;
     }
 
-    return matchesSearch && matchesCategory && matchesType && matchesDateRange && matchesSize;
+    return matchesSearch && matchesCategory && matchesType && matchesDateRange && matchesSize && matchesFavorites;
   });
 
   // Apply sorting
@@ -390,14 +429,18 @@ function renderDocuments() {
       const categoryEl = card.querySelector('.doc-category');
       const dateEl = card.querySelector('.doc-date');
       const sizeEl = card.querySelector('.doc-size');
+      const favoriteBtn = card.querySelector('.favorite-btn');
 
-      nameEl.textContent = doc.name;
+      nameEl.textContent = `${doc.isFavorite ? '⭐ ' : ''}${doc.name}`;
       typeIcon.innerHTML = getTypeIcon(doc.type);
       categoryEl.textContent = doc.category;
       categoryEl.style.background = catColor.bg;
       categoryEl.style.color = catColor.text;
       dateEl.textContent = formatDate(doc.createdAt);
       sizeEl.textContent = doc.size || '-';
+      if (favoriteBtn) {
+        favoriteBtn.style.color = doc.isFavorite ? '#f59e0b' : '#94a3b8';
+      }
 
       // Reset checkbox state
       checkbox.checked = selectedDocuments.has(doc.__backendId);
@@ -411,31 +454,26 @@ function renderDocuments() {
       card.innerHTML = `
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center gap-3">
-            <input type="checkbox" class="doc-checkbox w-4 h-4 rounded border-2 focus:ring-2 transition-all cursor-pointer" style="border-color: #cbd5e1; --tw-ring-color: #6366f1;" onchange="toggleDocumentSelection('${doc.__backendId}')">
+            <input type="checkbox" class="doc-checkbox w-4 h-4 rounded border-2 focus:ring-2 transition-all cursor-pointer" style="border-color: #cbd5e1; --tw-ring-color: #6366f1;" onclick="event.stopPropagation()" onchange="toggleDocumentSelection('${doc.__backendId}')">
             <div class="w-12 h-12 rounded-xl flex items-center justify-center doc-type-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
               ${getTypeIcon(doc.type)}
             </div>
           </div>
           <div class="flex gap-1">
+            <button onclick="event.stopPropagation(); toggleDocumentFavorite('${doc.__backendId}')" class="favorite-btn p-2 rounded-lg transition-colors hover:bg-amber-100" style="color: ${doc.isFavorite ? '#f59e0b' : '#94a3b8'};" aria-label="Favori">
+              <svg class="w-4 h-4" fill="${doc.isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z"/>
+              </svg>
+            </button>
             <button onclick="event.stopPropagation(); viewDocument('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-blue-100" style="color: #3b82f6;" aria-label="Voir">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
               </svg>
             </button>
-            <button onclick="event.stopPropagation(); editDocument('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-gray-100" style="color: #94a3b8;" aria-label="Modifier">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-              </svg>
-            </button>
-            <button onclick="event.stopPropagation(); confirmDelete('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-red-100" style="color: #f87171;" aria-label="Supprimer">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-              </svg>
-            </button>
           </div>
         </div>
-        <h3 class="doc-name text-lg font-semibold mb-2 truncate" style="color: #1e293b;">${doc.name}</h3>
+        <h3 class="doc-name text-lg font-semibold mb-2 truncate" style="color: #1e293b;">${doc.isFavorite ? '⭐ ' : ''}${doc.name}</h3>
         <div class="flex items-center gap-2 mb-3">
           <span class="doc-category category-pill px-3 py-1 rounded-full text-xs font-medium" style="background: ${catColor.bg}; color: ${catColor.text};">${doc.category}</span>
           <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(156, 163, 175, 0.1); color: #6b7280;">${doc.type}</span>
@@ -452,7 +490,7 @@ function renderDocuments() {
         </div>
         ${doc.description ? `<div class="mt-3 pt-3 border-t text-sm" style="border-color: #f1f5f9; color: #64748b;"><span class="font-medium">Description:</span> ${doc.description}</div>` : ''}
       `;
-      card.onclick = () => viewDocument(doc.__backendId);
+      card.onclick = null;
       grid.appendChild(card);
     }
   });
@@ -527,21 +565,37 @@ function selectAllDocuments() {
 }
 
 // Bulk actions
-function bulkDelete() {
+async function bulkDelete() {
   if (selectedDocuments.size === 0) return;
 
   const count = selectedDocuments.size;
   if (confirm(`Êtes-vous sûr de vouloir supprimer ${count} document(s) ? Cette action est irréversible.`)) {
-    selectedDocuments.forEach(docId => {
-      const index = documents.findIndex(doc => doc.__backendId === docId);
-      if (index !== -1) {
-        documents.splice(index, 1);
+    let deleted = 0;
+    let failed = 0;
+
+    for (const docId of selectedDocuments) {
+      const doc = documents.find(d => d.__backendId === docId);
+      if (!doc) {
+        failed++;
+        continue;
       }
-    });
+
+      const result = await window.dataSdk.delete({ id: doc.id || Number(doc.__backendId) });
+      if (result.isOk) {
+        deleted++;
+      } else {
+        failed++;
+      }
+    }
+
     selectedDocuments.clear();
-    renderDocuments();
-    updateStats();
-    showToast(`${count} document(s) supprimé(s)`, 'success');
+    await loadDocumentsFromAPI();
+
+    if (failed === 0) {
+      showToast(`${deleted} document(s) supprimé(s)`, 'success');
+    } else {
+      showToast(`${deleted} supprimé(s), ${failed} échec(s)`, 'error');
+    }
   }
 }
 
@@ -574,11 +628,68 @@ function clearFilters() {
 }
 
 function viewDocument(id) {
-  const doc = documents.find(d => d.__backendId === id);
-  if (doc) {
-    showToast(`Ouverture de "${doc.name}"`, 'info');
-    // Could expand this to show document preview modal
+  smartWathiqaAPI.getDocument(id).then((result) => {
+    if (!result.isOk || !result.data) {
+      showToast('Impossible d\'ouvrir ce document', 'error');
+      return;
+    }
+
+    const fileUrl = smartWathiqaAPI.getFileUrl(result.data.file_path);
+    if (!fileUrl) {
+      showToast('Ce document n\'a pas de fichier associé', 'error');
+      return;
+    }
+
+    window.open(fileUrl, '_blank', 'noopener');
+  }).catch(() => {
+    showToast('Erreur lors de l\'ouverture du document', 'error');
+  });
+}
+
+async function toggleDocumentFavorite(docId) {
+  const doc = documents.find(d => d.__backendId === docId);
+  if (!doc) return;
+
+  const nextFavorite = !doc.isFavorite;
+  const result = await window.dataSdk.toggleFavorite(doc.id || Number(doc.__backendId), nextFavorite);
+  if (!result.isOk) {
+    showToast('Erreur lors de la mise à jour du favori', 'error');
+    return;
   }
+
+  doc.isFavorite = nextFavorite;
+  const storedFavorites = getStoredFavoriteIds();
+  const key = String(doc.id || doc.__backendId);
+  if (nextFavorite) {
+    storedFavorites.add(key);
+  } else {
+    storedFavorites.delete(key);
+  }
+  persistFavoriteIds(storedFavorites);
+  renderDocuments();
+}
+
+async function bulkFavorite() {
+  if (selectedDocuments.size === 0) return;
+
+  const storedFavorites = getStoredFavoriteIds();
+  let updated = 0;
+  for (const docId of selectedDocuments) {
+    const doc = documents.find(d => d.__backendId === docId);
+    if (!doc) continue;
+
+    const result = await window.dataSdk.toggleFavorite(doc.id || Number(doc.__backendId), true);
+    if (result.isOk) {
+      doc.isFavorite = true;
+      storedFavorites.add(String(doc.id || doc.__backendId));
+      updated++;
+    }
+  }
+
+  persistFavoriteIds(storedFavorites);
+  selectedDocuments.clear();
+  renderDocuments();
+  showToast(`${updated} document(s) ajouté(s) aux favoris`, updated > 0 ? 'success' : 'error');
 }
 
 // Modal functions
@@ -615,8 +726,14 @@ function closeModal() {
 }
 
 function editDocument(id) {
-  const doc = documents.find(d => d.__backendId === id);
-  if (doc) openModal(doc);
+  const doc = documents.find(d =>
+    String(d.__backendId) === String(id) || String(d.id) === String(id)
+  );
+  if (!doc) {
+    showToast('Document introuvable', 'error');
+    return;
+  }
+  openModal(doc);
 }
 
 function confirmDelete(id) {
@@ -627,6 +744,30 @@ function confirmDelete(id) {
 function closeDeleteModal() {
   document.getElementById('delete-modal').classList.add('hidden');
   deletingDoc = null;
+}
+
+async function handleDeleteConfirm() {
+  if (!deletingDoc) return;
+
+  const btn = document.getElementById('confirm-delete-btn');
+  btn.disabled = true;
+  btn.textContent = 'Suppression...';
+
+  try {
+    const result = await window.dataSdk.delete({ id: deletingDoc.id || Number(deletingDoc.__backendId) });
+    if (result.isOk) {
+      showToast('Document supprimé');
+      closeDeleteModal();
+      await loadDocumentsFromAPI();
+    } else {
+      showToast('Erreur lors de la suppression', 'error');
+    }
+  } catch (err) {
+    showToast('Erreur lors de la suppression', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Supprimer';
+  }
 }
 
 // Toast notification
@@ -651,14 +792,17 @@ function showToast(message, type = 'success') {
 
 // Setup event listeners
 function setupEventListeners() {
-  // Add document buttons
-  document.getElementById('add-first-doc').addEventListener('click', () => {
-    if (currentRecordCount >= 999) {
-      showToast('Limite de 999 documents atteinte', 'error');
-      return;
-    }
-    openModal();
-  });
+  // Add document button (optional, might be hidden in UI)
+  const addFirstDocBtn = document.getElementById('add-first-doc');
+  if (addFirstDocBtn) {
+    addFirstDocBtn.addEventListener('click', () => {
+      if (currentRecordCount >= 999) {
+        showToast('Limite de 999 documents atteinte', 'error');
+        return;
+      }
+      openModal();
+    });
+  }
 
   // Form submission
   document.getElementById('doc-form').addEventListener('submit', async (e) => {
@@ -719,30 +863,7 @@ function setupEventListeners() {
   });
 
   // Delete confirmation
-  document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
-    if (!deletingDoc) return;
-
-    const btn = document.getElementById('confirm-delete-btn');
-    btn.disabled = true;
-    btn.textContent = 'Suppression...';
-
-    try {
-      const result = await window.dataSdk.delete(deletingDoc);
-      if (result.isOk) {
-        showToast('Document supprimé');
-        closeDeleteModal();
-        // Reload documents from API
-        await loadDocumentsFromAPI();
-      } else {
-        showToast('Erreur lors de la suppression', 'error');
-      }
-    } catch (err) {
-      showToast('Erreur lors de la suppression', 'error');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Supprimer';
-    }
-  });
+  document.getElementById('confirm-delete-btn').onclick = handleDeleteConfirm;
 
   // Bulk actions
   document.getElementById('select-all').addEventListener('change', selectAllDocuments);
@@ -758,6 +879,7 @@ function setupEventListeners() {
   document.getElementById('date-from').addEventListener('change', renderDocuments);
   document.getElementById('date-to').addEventListener('change', renderDocuments);
   document.getElementById('size-filter').addEventListener('change', renderDocuments);
+  window.addEventListener('hashchange', renderDocuments);
 }
 
 // Logout function
@@ -777,3 +899,4 @@ function logout() {
 
 // Initialize app
 init();
+

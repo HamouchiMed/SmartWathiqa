@@ -56,6 +56,61 @@ main {
   margin-left: 18rem; /* 72 * 0.25rem = 18rem for lg:ml-72 */
 }
 
+/* Compact layout for 14-inch laptop screens */
+html {
+  font-size: 14px;
+}
+
+#drawer {
+  width: 16rem !important;
+}
+
+main.lg\:ml-72 {
+  margin-left: 16rem !important;
+  padding-top: 1rem !important;
+}
+
+.rounded-2xl {
+  border-radius: 0.75rem !important;
+  padding: 0.9rem !important;
+}
+
+.grid.gap-4,
+.grid.gap-6,
+.grid.gap-8 {
+  gap: 0.75rem !important;
+}
+
+input,
+select,
+textarea,
+button {
+  font-size: 13px !important;
+}
+
+.w-12.h-12 {
+  width: 2.2rem !important;
+  height: 2.2rem !important;
+}
+
+.text-2xl {
+  font-size: 1.35rem !important;
+}
+
+.text-xl {
+  font-size: 1.1rem !important;
+}
+
+@media (max-width: 1400px) {
+  #drawer {
+    width: 15rem !important;
+  }
+
+  main.lg\:ml-72 {
+    margin-left: 15rem !important;
+  }
+}
+
 @media (max-width: 1024px) {
   main {
     margin-left: 0;

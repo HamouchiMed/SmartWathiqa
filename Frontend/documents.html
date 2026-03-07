@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="fr" class="h-full">
  <head>
   <meta charset="UTF-8">
@@ -59,6 +59,11 @@
       </svg>
       <span>Mes documents</span>
      </a>
+     <a href="#favoris" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style="color: #ffffff;" onclick="setTimeout(() => { if (typeof loadDocumentsFromAPI === 'function') { loadDocumentsFromAPI(); } else if (typeof renderDocuments === 'function') { renderDocuments(); } }, 0)" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z" />
+      </svg>
+      <span>Favoris</span>
+     </a>
     </nav>
 
     <!-- Footer -->
@@ -99,16 +104,9 @@
         </button>
        </div>
       </div>
-
-      <!-- Add Document Button -->
-      <button onclick="openModal()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-white transition-all hover:opacity-90" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-       </svg>
-       Nouveau document
-      </button>
      </div>
     </div><!-- Advanced Filters & Search -->
-    <div class="bg-white rounded-2xl border p-6 mb-6" style="border-color: #e2e8f0;">
+    <div id="filters-panel" class="bg-white rounded-2xl border p-6 mb-6" style="border-color: #e2e8f0;">
      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
       <!-- Search -->
       <div class="relative">
@@ -144,8 +142,8 @@
        <option value="date-asc">Plus ancien</option>
        <option value="name-asc">Nom A-Z</option>
        <option value="name-desc">Nom Z-A</option>
-       <option value="size-desc">Taille ↓</option>
-       <option value="size-asc">Taille ↑</option>
+       <option value="size-desc">Taille â†“</option>
+       <option value="size-asc">Taille â†‘</option>
       </select>
      </div>
 
@@ -163,10 +161,10 @@
        <label for="size-filter" class="text-sm font-medium" style="color: #374151;">Taille max:</label>
        <select id="size-filter" class="px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 transition-all cursor-pointer text-sm" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;">
         <option value="all">Toutes</option>
-        <option value="1">≤ 1 MB</option>
-        <option value="5">≤ 5 MB</option>
-        <option value="10">≤ 10 MB</option>
-        <option value="50">≤ 50 MB</option>
+        <option value="1">â‰¤ 1 MB</option>
+        <option value="5">â‰¤ 5 MB</option>
+        <option value="10">â‰¤ 10 MB</option>
+        <option value="50">â‰¤ 50 MB</option>
        </select>
       </div>
       <button id="clear-filters" class="px-4 py-2 rounded-lg text-sm font-medium transition-all hover:bg-gray-100" style="color: #6b7280; border: 1px solid #d1d5db;">
@@ -182,9 +180,7 @@
       </svg>
      </div>
      <h3 class="text-xl font-semibold mb-2" style="color: #1e293b;">Aucun document</h3>
-     <p class="mb-6" style="color: #64748b;">Commencez par ajouter votre premier document</p><button id="add-first-doc" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg> Ajouter un document </button>
+     <p class="mb-6" style="color: #64748b;">Aucun document disponible pour le moment.</p>
     </div><!-- Limit Warning -->
     <div id="limit-warning" class="hidden mt-4 p-4 rounded-xl border" style="background: rgba(249, 115, 22, 0.1); border-color: #fbbf24;">
      <p class="text-sm font-medium" style="color: #d97706;">⚠️ Vous avez atteint la limite de 999 documents. Veuillez en supprimer pour en ajouter de nouveaux.</p>
@@ -199,11 +195,11 @@
      <form id="doc-form" class="space-y-4">
       <div><label for="doc-name" class="block text-sm font-medium mb-2" style="color: #334155;">Nom du document *</label> <input type="text" id="doc-name" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;" placeholder="Ex: Contrat de travail"><style>#doc-name::placeholder { color: #cbd5e1; }</style>
       </div>
-      <div><label for="doc-type" class="block text-sm font-medium mb-2" style="color: #334155;">Type de fichier *</label> <select id="doc-type" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner un type</option> <option value="PDF">PDF</option> <option value="Word">Word</option> <option value="Excel">Excel</option> <option value="Image">Image</option> <option value="Autre">Autre</option> </select>
+      <div><label for="doc-type" class="block text-sm font-medium mb-2" style="color: #334155;">Type de fichier *</label> <select id="doc-type" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner un type</option> <option value="PDF">PDF</option> <option value="Word">Word</option> <option value="Excel">Excel</option> <option value="PowerPoint">PowerPoint</option> <option value="Image">Image</option> <option value="Vidéo">Vidéo</option> <option value="Audio">Audio</option> <option value="CSV">CSV</option> <option value="Archive (ZIP/RAR)">Archive (ZIP/RAR)</option> <option value="Texte">Texte</option> <option value="Autre">Autre</option> </select>
       </div>
       <div><label for="doc-file" class="block text-sm font-medium mb-2" style="color: #334155;">Fichier à télécharger *</label> <input type="file" id="doc-file" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1; cursor: pointer;" accept="*/*"><style>#doc-file::file-selector-button { background: #f3f4f6; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; color: #1e293b; margin-right: 12px; }</style>
       </div>
-      <div><label for="doc-category" class="block text-sm font-medium mb-2" style="color: #334155;">Catégorie *</label> <select id="doc-category" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner une catégorie</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select>
+      <div><label for="doc-category" class="block text-sm font-medium mb-2" style="color: #334155;">Catégorie *</label> <select id="doc-category" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner une catégorie</option> <option value="Travail">Travail</option> <option value="Ressources Humaines">Ressources Humaines</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Commercial">Commercial</option> <option value="Marketing">Marketing</option> <option value="Projets">Projets</option> <option value="IT / Technique">IT / Technique</option> <option value="Personnel">Personnel</option> <option value="Archive">Archive</option> <option value="Autre">Autre</option> </select>
       </div>
       <div><label for="doc-size" class="block text-sm font-medium mb-2" style="color: #334155;">Taille</label> <input type="text" id="doc-size" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;" placeholder="Ex: 2.5 MB"><style>#doc-size::placeholder { color: #cbd5e1; }</style>
       </div>
@@ -223,7 +219,7 @@
      </div>
      <h3 class="text-lg font-bold mb-2" style="color: #1e293b;">Supprimer ce document ?</h3>
      <p class="text-sm mb-6" style="color: #64748b;">Cette action est irréversible.</p>
-     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl font-medium border transition-colors hover:bg-gray-100" style="color: #334155; border-color: #e2e8f0;"> Annuler </button> <button id="confirm-delete-btn" class="flex-1 py-2.5 rounded-xl font-medium text-white transition-all hover:opacity-90" style="background: #ef4444;"> Supprimer </button>
+     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl font-medium border transition-colors hover:bg-gray-100" style="color: #334155; border-color: #e2e8f0;"> Annuler </button> <button id="confirm-delete-btn" onclick="handleDeleteConfirm()" class="flex-1 py-2.5 rounded-xl font-medium text-white transition-all hover:opacity-90" style="background: #ef4444;"> Supprimer </button>
      </div>
     </div>
    </div><!-- Toast Notification -->
@@ -244,6 +240,18 @@
     let deletingDoc = null;
     let currentRecordCount = 0;
     let selectedDocuments = new Set();
+
+    function getStoredFavoriteIds() {
+      try {
+        return new Set(JSON.parse(localStorage.getItem('favoriteDocIds') || '[]').map(String));
+      } catch {
+        return new Set();
+      }
+    }
+
+    function persistFavoriteIds(idsSet) {
+      localStorage.setItem('favoriteDocIds', JSON.stringify([...idsSet]));
+    }
 
     // Default config
     const defaultConfig = {
@@ -275,17 +283,25 @@
         const result = await window.dataSdk.getAll();
 
         if (result.isOk) {
+          const storedFavorites = getStoredFavoriteIds();
           // Transform API data to frontend format
           documents = result.data.map(doc => ({
+            id: doc.id,
             __backendId: doc.id.toString(),
             createdAt: doc.created_at,
             type: getFileTypeFromExtension(doc.file_name),
             size: formatFileSize(doc.file_size),
-            category: doc.category || 'Autre',
+            category: doc.category_name || doc.category || 'Autre',
             name: doc.name,
             description: doc.description,
-            fileName: doc.file_name
+            fileName: doc.file_name,
+            isFavorite: Boolean(doc.is_favorite) || storedFavorites.has(String(doc.id))
           }));
+
+          const mergedFavorites = new Set(
+            documents.filter(d => d.isFavorite).map(d => String(d.id || d.__backendId))
+          );
+          persistFavoriteIds(mergedFavorites);
 
           currentRecordCount = documents.length;
           console.log('Documents loaded from database:', documents.length);
@@ -388,13 +404,20 @@
     }
 
     function formatFileSize(bytes) {
-      if (!bytes) return '-';
+      if (bytes === null || bytes === undefined || bytes === '') return '-';
 
-      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-      if (bytes === 0) return '0 Bytes';
+      // If backend already returns a formatted size like "2.34 MB", keep it.
+      if (typeof bytes === 'string' && /[a-zA-Z]/.test(bytes)) {
+        return bytes;
+      }
 
-      const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-      return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+      const value = Number(bytes);
+      if (!Number.isFinite(value) || value < 0) return '-';
+      if (value === 0) return '0 Bytes';
+
+      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+      const i = Math.min(Math.floor(Math.log(value) / Math.log(1024)), sizes.length - 1);
+      return `${Math.round((value / Math.pow(1024, i)) * 100) / 100} ${sizes[i]}`;
     }
 
     // Element SDK Handler
@@ -536,8 +559,17 @@
       return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
     }
 
+    function updateFavoritesModeUI() {
+      const isFavoritesMode = (window.location.hash || '').toLowerCase() === '#favoris';
+      const filtersPanel = document.getElementById('filters-panel');
+      if (filtersPanel) {
+        filtersPanel.style.display = isFavoritesMode ? 'none' : '';
+      }
+    }
+
     // Render documents
     function renderDocuments() {
+      updateFavoritesModeUI();
       const grid = document.getElementById('documents-grid');
       const emptyState = document.getElementById('empty-state');
       const searchTerm = document.getElementById('search-input').value.toLowerCase();
@@ -549,10 +581,12 @@
       const sizeFilter = document.getElementById('size-filter').value;
 
       let filteredDocs = documents.filter(doc => {
+        const favoritesOnly = (window.location.hash || '').toLowerCase() === '#favoris';
         const matchesSearch = doc.name.toLowerCase().includes(searchTerm) ||
                               (doc.description && doc.description.toLowerCase().includes(searchTerm));
         const matchesCategory = categoryFilter === 'all' || doc.category === categoryFilter;
         const matchesType = typeFilter === 'all' || doc.type === typeFilter;
+        const matchesFavorites = !favoritesOnly || doc.isFavorite;
 
         // Date range filter
         let matchesDateRange = true;
@@ -577,7 +611,7 @@
           matchesSize = docSize <= maxSize;
         }
 
-        return matchesSearch && matchesCategory && matchesType && matchesDateRange && matchesSize;
+        return matchesSearch && matchesCategory && matchesType && matchesDateRange && matchesSize && matchesFavorites;
       });
 
       // Apply sorting
@@ -628,14 +662,18 @@
           const categoryEl = card.querySelector('.doc-category');
           const dateEl = card.querySelector('.doc-date');
           const sizeEl = card.querySelector('.doc-size');
+          const favoriteBtn = card.querySelector('.favorite-btn');
 
-          nameEl.textContent = doc.name;
+          nameEl.textContent = `${doc.isFavorite ? '⭐ ' : ''}${doc.name}`;
           typeIcon.innerHTML = getTypeIcon(doc.type);
           categoryEl.textContent = doc.category;
           categoryEl.style.background = catColor.bg;
           categoryEl.style.color = catColor.text;
           dateEl.textContent = formatDate(doc.createdAt);
           sizeEl.textContent = doc.size || '-';
+          if (favoriteBtn) {
+            favoriteBtn.style.color = doc.isFavorite ? '#f59e0b' : '#94a3b8';
+          }
 
           // Reset checkbox state
           checkbox.checked = selectedDocuments.has(doc.__backendId);
@@ -649,31 +687,26 @@
           card.innerHTML = `
             <div class="flex items-start justify-between mb-4">
               <div class="flex items-center gap-3">
-                <input type="checkbox" class="doc-checkbox w-4 h-4 rounded border-2 focus:ring-2 transition-all cursor-pointer" style="border-color: #cbd5e1; --tw-ring-color: #6366f1;" onchange="toggleDocumentSelection('${doc.__backendId}')">
+                <input type="checkbox" class="doc-checkbox w-4 h-4 rounded border-2 focus:ring-2 transition-all cursor-pointer" style="border-color: #cbd5e1; --tw-ring-color: #6366f1;" onclick="event.stopPropagation()" onchange="toggleDocumentSelection('${doc.__backendId}')">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center doc-type-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
                   ${getTypeIcon(doc.type)}
                 </div>
               </div>
               <div class="flex gap-1">
+                <button onclick="event.stopPropagation(); toggleDocumentFavorite('${doc.__backendId}')" class="favorite-btn p-2 rounded-lg transition-colors hover:bg-amber-100" style="color: ${doc.isFavorite ? '#f59e0b' : '#94a3b8'};" aria-label="Favori">
+                  <svg class="w-4 h-4" fill="${doc.isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z"/>
+                  </svg>
+                </button>
                 <button onclick="event.stopPropagation(); viewDocument('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-blue-100" style="color: #3b82f6;" aria-label="Voir">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                   </svg>
                 </button>
-                <button onclick="event.stopPropagation(); editDocument('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-gray-100" style="color: #94a3b8;" aria-label="Modifier">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                  </svg>
-                </button>
-                <button onclick="event.stopPropagation(); confirmDelete('${doc.__backendId}')" class="p-2 rounded-lg transition-colors hover:bg-red-100" style="color: #f87171;" aria-label="Supprimer">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                  </svg>
-                </button>
               </div>
             </div>
-            <h3 class="doc-name text-lg font-semibold mb-2 truncate" style="color: #1e293b;">${doc.name}</h3>
+            <h3 class="doc-name text-lg font-semibold mb-2 truncate" style="color: #1e293b;">${doc.isFavorite ? '⭐ ' : ''}${doc.name}</h3>
             <div class="flex items-center gap-2 mb-3">
               <span class="doc-category category-pill px-3 py-1 rounded-full text-xs font-medium" style="background: ${catColor.bg}; color: ${catColor.text};">${doc.category}</span>
               <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(156, 163, 175, 0.1); color: #6b7280;">${doc.type}</span>
@@ -690,7 +723,7 @@
             </div>
             ${doc.description ? `<div class="mt-3 pt-3 border-t text-sm" style="border-color: #f1f5f9; color: #64748b;"><span class="font-medium">Description:</span> ${doc.description}</div>` : ''}
           `;
-          card.onclick = () => viewDocument(doc.__backendId);
+          card.onclick = null;
           grid.appendChild(card);
         }
       });
@@ -770,21 +803,37 @@
     }
 
     // Bulk actions
-    function bulkDelete() {
+    async function bulkDelete() {
       if (selectedDocuments.size === 0) return;
 
       const count = selectedDocuments.size;
       if (confirm(`Êtes-vous sûr de vouloir supprimer ${count} document(s) ? Cette action est irréversible.`)) {
-        selectedDocuments.forEach(docId => {
-          const index = documents.findIndex(doc => doc.__backendId === docId);
-          if (index !== -1) {
-            documents.splice(index, 1);
+        let deleted = 0;
+        let failed = 0;
+
+        for (const docId of selectedDocuments) {
+          const doc = documents.find(d => d.__backendId === docId);
+          if (!doc) {
+            failed++;
+            continue;
           }
-        });
+
+          const result = await window.dataSdk.delete({ id: doc.id || Number(doc.__backendId) });
+          if (result.isOk) {
+            deleted++;
+          } else {
+            failed++;
+          }
+        }
+
         selectedDocuments.clear();
-        renderDocuments();
-        updateStats();
-        showToast(`${count} document(s) supprimé(s)`, 'success');
+        await loadDocumentsFromAPI();
+
+        if (failed === 0) {
+          showToast(`${deleted} document(s) supprimé(s)`, 'success');
+        } else {
+          showToast(`${deleted} supprimé(s), ${failed} échec(s)`, 'error');
+        }
       }
     }
 
@@ -805,6 +854,52 @@
       }
     }
 
+    async function toggleDocumentFavorite(docId) {
+      const doc = documents.find(d => d.__backendId === docId);
+      if (!doc) return;
+
+      const nextFavorite = !doc.isFavorite;
+      const result = await window.dataSdk.toggleFavorite(doc.id || Number(doc.__backendId), nextFavorite);
+      if (!result.isOk) {
+        showToast('Erreur lors de la mise à jour du favori', 'error');
+        return;
+      }
+
+      doc.isFavorite = nextFavorite;
+      const storedFavorites = getStoredFavoriteIds();
+      const key = String(doc.id || doc.__backendId);
+      if (nextFavorite) {
+        storedFavorites.add(key);
+      } else {
+        storedFavorites.delete(key);
+      }
+      persistFavoriteIds(storedFavorites);
+      renderDocuments();
+    }
+
+    async function bulkFavorite() {
+      if (selectedDocuments.size === 0) return;
+
+      const storedFavorites = getStoredFavoriteIds();
+      let updated = 0;
+      for (const docId of selectedDocuments) {
+        const doc = documents.find(d => d.__backendId === docId);
+        if (!doc) continue;
+
+        const result = await window.dataSdk.toggleFavorite(doc.id || Number(doc.__backendId), true);
+        if (result.isOk) {
+          doc.isFavorite = true;
+          storedFavorites.add(String(doc.id || doc.__backendId));
+          updated++;
+        }
+      }
+
+      persistFavoriteIds(storedFavorites);
+      selectedDocuments.clear();
+      renderDocuments();
+      showToast(`${updated} document(s) ajouté(s) aux favoris`, updated > 0 ? 'success' : 'error');
+    }
+
     function clearFilters() {
       document.getElementById('search-input').value = '';
       document.getElementById('category-filter').value = 'all';
@@ -817,19 +912,22 @@
     }
 
     function viewDocument(id) {
-      const doc = documents.find(d => d.__backendId === id);
-      if (doc) {
-        showToast(`Ouverture de "${doc.name}"`, 'info');
-        // Could expand this to show document preview modal
-      }
-    }
+      smartWathiqaAPI.getDocument(id).then((result) => {
+        if (!result.isOk || !result.data) {
+          showToast('Impossible d\'ouvrir ce document', 'error');
+          return;
+        }
 
-    function viewDocument(id) {
-      const doc = documents.find(d => d.__backendId === id);
-      if (doc) {
-        showToast(`Ouverture de "${doc.name}"`, 'info');
-        // Could expand this to show document preview modal
-      }
+        const fileUrl = smartWathiqaAPI.getFileUrl(result.data.file_path);
+        if (!fileUrl) {
+          showToast('Ce document n\'a pas de fichier associé', 'error');
+          return;
+        }
+
+        window.open(fileUrl, '_blank', 'noopener');
+      }).catch(() => {
+        showToast('Erreur lors de l\'ouverture du document', 'error');
+      });
     }
 
     // Modal functions
@@ -866,8 +964,14 @@
     }
 
     function editDocument(id) {
-      const doc = documents.find(d => d.__backendId === id);
-      if (doc) openModal(doc);
+      const doc = documents.find(d =>
+        String(d.__backendId) === String(id) || String(d.id) === String(id)
+      );
+      if (!doc) {
+        showToast('Document introuvable', 'error');
+        return;
+      }
+      openModal(doc);
     }
 
     function confirmDelete(id) {
@@ -878,6 +982,29 @@
     function closeDeleteModal() {
       document.getElementById('delete-modal').classList.add('hidden');
       deletingDoc = null;
+    }
+    async function handleDeleteConfirm() {
+      if (!deletingDoc) return;
+
+      const btn = document.getElementById('confirm-delete-btn');
+      btn.disabled = true;
+      btn.textContent = 'Suppression...';
+
+      try {
+        const result = await window.dataSdk.delete({ id: deletingDoc.id || Number(deletingDoc.__backendId) });
+        if (result.isOk) {
+          showToast('Document supprimé');
+          closeDeleteModal();
+          await loadDocumentsFromAPI();
+        } else {
+          showToast('Erreur lors de la suppression', 'error');
+        }
+      } catch (err) {
+        showToast('Erreur lors de la suppression', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Supprimer';
+      }
     }
 
     // Toast notification
@@ -905,14 +1032,17 @@
     // Setup event listeners
     function setupEventListeners() {
 
-      // Add document buttons
-      document.getElementById('add-first-doc').addEventListener('click', () => {
-        if (currentRecordCount >= 999) {
-          showToast('Limite de 999 documents atteinte', 'error');
-          return;
-        }
-        openModal();
-      });
+      // Add document button (optional, might be hidden in UI)
+      const addFirstDocBtn = document.getElementById('add-first-doc');
+      if (addFirstDocBtn) {
+        addFirstDocBtn.addEventListener('click', () => {
+          if (currentRecordCount >= 999) {
+            showToast('Limite de 999 documents atteinte', 'error');
+            return;
+          }
+          openModal();
+        });
+      }
 
       // Form submission
       document.getElementById('doc-form').addEventListener('submit', async (e) => {
@@ -971,32 +1101,8 @@
           submitSpinner.classList.add('hidden');
         }
       });
-
       // Delete confirmation
-      document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
-        if (!deletingDoc) return;
-
-        const btn = document.getElementById('confirm-delete-btn');
-        btn.disabled = true;
-        btn.textContent = 'Suppression...';
-
-        try {
-          const result = await window.dataSdk.delete(deletingDoc);
-          if (result.isOk) {
-            showToast('Document supprimé');
-            closeDeleteModal();
-            // Reload documents from API
-            await loadDocumentsFromAPI();
-          } else {
-            showToast('Erreur lors de la suppression', 'error');
-          }
-        } catch (err) {
-          showToast('Erreur lors de la suppression', 'error');
-        } finally {
-          btn.disabled = false;
-          btn.textContent = 'Supprimer';
-        }
-      });
+      document.getElementById('confirm-delete-btn').onclick = handleDeleteConfirm;
 
       // Bulk actions
       document.getElementById('select-all').addEventListener('change', selectAllDocuments);
@@ -1012,6 +1118,7 @@
       document.getElementById('date-from').addEventListener('change', renderDocuments);
       document.getElementById('date-to').addEventListener('change', renderDocuments);
       document.getElementById('size-filter').addEventListener('change', renderDocuments);
+      window.addEventListener('hashchange', renderDocuments);
     }
       }
     
@@ -1036,3 +1143,4 @@
     <script src="documents.js"></script>
   </body>
 </html>
+

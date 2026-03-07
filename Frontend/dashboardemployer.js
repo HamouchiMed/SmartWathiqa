@@ -1,10 +1,12 @@
-// Dashboard Employer JavaScript
+﻿// Dashboard Employer JavaScript
 
 // State
 let documents = [];
 let editingDoc = null;
 let deletingDoc = null;
 let currentRecordCount = 0;
+let recentActivities = [];
+let showAllRecentActivities = false;
 
 // Default config
 const defaultConfig = {
@@ -66,11 +68,20 @@ async function loadDocumentsFromAPI() {
 
       // Render recent documents
       renderRecentDocumentsFromAPI(recentDocs);
-
-      showToast('Données du tableau de bord mises à jour', 'success');
     } else {
       console.error('Failed to load recent documents:', recentResponse.error);
       showToast('Erreur lors du chargement des documents récents', 'error');
+    }
+
+    // Fetch recent activity from API
+    const activityResponse = await smartWathiqaAPI.getRecentActivity({ limit: 50 });
+    if (activityResponse.isOk) {
+      recentActivities = Array.isArray(activityResponse.data) ? activityResponse.data : [];
+      showAllRecentActivities = false;
+      renderRecentActivityFromAPI(recentActivities);
+    } else {
+      console.error('Failed to load recent activity:', activityResponse.error);
+      showToast('Erreur lors du chargement de l\'activité récente', 'error');
     }
   } catch (error) {
     console.error('Error loading dashboard data:', error);
@@ -274,6 +285,111 @@ function renderRecentDocumentsFromAPI(recentDocs) {
 }
 
 // Normalize file type from database to display format
+function formatRelativeTime(isoString) {
+  const date = new Date(isoString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+
+  if (diffMin < 1) return "a l'instant";
+  if (diffMin < 60) return `il y a ${diffMin} min`;
+  if (diffHour < 24) return `il y a ${diffHour} h`;
+  if (diffDay < 30) return `il y a ${diffDay} j`;
+  return formatDate(isoString);
+}
+
+function getActivityVisual(action) {
+  const normalized = (action || '').toLowerCase();
+  if (normalized === 'created') {
+    return {
+      title: 'Nouveau document ajoute',
+      iconColor: '#6366f1',
+      bg: 'rgba(99, 102, 241, 0.15)',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>'
+    };
+  }
+  if (normalized === 'updated') {
+    return {
+      title: 'Document modifie',
+      iconColor: '#22c55e',
+      bg: 'rgba(34, 197, 94, 0.15)',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>'
+    };
+  }
+  if (normalized === 'deleted') {
+    return {
+      title: 'Document supprime',
+      iconColor: '#ef4444',
+      bg: 'rgba(239, 68, 68, 0.15)',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>'
+    };
+  }
+  return {
+    title: 'Activite document',
+    iconColor: '#3b82f6',
+    bg: 'rgba(59, 130, 246, 0.15)',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>'
+  };
+}
+
+function renderRecentActivityFromAPI(activities) {
+  const container = document.getElementById('recent-activity');
+  if (!container) return;
+  let moreBtn = document.getElementById('recent-activity-more-btn');
+  if (!moreBtn) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'mt-3';
+    wrapper.innerHTML = '<button id="recent-activity-more-btn" class="text-sm font-semibold px-3 py-2 rounded-lg transition-all hover:opacity-90" style="background: #005EB8; color: #ffffff; display: none;">Voir plus</button>';
+    container.parentElement.appendChild(wrapper);
+    moreBtn = document.getElementById('recent-activity-more-btn');
+    if (moreBtn) {
+      moreBtn.addEventListener('click', toggleRecentActivityView);
+    }
+  }
+
+  if (!activities || activities.length === 0) {
+    container.innerHTML = '<p class="text-sm text-center py-4" style="color: #64748b;">Aucune activite recente</p>';
+    if (moreBtn) moreBtn.style.display = 'none';
+    return;
+  }
+
+  const visibleActivities = showAllRecentActivities ? activities : activities.slice(0, 5);
+
+  container.innerHTML = visibleActivities.map((activity) => {
+    const v = getActivityVisual(activity.action);
+    const detail = activity.details || activity.document_name || 'Document';
+    const when = formatRelativeTime(activity.created_at);
+
+    return `
+      <div class="flex items-center gap-3 p-3 rounded-lg" style="background: #ffffff;">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: ${v.bg};">
+          <svg class="w-4 h-4" style="color: ${v.iconColor};" fill="none" stroke="currentColor" viewBox="0 0 24 24">${v.icon}</svg>
+        </div>
+        <div class="flex-1">
+          <p class="text-sm font-medium" style="color: #1e293b;">${v.title}</p>
+          <p class="text-xs" style="color: #64748b;">${detail} • ${when}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (moreBtn) {
+    if (activities.length > 5) {
+      moreBtn.style.display = 'inline-flex';
+      moreBtn.textContent = showAllRecentActivities ? 'Voir moins' : 'Voir plus';
+    } else {
+      moreBtn.style.display = 'none';
+    }
+  }
+}
+
+function toggleRecentActivityView() {
+  showAllRecentActivities = !showAllRecentActivities;
+  renderRecentActivityFromAPI(recentActivities);
+}
+
 function normalizeFileType(fileType) {
   if (!fileType) return 'Autre';
 
@@ -301,30 +417,62 @@ if (currentRecordCount >= 999) {
 
 // Update chart bars based on statistics
 function updateChartBars(stats) {
-  const total = stats.total;
-  if (total > 0) {
-    const pdfPercent = Math.round((stats.pdf / total) * 100);
-    const imagePercent = Math.round((stats.images / total) * 100);
-    const otherPercent = Math.round((stats.other / total) * 100);
+  const listEl = document.getElementById('type-distribution-list');
+  if (!listEl) return;
 
-    // Update chart bars if they exist in the DOM
-    const pdfBar = document.getElementById('pdf-bar');
-    const imageBar = document.getElementById('image-bar');
-    const otherBar = document.getElementById('other-bar');
+  const typeOrder = ['PDF', 'Word', 'Excel', 'PowerPoint', 'Image', 'Vidéo', 'Audio', 'CSV', 'Archive (ZIP/RAR)', 'Texte', 'Autre'];
+  const typeColors = {
+    'PDF': '#ef4444',
+    'Word': '#3b82f6',
+    'Excel': '#22c55e',
+    'PowerPoint': '#f97316',
+    'Image': '#a855f7',
+    'Vidéo': '#e11d48',
+    'Audio': '#06b6d4',
+    'CSV': '#14b8a6',
+    'Archive (ZIP/RAR)': '#64748b',
+    'Texte': '#0ea5e9',
+    'Autre': '#f59e0b'
+  };
 
-    if (pdfBar) pdfBar.style.width = `${pdfPercent}%`;
-    if (imageBar) imageBar.style.width = `${imagePercent}%`;
-    if (otherBar) otherBar.style.width = `${otherPercent}%`;
+  const breakdown = stats.type_breakdown || {
+    PDF: stats.pdf || 0,
+    Word: 0,
+    Excel: 0,
+    PowerPoint: 0,
+    Image: stats.images || 0,
+    'Vidéo': 0,
+    Audio: 0,
+    CSV: 0,
+    'Archive (ZIP/RAR)': 0,
+    Texte: 0,
+    Autre: stats.other || 0
+  };
 
-    // Update percentages if they exist
-    const pdfPercentEl = document.getElementById('pdf-percent');
-    const imagePercentEl = document.getElementById('image-percent');
-    const otherPercentEl = document.getElementById('other-percent');
+  const total = Number(stats.total || 0);
+  listEl.innerHTML = '';
 
-    if (pdfPercentEl) pdfPercentEl.textContent = `${pdfPercent}%`;
-    if (imagePercentEl) imagePercentEl.textContent = `${imagePercent}%`;
-    if (otherPercentEl) otherPercentEl.textContent = `${otherPercent}%`;
-  }
+  typeOrder.forEach((type) => {
+    const count = Number(breakdown[type] || 0);
+    const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+    const color = typeColors[type] || '#94a3b8';
+
+    const row = document.createElement('div');
+    row.className = 'flex items-center justify-between';
+    row.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="w-4 h-4 rounded" style="background: ${color};"></div>
+        <span class="text-sm" style="color: #64748b;">${type}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-500" style="background: ${color}; width: ${percent}%;"></div>
+        </div>
+        <span class="text-sm font-medium w-10 text-right">${percent}%</span>
+      </div>
+    `;
+    listEl.appendChild(row);
+  });
 }
 
 // Update statistics (legacy function - now stats are updated directly from API)
@@ -336,8 +484,10 @@ function updateStats() {
 
 // Quick action functions
 function showRecentActivity() {
-  showToast('Affichage de l\'activité récente', 'info');
-  // Could expand this to show a detailed activity modal
+  const section = document.getElementById('recent-activity');
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 function showStorageUsage() {
@@ -352,10 +502,22 @@ function showStorageUsage() {
 }
 
 function viewDocument(id) {
-  // For database documents, show a toast and could expand to show document preview
-  showToast(`Ouverture du document ID: ${id}`, 'info');
-  // Could expand this to fetch document details and show preview modal
-  // For now, just show the document ID
+  smartWathiqaAPI.getDocument(id).then((result) => {
+    if (!result.isOk || !result.data) {
+      showToast('Impossible d\'ouvrir ce document', 'error');
+      return;
+    }
+
+    const fileUrl = smartWathiqaAPI.getFileUrl(result.data.file_path);
+    if (!fileUrl) {
+      showToast('Ce document n\'a pas de fichier associé', 'error');
+      return;
+    }
+
+    window.open(fileUrl, '_blank', 'noopener');
+  }).catch(() => {
+    showToast('Erreur lors de l\'ouverture du document', 'error');
+  });
 }
 
 // Modal functions
@@ -373,7 +535,6 @@ function openModal(doc = null) {
     document.getElementById('doc-name').value = doc.name;
     document.getElementById('doc-type').value = doc.type;
     document.getElementById('doc-category').value = doc.category;
-    document.getElementById('doc-size').value = doc.size || '';
     document.getElementById('doc-description').value = doc.description || '';
     fileInput.required = false;
   } else {
@@ -554,6 +715,8 @@ function setupEventListeners() {
   document.getElementById('search-input').addEventListener('input', renderDocuments);
   document.getElementById('category-filter').addEventListener('change', renderDocuments);
   document.getElementById('date-filter').addEventListener('change', renderDocuments);
+
+  // recent-activity-more-btn is created dynamically only when needed
 }
 
 // Logout function
@@ -573,3 +736,5 @@ function logout() {
 
 // Initialize app
 init();
+
+

@@ -63,6 +63,11 @@
       </svg>
       <span>Mes documents</span>
      </a>
+     <a href="documents.html#favoris" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z" />
+      </svg>
+      <span>Favoris</span>
+     </a>
     </nav>
 
     <!-- Footer -->
@@ -81,7 +86,7 @@
      </button>
     </div>
    </div><!-- Main Content -->
-   <main class="ml-72 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><!-- Stats Bar -->
+   <main class="ml-72 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5"><!-- Stats Bar -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
      <div class="rounded-2xl p-4 border" style="background: #f8fafc; border-color: #e2e8f0;">
       <div class="flex items-center gap-3">
@@ -164,114 +169,27 @@
       </div>
      </button>
     </div><!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
      <div class="rounded-2xl border p-6" style="background: #f8fafc; border-color: #e2e8f0;">
-      <h3 class="text-lg font-semibold mb-4" style="color: #1e293b;">Répartition par type</h3>
-      <div class="space-y-3">
-       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-         <div class="w-4 h-4 rounded" style="background: #ef4444;"></div>
-         <span class="text-sm" style="color: #64748b;">PDF</span>
-        </div>
-        <div class="flex items-center gap-2">
-         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div id="pdf-bar" class="h-full rounded-full transition-all duration-500" style="background: #ef4444; width: 0%;"></div>
-         </div>
-         <span class="text-sm font-medium w-8 text-right" id="pdf-percent">0%</span>
-        </div>
-       </div>
-       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-         <div class="w-4 h-4 rounded" style="background: #3b82f6;"></div>
-         <span class="text-sm" style="color: #64748b;">Word</span>
-        </div>
-        <div class="flex items-center gap-2">
-         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div id="word-bar" class="h-full rounded-full transition-all duration-500" style="background: #3b82f6; width: 0%;"></div>
-         </div>
-         <span class="text-sm font-medium w-8 text-right" id="word-percent">0%</span>
-        </div>
-       </div>
-       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-         <div class="w-4 h-4 rounded" style="background: #22c55e;"></div>
-         <span class="text-sm" style="color: #64748b;">Excel</span>
-        </div>
-        <div class="flex items-center gap-2">
-         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div id="excel-bar" class="h-full rounded-full transition-all duration-500" style="background: #22c55e; width: 0%;"></div>
-         </div>
-         <span class="text-sm font-medium w-8 text-right" id="excel-percent">0%</span>
-        </div>
-       </div>
-       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-         <div class="w-4 h-4 rounded" style="background: #a855f7;"></div>
-         <span class="text-sm" style="color: #64748b;">Images</span>
-        </div>
-        <div class="flex items-center gap-2">
-         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div id="image-bar" class="h-full rounded-full transition-all duration-500" style="background: #a855f7; width: 0%;"></div>
-         </div>
-         <span class="text-sm font-medium w-8 text-right" id="image-percent">0%</span>
-        </div>
-       </div>
-       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-         <div class="w-4 h-4 rounded" style="background: #f59e0b;"></div>
-         <span class="text-sm" style="color: #64748b;">Autres</span>
-        </div>
-        <div class="flex items-center gap-2">
-         <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div id="other-bar" class="h-full rounded-full transition-all duration-500" style="background: #f59e0b; width: 0%;"></div>
-         </div>
-         <span class="text-sm font-medium w-8 text-right" id="other-percent">0%</span>
-        </div>
-       </div>
+     <h3 class="text-lg font-semibold mb-4" style="color: #1e293b;">Répartition par type</h3>
+      <div id="type-distribution-list" class="space-y-3">
+       <p class="text-sm" style="color: #64748b;">Chargement...</p>
       </div>
      </div>
      <div class="rounded-2xl border p-6" style="background: #f8fafc; border-color: #e2e8f0;">
       <h3 class="text-lg font-semibold mb-4" style="color: #1e293b;">Activité récente</h3>
       <div id="recent-activity" class="space-y-3">
-       <div class="flex items-center gap-3 p-3 rounded-lg" style="background: #ffffff;">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: rgba(99, 102, 241, 0.15);">
-         <svg class="w-4 h-4" style="color: #6366f1;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-         </svg>
-        </div>
-        <div class="flex-1">
-         <p class="text-sm font-medium" style="color: #1e293b;">Nouveau document ajouté</p>
-         <p class="text-xs" style="color: #64748b;">Rapport Annuel 2024.pdf • il y a 2h</p>
-        </div>
-       </div>
-       <div class="flex items-center gap-3 p-3 rounded-lg" style="background: #ffffff;">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: rgba(34, 197, 94, 0.15);">
-         <svg class="w-4 h-4" style="color: #22c55e;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-         </svg>
-        </div>
-        <div class="flex-1">
-         <p class="text-sm font-medium" style="color: #1e293b;">Document consulté</p>
-         <p class="text-xs" style="color: #64748b;">Contrat de Partenariat.docx • il y a 4h</p>
-        </div>
-       </div>
-       <div class="flex items-center gap-3 p-3 rounded-lg" style="background: #ffffff;">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: rgba(239, 68, 68, 0.15);">
-         <svg class="w-4 h-4" style="color: #ef4444;" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-         </svg>
-        </div>
-        <div class="flex-1">
-         <p class="text-sm font-medium" style="color: #1e293b;">Document supprimé</p>
-         <p class="text-xs" style="color: #64748b;">Ancien_rapport.pdf • il y a 1j</p>
-        </div>
-       </div>
+       <p class="text-sm text-center py-3" style="color: #64748b;">Aucune activité récente</p>
       </div>
      </div>
-    </div><!-- Recent Documents -->
-    <div class="rounded-2xl border p-6 mb-8" style="background: #f8fafc; border-color: #e2e8f0;">
-     <div class="flex items-center justify-between mb-4">
+    </div>
+    <div class="rounded-2xl border p-4 mb-5" style="background: #f8fafc; border-color: #e2e8f0;">
+     <div class="flex items-center justify-between mb-3">
       <h3 class="text-lg font-semibold" style="color: #1e293b;">Documents récents</h3>
-      <a href="documents.html" class="text-sm font-medium transition-colors hover:underline" style="color: #6366f1;">Voir tout</a>
+      <a href="documents.html" class="text-sm font-medium transition-colors hover:underline" style="color: #005EB8;">Voir tout</a>
      </div>
-     <div id="recent-documents-list" class="space-y-2"><!-- Recent documents will be rendered here as a list -->
+     <div id="recent-documents-list" class="space-y-2">
+      <p class="text-sm text-center py-3" style="color: #64748b;">Chargement des documents...</p>
      </div>
     </div><!-- Empty State -->
     <div id="empty-state" class="hidden text-center py-16">
@@ -297,15 +215,13 @@
      <form id="doc-form" class="space-y-4">
       <div><label for="doc-name" class="block text-sm font-medium mb-2" style="color: #334155;">Nom du document *</label> <input type="text" id="doc-name" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;" placeholder="Ex: Contrat de travail"><style>#doc-name::placeholder { color: #cbd5e1; }</style>
       </div>
-      <div><label for="doc-type" class="block text-sm font-medium mb-2" style="color: #334155;">Type de fichier *</label> <select id="doc-type" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner un type</option> <option value="PDF">PDF</option> <option value="Word">Word</option> <option value="Excel">Excel</option> <option value="Image">Image</option> <option value="Autre">Autre</option> </select>
+      <div><label for="doc-type" class="block text-sm font-medium mb-2" style="color: #334155;">Type de fichier *</label> <select id="doc-type" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner un type</option> <option value="PDF">PDF</option> <option value="Word">Word</option> <option value="Excel">Excel</option> <option value="PowerPoint">PowerPoint</option> <option value="Image">Image</option> <option value="Vidéo">Vidéo</option> <option value="Audio">Audio</option> <option value="CSV">CSV</option> <option value="Archive (ZIP/RAR)">Archive (ZIP/RAR)</option> <option value="Texte">Texte</option> <option value="Autre">Autre</option> </select>
       </div>
       <div><label for="doc-file" class="block text-sm font-medium mb-2" style="color: #334155;">Fichier à télécharger *</label> <input type="file" id="doc-file" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1; cursor: pointer;" accept="*/*"><style>#doc-file::file-selector-button { background: #f3f4f6; border: 1px solid #e2e8f0; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; color: #1e293b; margin-right: 12px; }</style>
       </div>
-      <div><label for="doc-category" class="block text-sm font-medium mb-2" style="color: #334155;">Catégorie *</label> <select id="doc-category" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner une catégorie</option> <option value="Travail">Travail</option> <option value="Personnel">Personnel</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Autre">Autre</option> </select>
+      <div><label for="doc-category" class="block text-sm font-medium mb-2" style="color: #334155;">Catégorie *</label> <select id="doc-category" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all cursor-pointer" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;"> <option value="">Sélectionner une catégorie</option> <option value="Travail">Travail</option> <option value="Ressources Humaines">Ressources Humaines</option> <option value="Finance">Finance</option> <option value="Juridique">Juridique</option> <option value="Commercial">Commercial</option> <option value="Marketing">Marketing</option> <option value="Projets">Projets</option> <option value="IT / Technique">IT / Technique</option> <option value="Personnel">Personnel</option> <option value="Archive">Archive</option> <option value="Autre">Autre</option> </select>
       </div>
-      <div><label for="doc-size" class="block text-sm font-medium mb-2" style="color: #334155;">Taille</label> <input type="text" id="doc-size" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;" placeholder="Ex: 2.5 MB"><style>#doc-size::placeholder { color: #cbd5e1; }</style>
-      </div>
-      <div><label for="doc-description" class="block text-sm font-medium mb-2" style="color: #334155;">Description</label> <textarea id="doc-description" rows="3" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all resize-none" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;" placeholder="Description du document..."><style>#doc-description::placeholder { color: #cbd5e1; }</style></textarea>
+      <div><label for="doc-description" class="block text-sm font-medium mb-2" style="color: #334155;">Description</label> <textarea id="doc-description" rows="3" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 transition-all resize-none" style="background: #f8fafc; border-color: #e2e8f0; color: #1e293b; --tw-ring-color: #6366f1;" placeholder="Description du document..."></textarea>
       </div><button type="submit" id="submit-btn" class="w-full py-3 rounded-xl font-semibold text-white transition-all hover:opacity-90 flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);"> <span id="submit-text">Ajouter le document</span>
        <svg id="submit-spinner" class="hidden w-5 h-5 animate-spin" fill="none" viewbox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
        </svg></button>
@@ -638,30 +554,62 @@
 
     // Update chart bars based on statistics
     function updateChartBars(stats) {
-      const total = stats.total;
-      if (total > 0) {
-        const pdfPercent = Math.round((stats.pdf / total) * 100);
-        const imagePercent = Math.round((stats.images / total) * 100);
-        const otherPercent = Math.round((stats.other / total) * 100);
+      const listEl = document.getElementById('type-distribution-list');
+      if (!listEl) return;
 
-        // Update chart bars if they exist in the DOM
-        const pdfBar = document.getElementById('pdf-bar');
-        const imageBar = document.getElementById('image-bar');
-        const otherBar = document.getElementById('other-bar');
+      const typeOrder = ['PDF', 'Word', 'Excel', 'PowerPoint', 'Image', 'Vidéo', 'Audio', 'CSV', 'Archive (ZIP/RAR)', 'Texte', 'Autre'];
+      const typeColors = {
+        'PDF': '#ef4444',
+        'Word': '#3b82f6',
+        'Excel': '#22c55e',
+        'PowerPoint': '#f97316',
+        'Image': '#a855f7',
+        'Vidéo': '#e11d48',
+        'Audio': '#06b6d4',
+        'CSV': '#14b8a6',
+        'Archive (ZIP/RAR)': '#64748b',
+        'Texte': '#0ea5e9',
+        'Autre': '#f59e0b'
+      };
 
-        if (pdfBar) pdfBar.style.width = `${pdfPercent}%`;
-        if (imageBar) imageBar.style.width = `${imagePercent}%`;
-        if (otherBar) otherBar.style.width = `${otherPercent}%`;
+      const breakdown = stats.type_breakdown || {
+        PDF: stats.pdf || 0,
+        Word: 0,
+        Excel: 0,
+        PowerPoint: 0,
+        Image: stats.images || 0,
+        'Vidéo': 0,
+        Audio: 0,
+        CSV: 0,
+        'Archive (ZIP/RAR)': 0,
+        Texte: 0,
+        Autre: stats.other || 0
+      };
 
-        // Update percentages if they exist
-        const pdfPercentEl = document.getElementById('pdf-percent');
-        const imagePercentEl = document.getElementById('image-percent');
-        const otherPercentEl = document.getElementById('other-percent');
+      const total = Number(stats.total || 0);
+      listEl.innerHTML = '';
 
-        if (pdfPercentEl) pdfPercentEl.textContent = `${pdfPercent}%`;
-        if (imagePercentEl) imagePercentEl.textContent = `${imagePercent}%`;
-        if (otherPercentEl) otherPercentEl.textContent = `${otherPercent}%`;
-      }
+      typeOrder.forEach((type) => {
+        const count = Number(breakdown[type] || 0);
+        const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+        const color = typeColors[type] || '#94a3b8';
+
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between';
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-4 h-4 rounded" style="background: ${color};"></div>
+            <span class="text-sm" style="color: #64748b;">${type}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-500" style="background: ${color}; width: ${percent}%;"></div>
+            </div>
+            <span class="text-sm font-medium w-10 text-right">${percent}%</span>
+          </div>
+        `;
+        listEl.appendChild(row);
+      });
     }
 
     // Update statistics (legacy function - now stats are updated directly from API)
@@ -689,10 +637,22 @@
     }
 
     function viewDocument(id) {
-      // For database documents, show a toast and could expand to show document preview
-      showToast(`Ouverture du document ID: ${id}`, 'info');
-      // Could expand this to fetch document details and show preview modal
-      // For now, just show the document ID
+      smartWathiqaAPI.getDocument(id).then((result) => {
+        if (!result.isOk || !result.data) {
+          showToast('Impossible d\'ouvrir ce document', 'error');
+          return;
+        }
+
+        const fileUrl = smartWathiqaAPI.getFileUrl(result.data.file_path);
+        if (!fileUrl) {
+          showToast('Ce document n\'a pas de fichier associé', 'error');
+          return;
+        }
+
+        window.open(fileUrl, '_blank', 'noopener');
+      }).catch(() => {
+        showToast('Erreur lors de l\'ouverture du document', 'error');
+      });
     }
 
     // Modal functions
@@ -710,7 +670,6 @@
         document.getElementById('doc-name').value = doc.name;
         document.getElementById('doc-type').value = doc.type;
         document.getElementById('doc-category').value = doc.category;
-        document.getElementById('doc-size').value = doc.size || '';
         document.getElementById('doc-description').value = doc.description || '';
         fileInput.required = false;
       } else {
@@ -808,7 +767,7 @@
           name: document.getElementById('doc-name').value.trim(),
           type: document.getElementById('doc-type').value,
           category: document.getElementById('doc-category').value,
-          size: file ? (file.size / (1024 * 1024)).toFixed(2) + ' MB' : document.getElementById('doc-size').value.trim(),
+          size: file ? (file.size / (1024 * 1024)).toFixed(2) + ' MB' : (editingDoc?.size || ''),
           description: document.getElementById('doc-description').value.trim(),
           createdAt: editingDoc ? editingDoc.createdAt : new Date().toISOString(),
           fileName: file ? file.name : undefined

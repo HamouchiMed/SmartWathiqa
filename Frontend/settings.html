@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -46,6 +46,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z"></path>
                 </svg>
                 <span>Mes documents</span>
+            </a>
+            <a href="documents.html#favoris" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors" style="color: #ffffff;" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z"></path>
+                </svg>
+                <span>Favoris</span>
             </a>
         </nav>
 
@@ -120,24 +126,24 @@
                     <div>
                         <div class="flex justify-between text-sm text-gray-600 mb-2">
                             <span>Espace utilisé</span>
-                            <span>2.3 GB sur 10 GB</span>
+                            <span id="storage-used-text">0 GB sur 10 GB</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div class="bg-blue-600 h-3 rounded-full" style="width: 23%"></div>
+                            <div id="storage-used-bar" class="bg-blue-600 h-3 rounded-full" style="width: 0%"></div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
                         <div class="text-center p-4 bg-gray-50 rounded-xl">
-                            <div class="text-2xl font-bold text-blue-600">1.2 GB</div>
+                            <div id="storage-documents" class="text-2xl font-bold text-blue-600">0 GB</div>
                             <div class="text-sm text-gray-600">Documents</div>
                         </div>
                         <div class="text-center p-4 bg-gray-50 rounded-xl">
-                            <div class="text-2xl font-bold text-green-600">0.8 GB</div>
+                            <div id="storage-images" class="text-2xl font-bold text-green-600">0 GB</div>
                             <div class="text-sm text-gray-600">Images</div>
                         </div>
                         <div class="text-center p-4 bg-gray-50 rounded-xl">
-                            <div class="text-2xl font-bold text-purple-600">0.3 GB</div>
+                            <div id="storage-others" class="text-2xl font-bold text-purple-600">0 GB</div>
                             <div class="text-sm text-gray-600">Autres</div>
                         </div>
                     </div>
@@ -148,6 +154,8 @@
     </main>
 
     <!-- Scripts -->
+    <script src="api-client.js"></script>
     <script src="settings.js"></script>
 </body>
 </html>
+
