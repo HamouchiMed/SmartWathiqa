@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tous les Documents - Admin</title>
+  <title>Documents Équipe - SmartWathiqa</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 min-h-screen">
@@ -12,218 +12,496 @@
       <div class="mb-4">
         <h2 class="text-lg font-bold">SmartWathiqa</h2>
       </div>
-
+      <div class="mb-4 border-b border-white/30 pb-4">
+        <p id="account-name" class="text-sm font-semibold">Mon Compte</p>
+        <p id="account-email" class="text-xs text-blue-100">utilisateur@example.com</p>
+      </div>
       <nav class="space-y-1.5 text-sm">
-        <a href="dashboardadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Tableau de bord</a>
-        <a href="alldocuments.html" class="block px-3 py-2.5 rounded-lg bg-white/20">Documents</a>
-        <a href="parametreadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Paramètres</a>
+        <a id="nav-dashboard" href="dashboardadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Tableau de bord</a>
+        <a href="alldocuments.html" class="block px-3 py-2.5 rounded-lg bg-white/20">Documents équipe</a>
+        <a id="nav-settings" href="parametreadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Paramètres</a>
         <button onclick="logout()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/15">Déconnexion</button>
       </nav>
     </aside>
 
-    <main class="flex-1 p-3 md:p-4">
-      <div class="bg-white rounded-2xl border border-slate-200 p-3 md:p-4">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
-        <div>
-          <h1 class="text-xl font-bold text-slate-900">Tous les documents</h1>
-          <p class="text-slate-600 text-sm">Liste globale des documents (employé, directeur et futurs utilisateurs).</p>
+    <main class="flex-1 p-3 md:p-4 space-y-4">
+      <header class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5">
+        <h1 class="text-xl font-bold text-slate-900">Documents équipe</h1>
+        <p class="text-slate-600 text-sm mt-1">Validation, filtrage et supervision documentaire.</p>
+      </header>
+
+      <section class="bg-white rounded-xl border border-slate-200 p-3">
+        <div class="flex flex-wrap gap-2 mb-3">
+          <button data-status="pending" class="status-tab px-3 py-1.5 rounded-lg bg-amber-100 text-amber-800 text-sm">En attente</button>
+          <button data-status="approved" class="status-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-sm">Validés</button>
+          <button data-status="needs_correction" class="status-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-sm">À corriger</button>
+          <button data-status="rejected" class="status-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-sm">Rejetés</button>
+          <button data-status="all" class="status-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-sm">Tous</button>
         </div>
-        <div class="flex gap-2">
-          <a href="dashboardadmin.html" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50">Retour Admin</a>
-          <button onclick="loadDocuments()" class="px-4 py-2 rounded-lg bg-[#005EB8] text-white hover:opacity-90">Actualiser</button>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-2 mb-3">
+          <input id="search-input" placeholder="Recherche nom/description/email" class="md:col-span-2 border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900" />
+          <select id="owner-filter" class="border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900">
+            <option value="all">Tous les employés</option>
+          </select>
+          <select id="category-filter" class="border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900">
+            <option value="all">Toutes les catégories</option>
+            <option value="Travail">Travail</option>
+            <option value="Ressources Humaines">Ressources Humaines</option>
+            <option value="Finance">Finance</option>
+            <option value="Juridique">Juridique</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Projets">Projets</option>
+            <option value="IT / Technique">IT / Technique</option>
+            <option value="Personnel">Personnel</option>
+            <option value="Archive">Archive</option>
+            <option value="Autre">Autre</option>
+          </select>
+          <label class="flex items-center gap-2 text-sm px-2">
+            <input id="group-owner" type="checkbox" class="w-4 h-4" checked />
+            Grouper par employé
+          </label>
         </div>
-      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-        <input id="searchInput" type="text" placeholder="Rechercher (nom, description, email...)" class="w-full rounded-lg border border-slate-300 bg-white text-slate-900 px-3 py-2" />
-        <select id="roleFilter" class="w-full rounded-lg border border-slate-300 bg-white text-slate-900 px-3 py-2">
-          <option value="all">Tous les rôles</option>
-          <option value="employer">Employé</option>
-          <option value="directeur">Directeur</option>
-        </select>
-        <select id="categoryFilter" class="w-full rounded-lg border border-slate-300 bg-white text-slate-900 px-3 py-2">
-          <option value="all">Toutes les catégories</option>
-          <option value="Travail">Travail</option>
-          <option value="Ressources Humaines">Ressources Humaines</option>
-          <option value="Finance">Finance</option>
-          <option value="Juridique">Juridique</option>
-          <option value="Commercial">Commercial</option>
-          <option value="Marketing">Marketing</option>
-          <option value="Projets">Projets</option>
-          <option value="IT / Technique">IT / Technique</option>
-          <option value="Personnel">Personnel</option>
-          <option value="Archive">Archive</option>
-          <option value="Autre">Autre</option>
-        </select>
-      </div>
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-2 mb-2">
+          <select id="bulk-assignee" class="border border-slate-300 rounded-lg px-2 py-2 bg-white text-slate-900 text-sm">
+            <option value="">Assigner à...</option>
+          </select>
+          <input id="bulk-due" type="date" class="border border-slate-300 rounded-lg px-2 py-2 bg-white text-slate-900 text-sm" />
+          <select id="bulk-priority" class="border border-slate-300 rounded-lg px-2 py-2 bg-white text-slate-900 text-sm">
+            <option value="high">Priorité haute</option>
+            <option value="medium" selected>Priorité moyenne</option>
+            <option value="low">Priorité basse</option>
+          </select>
+          <input id="bulk-note" placeholder="Note obligatoire pour correction/rejet" class="md:col-span-2 border border-slate-300 rounded-lg px-2 py-2 bg-white text-slate-900 text-sm" />
+          <button id="bulk-assign-btn" class="px-3 py-2 rounded bg-slate-800 text-white text-sm">Déléguer sélection</button>
+        </div>
 
-      <div class="overflow-x-auto border border-slate-200 rounded-xl">
-        <table class="min-w-full text-sm">
-          <thead class="bg-slate-50 text-slate-700">
-            <tr>
-              <th class="text-left px-4 py-3">Nom</th>
-              <th class="text-left px-4 py-3">Catégorie</th>
-              <th class="text-left px-4 py-3">Type</th>
-              <th class="text-left px-4 py-3">Propriétaire</th>
-              <th class="text-left px-4 py-3">Rôle</th>
-              <th class="text-left px-4 py-3">Créé le</th>
-              <th class="text-left px-4 py-3">Action</th>
-            </tr>
-          </thead>
-          <tbody id="docsBody" class="divide-y divide-slate-200 bg-white"></tbody>
-        </table>
-      </div>
+        <div class="flex flex-wrap gap-2">
+          <button id="bulk-approve" class="px-3 py-2 rounded bg-emerald-600 text-white text-sm">Valider sélection</button>
+          <button id="bulk-correction" class="px-3 py-2 rounded bg-orange-500 text-white text-sm">Demander correction</button>
+          <button id="bulk-reject" class="px-3 py-2 rounded bg-red-600 text-white text-sm">Rejeter sélection</button>
+          <button id="export-btn" class="px-3 py-2 rounded bg-[#005EB8] text-white text-sm">Exporter rapport (CSV)</button>
+          <span id="selection-info" class="text-sm text-slate-500 px-2 py-2">0 sélectionné</span>
+        </div>
+      </section>
 
-      <p id="statusText" class="text-slate-500 mt-3">Chargement...</p>
-    </div>
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="xl:col-span-2 bg-white rounded-xl border border-slate-200 p-3">
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="text-left text-slate-500 border-b">
+                  <th class="py-2"><input id="select-all" type="checkbox" class="w-4 h-4" /></th>
+                  <th class="py-2">Document</th>
+                  <th class="py-2">Employé</th>
+                  <th class="py-2">Statut</th>
+                  <th class="py-2">SLA</th>
+                  <th class="py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="docs-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-3">
+          <h2 class="font-semibold text-slate-900 mb-2">Aperçu document</h2>
+          <p id="preview-title" class="text-sm text-slate-600 mb-2">Sélectionnez un document</p>
+          <div class="h-[420px] border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
+            <iframe id="preview-frame" class="w-full h-full" title="Aperçu"></iframe>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
   <script>
     const API_BASES = ['http://localhost:3001/api', 'http://127.0.0.1:3001/api'];
-    let currentDocuments = [];
+    let currentStatus = 'pending';
+    let queueRows = [];
+    let filteredRows = [];
+    let teamRows = [];
+    const selectedIds = new Set();
+
+    function user() {
+      try { return JSON.parse(localStorage.getItem('currentUser') || 'null'); } catch { return null; }
+    }
+
+    function syncUserUI() {
+      const u = user();
+      if (!u) return;
+      const nameEl = document.getElementById('account-name');
+      const emailEl = document.getElementById('account-email');
+      if (nameEl) nameEl.textContent = u.name || 'Mon Compte';
+      if (emailEl) emailEl.textContent = u.email || 'utilisateur@example.com';
+
+      const navDashboard = document.getElementById('nav-dashboard');
+      const navSettings = document.getElementById('nav-settings');
+      if (u.role === 'directeur') {
+        if (navDashboard) navDashboard.href = 'dashboarddirecteur.html';
+        if (navSettings) navSettings.href = 'parametreadmin.html';
+      } else {
+        if (navDashboard) navDashboard.href = 'dashboardadmin.html';
+        if (navSettings) navSettings.href = 'parametreadmin.html';
+      }
+    }
 
     function logout() {
-      localStorage.removeItem('currentUser');
+      localStorage.clear();
       sessionStorage.clear();
       window.location.href = 'firstscreen.html';
     }
 
-    const searchInput = document.getElementById('searchInput');
-    const roleFilter = document.getElementById('roleFilter');
-    const categoryFilter = document.getElementById('categoryFilter');
-
-    searchInput.addEventListener('input', debounce(loadDocuments, 250));
-    roleFilter.addEventListener('change', loadDocuments);
-    categoryFilter.addEventListener('change', loadDocuments);
-
-    function debounce(fn, delay) {
-      let timer;
-      return (...args) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn(...args), delay);
+    async function api(path, options = {}) {
+      let last = 'Serveur indisponible';
+      const u = user();
+      const authHeaders = {
+        'x-user-role': (u && u.role) ? String(u.role) : 'directeur',
+        'x-user-id': (u && u.id) ? String(u.id) : '1'
       };
+      for (const base of API_BASES) {
+        try {
+          const mergedOptions = {
+            ...options,
+            headers: {
+              ...authHeaders,
+              ...(options.headers || {})
+            }
+          };
+          const res = await fetch(base + path, mergedOptions);
+          const text = await res.text();
+          let json = null;
+          try { json = text ? JSON.parse(text) : null; } catch { json = null; }
+          if (!json || !res.ok || !json.success) {
+            last = json?.error || `HTTP ${res.status}`;
+            continue;
+          }
+          return json.data;
+        } catch (e) {
+          last = e.message;
+        }
+      }
+      throw new Error(last);
     }
 
-    function getFileUrl(filePath) {
-      if (!filePath) return '';
-      if (filePath.startsWith('http://') || filePath.startsWith('https://')) return filePath;
-      return API_BASES[0].replace('/api', '') + filePath;
+    function badge(status) {
+      const s = status || 'pending';
+      const map = {
+        pending: 'bg-amber-100 text-amber-800',
+        approved: 'bg-emerald-100 text-emerald-800',
+        rejected: 'bg-red-100 text-red-800',
+        needs_correction: 'bg-orange-100 text-orange-800'
+      };
+      return map[s] || 'bg-slate-100 text-slate-700';
     }
 
-    function formatDate(value) {
-      if (!value) return '—';
-      const d = new Date(value);
-      if (Number.isNaN(d.getTime())) return '—';
-      return d.toLocaleString('fr-FR');
+    function isOverdue(row) {
+      if (!row?.due_date || row.review_status !== 'pending') return false;
+      return new Date(row.due_date).getTime() < Date.now();
     }
 
-    function escapeHtml(str) {
-      const div = document.createElement('div');
-      div.textContent = str || '';
-      return div.innerHTML;
+    function getFileUrl(path) {
+      if (!path) return '';
+      if (path.startsWith('http')) return path;
+      return 'http://localhost:3001' + path;
     }
 
-    function renderTable() {
-      const body = document.getElementById('docsBody');
-      const status = document.getElementById('statusText');
+    function updateSelectionInfo() {
+      document.getElementById('selection-info').textContent = `${selectedIds.size} sélectionné(s)`;
+    }
 
-      if (!currentDocuments.length) {
-        body.innerHTML = '<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">Aucun document trouvé.</td></tr>';
-        status.textContent = '0 document';
+    function applyFilters() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+      const owner = document.getElementById('owner-filter').value;
+      const category = document.getElementById('category-filter').value;
+
+      filteredRows = queueRows.filter((r) => {
+        const hay = `${r.name || ''} ${r.owner_name || ''} ${r.owner_email || ''} ${r.category_name || ''} ${r.decision_comment || ''}`.toLowerCase();
+        const okSearch = !q || hay.includes(q);
+        const okOwner = owner === 'all' || String(r.owner_id) === owner;
+        const okCategory = category === 'all' || (r.category_name || '') === category;
+        return okSearch && okOwner && okCategory;
+      });
+    }
+
+    function renderOwnerOptions() {
+      const ownerSel = document.getElementById('owner-filter');
+      const bulkAssignee = document.getElementById('bulk-assignee');
+      const owners = [...new Map(teamRows.map(t => [String(t.id), t])).values()];
+
+      ownerSel.innerHTML = '<option value="all">Tous les employés</option>' +
+        owners.map(o => `<option value="${o.id}">${o.name || o.email}</option>`).join('');
+
+      bulkAssignee.innerHTML = '<option value="">Assigner à...</option>' +
+        owners.map(o => `<option value="${o.id}">${o.name || o.email}</option>`).join('');
+    }
+
+    function renderRows(rows, grouped) {
+      const body = document.getElementById('docs-body');
+      if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="6" class="py-4 text-center text-slate-500">Aucun document trouvé.</td></tr>';
         return;
       }
 
-      body.innerHTML = currentDocuments.map((doc) => {
-        const viewUrl = getFileUrl(doc.file_path);
-        const canView = Boolean(viewUrl);
-
+      const rowHtml = (r) => {
+        const overdue = isOverdue(r);
+        const rowCls = overdue ? 'bg-red-50' : '';
+        const dueValue = r.due_date ? String(r.due_date).slice(0, 10) : '';
         return `
-          <tr class="hover:bg-slate-50">
-            <td class="px-4 py-3 font-medium text-slate-900">${escapeHtml(doc.name || 'Sans nom')}</td>
-            <td class="px-4 py-3 text-slate-700">${escapeHtml(doc.category_name || doc.category || '—')}</td>
-            <td class="px-4 py-3 text-slate-700">${escapeHtml(doc.file_type || '—')}</td>
-            <td class="px-4 py-3 text-slate-700">${escapeHtml(doc.owner_email || doc.owner_name || '—')}</td>
-            <td class="px-4 py-3 text-slate-700">${escapeHtml(doc.owner_role || '—')}</td>
-            <td class="px-4 py-3 text-slate-700">${formatDate(doc.created_at)}</td>
-            <td class="px-4 py-3">
-              ${canView
-                ? `<a class="inline-block px-3 py-1.5 rounded-md bg-[#005EB8] text-white hover:opacity-90" href="${viewUrl}" target="_blank" rel="noopener noreferrer">Voir</a>`
-                : '<span class="text-slate-400">Pas de fichier</span>'}
+          <tr class="border-b ${rowCls}">
+            <td class="py-2 align-top"><input type="checkbox" class="row-check w-4 h-4" data-id="${r.id}" ${selectedIds.has(r.id) ? 'checked' : ''} /></td>
+            <td class="py-2 pr-2 align-top">
+              <button class="text-left text-[#005EB8] hover:underline" onclick="previewDoc(${r.id})">${r.name || 'Sans nom'}</button>
+              <p class="text-xs text-slate-500">${r.category_name || '-'} • ${r.file_type || '-'}</p>
+            </td>
+            <td class="py-2 pr-2 align-top text-slate-700">${r.owner_name || '-'}<p class="text-xs text-slate-500">${r.owner_email || ''}</p></td>
+            <td class="py-2 pr-2 align-top"><span class="px-2 py-1 rounded text-xs ${badge(r.review_status)}">${r.review_status || 'pending'}</span></td>
+            <td class="py-2 pr-2 align-top">
+              <div class="space-y-1">
+                <select id="prio-${r.id}" class="border border-slate-300 rounded px-2 py-1 text-xs w-full bg-white text-slate-900">
+                  <option value="high" ${r.priority === 'high' ? 'selected' : ''}>Haute</option>
+                  <option value="medium" ${!r.priority || r.priority === 'medium' ? 'selected' : ''}>Moyenne</option>
+                  <option value="low" ${r.priority === 'low' ? 'selected' : ''}>Basse</option>
+                </select>
+                <input id="due-${r.id}" type="date" value="${dueValue}" class="border border-slate-300 rounded px-2 py-1 text-xs w-full bg-white text-slate-900" />
+                <button onclick="saveSla(${r.id})" class="text-xs px-2 py-1 rounded bg-slate-800 text-white">SLA</button>
+                ${overdue ? '<p class="text-[11px] text-red-700 font-medium">En retard</p>' : ''}
+              </div>
+            </td>
+            <td class="py-2 align-top">
+              <input id="note-${r.id}" placeholder="Commentaire" class="border border-slate-300 rounded px-2 py-1 text-xs w-full mb-1 bg-white text-slate-900" />
+              <div class="flex flex-wrap gap-1">
+                <button onclick="decideOne(${r.id}, 'approved')" class="text-xs px-2 py-1 rounded bg-emerald-600 text-white">Valider</button>
+                <button onclick="decideOne(${r.id}, 'needs_correction')" class="text-xs px-2 py-1 rounded bg-orange-500 text-white">Correction</button>
+                <button onclick="decideOne(${r.id}, 'rejected')" class="text-xs px-2 py-1 rounded bg-red-600 text-white">Rejeter</button>
+                <button onclick="openFile(${r.id})" class="text-xs px-2 py-1 rounded bg-[#005EB8] text-white">Voir</button>
+              </div>
             </td>
           </tr>
         `;
+      };
+
+      if (!grouped) {
+        body.innerHTML = rows.map(rowHtml).join('');
+        return;
+      }
+
+      const groupedMap = rows.reduce((acc, r) => {
+        const key = `${r.owner_id}|${r.owner_name || ''}|${r.owner_email || ''}`;
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(r);
+        return acc;
+      }, {});
+
+      body.innerHTML = Object.keys(groupedMap).map((key) => {
+        const list = groupedMap[key];
+        const [id, name, email] = key.split('|');
+        const pendingCount = list.filter((x) => (x.review_status || 'pending') === 'pending').length;
+        return `
+          <tr><td colspan="6" class="py-2 bg-slate-50 border-y text-sm font-semibold text-slate-800">${name || email} • ${pendingCount} en attente • ${list.length} document(s)</td></tr>
+          ${list.map(rowHtml).join('')}
+        `;
       }).join('');
-
-      status.textContent = `${currentDocuments.length} document(s)`;
     }
 
-    async function fetchAdminDocuments(queryString) {
-      let lastError = 'Serveur indisponible';
-      for (const base of API_BASES) {
+    function bindRowSelection() {
+      document.querySelectorAll('.row-check').forEach((cb) => {
+        cb.addEventListener('change', () => {
+          const id = Number(cb.dataset.id);
+          if (cb.checked) selectedIds.add(id);
+          else selectedIds.delete(id);
+          updateSelectionInfo();
+        });
+      });
+    }
+
+    function render() {
+      applyFilters();
+      const grouped = document.getElementById('group-owner').checked;
+      renderRows(filteredRows, grouped);
+      bindRowSelection();
+      updateSelectionInfo();
+    }
+
+    async function loadQueue() {
+      queueRows = await api(`/director/queue?status=${encodeURIComponent(currentStatus)}&limit=400`);
+      render();
+    }
+
+    async function loadTeam() {
+      teamRows = await api('/director/team-overview');
+      renderOwnerOptions();
+    }
+
+    function setActiveStatusTab() {
+      document.querySelectorAll('.status-tab').forEach((btn) => {
+        const active = btn.dataset.status === currentStatus;
+        btn.className = active
+          ? 'status-tab px-3 py-1.5 rounded-lg bg-amber-100 text-amber-800 text-sm'
+          : 'status-tab px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 text-sm';
+      });
+    }
+
+    async function decideOne(id, decision) {
+      const note = (document.getElementById(`note-${id}`)?.value || '').trim();
+      if ((decision === 'rejected' || decision === 'needs_correction') && !note) {
+        alert('Commentaire obligatoire pour rejet/correction.');
+        return;
+      }
+
+      const u = user();
+      await api(`/director/decision/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewer_user_id: u?.id || null, decision, comment: note })
+      });
+      selectedIds.delete(id);
+      await loadQueue();
+    }
+
+    async function saveSla(id) {
+      const u = user();
+      const assignedTo = document.getElementById('bulk-assignee').value || null;
+      const due = document.getElementById(`due-${id}`)?.value || null;
+      const prio = document.getElementById(`prio-${id}`)?.value || 'medium';
+      const note = (document.getElementById(`note-${id}`)?.value || '').trim();
+      await api(`/director/assign/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewer_user_id: u?.id || null, assigned_to_user_id: assignedTo, due_date: due, priority: prio, comment: note })
+      });
+      await loadQueue();
+    }
+
+    async function bulkDecision(decision) {
+      const ids = [...selectedIds];
+      if (!ids.length) {
+        alert('Sélectionnez au moins un document.');
+        return;
+      }
+      const note = (document.getElementById('bulk-note').value || '').trim();
+      if ((decision === 'rejected' || decision === 'needs_correction') && !note) {
+        alert('Commentaire obligatoire pour rejet/correction.');
+        return;
+      }
+
+      const u = user();
+      await Promise.all(ids.map((id) => api(`/director/decision/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewer_user_id: u?.id || null, decision, comment: note })
+      })));
+
+      selectedIds.clear();
+      await loadQueue();
+    }
+
+    async function bulkAssign() {
+      const ids = [...selectedIds];
+      if (!ids.length) {
+        alert('Sélectionnez au moins un document.');
+        return;
+      }
+      const assigned = document.getElementById('bulk-assignee').value || null;
+      const due = document.getElementById('bulk-due').value || null;
+      const prio = document.getElementById('bulk-priority').value || 'medium';
+      const note = (document.getElementById('bulk-note').value || '').trim();
+      const u = user();
+
+      await Promise.all(ids.map((id) => api(`/director/assign/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewer_user_id: u?.id || null, assigned_to_user_id: assigned, due_date: due, priority: prio, comment: note })
+      })));
+
+      await loadQueue();
+    }
+
+    function previewDoc(id) {
+      const row = queueRows.find((r) => Number(r.id) === Number(id));
+      if (!row) return;
+      document.getElementById('preview-title').textContent = row.name || 'Aperçu';
+      document.getElementById('preview-frame').src = getFileUrl(row.file_path);
+    }
+
+    function openFile(id) {
+      const row = queueRows.find((r) => Number(r.id) === Number(id));
+      if (!row) return;
+      const url = getFileUrl(row.file_path);
+      if (!url) return;
+      window.open(url, '_blank', 'noopener');
+    }
+
+    function exportCsv() {
+      if (!filteredRows.length) {
+        alert('Aucune donnée à exporter.');
+        return;
+      }
+
+      const headers = ['id', 'name', 'owner_name', 'owner_email', 'category_name', 'file_type', 'review_status', 'priority', 'due_date', 'created_at'];
+      const lines = [headers.join(',')];
+      filteredRows.forEach((r) => {
+        const vals = headers.map((h) => `"${String(r[h] ?? '').replace(/"/g, '""')}"`);
+        lines.push(vals.join(','));
+      });
+
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `documents-equipe-${currentStatus}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function bindEvents() {
+      document.querySelectorAll('.status-tab').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          currentStatus = btn.dataset.status;
+          setActiveStatusTab();
+          selectedIds.clear();
+          await loadQueue();
+        });
+      });
+
+      document.getElementById('search-input').addEventListener('input', render);
+      document.getElementById('owner-filter').addEventListener('change', render);
+      document.getElementById('category-filter').addEventListener('change', render);
+      document.getElementById('group-owner').addEventListener('change', render);
+
+      document.getElementById('select-all').addEventListener('change', (e) => {
+        if (e.target.checked) filteredRows.forEach((r) => selectedIds.add(Number(r.id)));
+        else selectedIds.clear();
+        render();
+      });
+
+      document.getElementById('bulk-approve').addEventListener('click', () => bulkDecision('approved'));
+      document.getElementById('bulk-correction').addEventListener('click', () => bulkDecision('needs_correction'));
+      document.getElementById('bulk-reject').addEventListener('click', () => bulkDecision('rejected'));
+      document.getElementById('bulk-assign-btn').addEventListener('click', bulkAssign);
+      document.getElementById('export-btn').addEventListener('click', exportCsv);
+    }
+
+    async function init() {
+      syncUserUI();
+      bindEvents();
+      setActiveStatusTab();
+      await loadTeam();
+      await loadQueue();
+
+      // Cross-role sync: refresh automatically for collaborative workflow updates.
+      setInterval(async () => {
         try {
-          const response = await fetch(`${base}/admin/documents?${queryString}`);
-          const raw = await response.text();
-          let json = null;
-          try {
-            json = raw ? JSON.parse(raw) : null;
-          } catch (_) {
-            json = null;
-          }
-
-          if (!json) {
-            if (response.status === 404 || raw.startsWith('<!DOCTYPE')) {
-              lastError = 'Route admin introuvable. Redémarrez le backend.';
-            } else {
-              lastError = `Réponse serveur invalide (HTTP ${response.status})`;
-            }
-            continue;
-          }
-
-          if (!response.ok || !json.success) {
-            lastError = json.error || `HTTP ${response.status}`;
-            if (response.status === 404) {
-              lastError = 'Route admin introuvable. Redémarrez le backend.';
-            }
-            continue;
-          }
-          return { ok: true, data: Array.isArray(json.data) ? json.data : [] };
-        } catch (error) {
-          lastError = error.message || String(error);
-        }
-      }
-      return { ok: false, error: lastError };
+          await loadQueue();
+        } catch (_) {}
+      }, 15000);
     }
 
-    async function loadDocuments() {
-      const status = document.getElementById('statusText');
-      status.textContent = 'Chargement...';
-
-      const params = new URLSearchParams();
-      const search = searchInput.value.trim();
-      const role = roleFilter.value;
-      const category = categoryFilter.value;
-
-      if (search) params.set('search', search);
-      if (role && role !== 'all') params.set('role', role);
-      if (category && category !== 'all') params.set('category', category);
-
-      try {
-        const result = await fetchAdminDocuments(params.toString());
-        if (!result.ok) {
-          throw new Error(result.error || 'Erreur de chargement');
-        }
-        currentDocuments = result.data;
-
-        renderTable();
-      } catch (error) {
-        currentDocuments = [];
-        renderTable();
-        status.textContent = `Erreur: ${error.message}`;
-      }
-    }
-
-    loadDocuments();
+    init().catch((e) => {
+      alert('Erreur Documents équipe: ' + e.message);
+    });
   </script>
 </body>
 </html>

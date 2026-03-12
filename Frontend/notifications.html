@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications - SmartWathiqa</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="api-client.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @media (max-width: 1400px) {
+      #drawer {
+        width: 15rem !important;
+      }
+      #notifications-main {
+        margin-left: 15rem !important;
+        max-width: calc(100% - 15rem) !important;
+      }
+    }
+  </style>
+</head>
+<body class="h-full" style="font-family: 'DM Sans', sans-serif; background: #ffffff;">
+  <div class="h-full overflow-auto">
+    <div id="drawer" class="fixed left-0 top-0 h-screen z-40 w-72 overflow-y-auto" style="width: 16rem; background: rgb(0, 94, 184);">
+      <div class="p-6 border-b" style="border-color: #5B9FD9;">
+        <h2 class="text-lg font-bold text-white">SmartWathiqa</h2>
+      </div>
+
+      <div class="p-6" style="border-bottom: 1px solid #5B9FD9;">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: #ffffff; color: #005EB8;">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+          <div>
+            <p id="account-name" class="text-white font-semibold text-sm">Mon Compte</p>
+            <p id="account-email" class="text-blue-100 text-xs">utilisateur@example.com</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="p-4" style="border-bottom: 1px solid #5B9FD9;">
+        <p class="text-blue-100 text-xs font-semibold mb-3 px-2 uppercase">Navigation</p>
+        <a href="dashboardemployer.html" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-white" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 11l4-4m0 0l-4-4m4 4l4 4m0-4l-4-4"/></svg>
+          <span>Tableau de bord</span>
+        </a>
+        <a href="documents.html" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-white" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z"/></svg>
+          <span>Mes documents</span>
+        </a>
+        <a href="documents.html#favoris" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-white" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.539 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81H7.03a1 1 0 00.95-.69l1.07-3.292z"/></svg>
+          <span>Favoris</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-white" style="background: rgba(0, 94, 184, 0.5);" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='rgba(0, 94, 184, 0.5)'">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+          </svg>
+          <span>Notification</span>
+        </a>
+      </nav>
+
+      <div class="p-4" style="border-top: 1px solid #5B9FD9;">
+        <a href="settings.html" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-white" onmouseover="this.style.background='rgb(0, 94, 184)'" onmouseout="this.style.background='transparent'">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>Paramètres</span>
+        </a>
+        <button onclick="logout()" class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors w-full text-left mt-2 text-white" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)'" onmouseout="this.style.background='transparent'">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          <span>Déconnexion</span>
+        </button>
+      </div>
+    </div>
+
+    <main id="notifications-main" class="ml-72 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style="margin-left: 16rem; max-width: calc(100% - 16rem);">
+      <div class="bg-white rounded-2xl border p-6" style="border-color: #e2e8f0;">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h1 class="text-2xl font-bold" style="color: #1e293b;">Notifications</h1>
+            <p class="text-sm mt-1" style="color: #64748b;">Actions de l'admin/directeur: validé, rejeté, correction, commentaires</p>
+          </div>
+          <button id="refresh-btn" class="px-4 py-2 rounded-lg text-white text-sm font-medium" style="background: #005EB8;">Actualiser</button>
+        </div>
+
+        <div id="notifications-list" class="space-y-3">
+          <p class="text-sm text-center py-8" style="color: #64748b;">Chargement...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="edit-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0" style="background: rgba(0, 0, 0, 0.45);" onclick="closeEditModal()"></div>
+    <div class="relative w-full max-w-lg rounded-2xl border p-6" style="background: #ffffff; border-color: #e2e8f0;">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-xl font-bold" style="color: #1e293b;">Modifier le document</h2>
+        <button onclick="closeEditModal()" class="p-2 rounded-lg hover:bg-gray-100" style="color:#64748b;">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="edit-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-2" style="color:#334155;">Nom du document *</label>
+          <input id="edit-name" type="text" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2" style="background:#f8fafc;border-color:#e2e8f0;--tw-ring-color:#005EB8;color:#1e293b;">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2" style="color:#334155;">Catégorie *</label>
+          <select id="edit-category" required class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 cursor-pointer" style="background:#f8fafc;border-color:#e2e8f0;--tw-ring-color:#005EB8;color:#1e293b;">
+            <option value="Travail">Travail</option>
+            <option value="Ressources Humaines">Ressources Humaines</option>
+            <option value="Finance">Finance</option>
+            <option value="Juridique">Juridique</option>
+            <option value="Commercial">Commercial</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Projets">Projets</option>
+            <option value="IT / Technique">IT / Technique</option>
+            <option value="Personnel">Personnel</option>
+            <option value="Archive">Archive</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2" style="color:#334155;">Description</label>
+          <textarea id="edit-description" rows="4" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 resize-none" style="background:#f8fafc;border-color:#e2e8f0;--tw-ring-color:#005EB8;color:#1e293b;"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-2" style="color:#334155;">Ajouter document depuis fichier</label>
+          <input id="edit-file" type="file" class="w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2" style="background:#f8fafc;border-color:#e2e8f0;--tw-ring-color:#005EB8;color:#1e293b;">
+        </div>
+
+        <div class="flex gap-3 pt-1">
+          <button type="button" onclick="closeEditModal()" class="flex-1 px-4 py-3 rounded-xl border font-medium" style="border-color:#e2e8f0;color:#334155;background:#ffffff;">Annuler</button>
+          <button id="edit-save-btn" type="submit" class="flex-1 px-4 py-3 rounded-xl font-medium text-white" style="background:#005EB8;">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let currentEditDocumentId = null;
+
+    function logout() {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = 'firstscreen.html';
+    }
+
+    function syncAccount() {
+      try {
+        const raw = localStorage.getItem('currentUser');
+        if (!raw) return;
+        const user = JSON.parse(raw);
+        const nameEl = document.getElementById('account-name');
+        const emailEl = document.getElementById('account-email');
+        if (nameEl) nameEl.textContent = user.name || 'Mon Compte';
+        if (emailEl) emailEl.textContent = user.email || 'utilisateur@example.com';
+      } catch (_) {}
+    }
+
+    function relativeTime(iso) {
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return '';
+      const diff = Date.now() - d.getTime();
+      const m = Math.floor(diff / 60000);
+      if (m < 60) return `il y a ${Math.max(1, m)} min`;
+      const h = Math.floor(m / 60);
+      if (h < 24) return `il y a ${h} h`;
+      const days = Math.floor(h / 24);
+      return `il y a ${days} j`;
+    }
+
+    function isRelevantNotification(n) {
+      const type = String(n.notif_type || '').toLowerCase();
+      const title = String(n.title || '').toLowerCase();
+      const message = String(n.message || '').toLowerCase();
+      return (
+        type.includes('review') ||
+        type.includes('comment') ||
+        type.includes('assign') ||
+        title.includes('valid') ||
+        title.includes('rejet') ||
+        title.includes('correction') ||
+        title.includes('comment') ||
+        message.includes('approved') ||
+        message.includes('rejected') ||
+        message.includes('needs_correction') ||
+        message.includes('validé') ||
+        message.includes('rejet') ||
+        message.includes('correction') ||
+        message.includes('comment')
+      );
+    }
+
+    function parsePayload(payload) {
+      if (!payload) return {};
+      if (typeof payload === 'object') return payload;
+      try { return JSON.parse(String(payload)); } catch (_) { return {}; }
+    }
+
+    function extractDecision(n) {
+      const payload = parsePayload(n.payload_json);
+      const d = String(payload.decision || '').toLowerCase();
+      if (d === 'rejected' || d === 'needs_correction' || d === 'approved') return d;
+
+      const txt = `${String(n.title || '').toLowerCase()} ${String(n.message || '').toLowerCase()}`;
+      if (txt.includes('needs_correction') || txt.includes('correction')) return 'needs_correction';
+      if (txt.includes('rejected') || txt.includes('rejet')) return 'rejected';
+      if (txt.includes('approved') || txt.includes('valid')) return 'approved';
+      return '';
+    }
+
+    async function openForEdit(documentId) {
+      if (!documentId) return;
+      currentEditDocumentId = String(documentId);
+      const modal = document.getElementById('edit-modal');
+      const nameEl = document.getElementById('edit-name');
+      const catEl = document.getElementById('edit-category');
+      const descEl = document.getElementById('edit-description');
+      const saveBtn = document.getElementById('edit-save-btn');
+
+      nameEl.value = '';
+      catEl.value = 'Autre';
+      descEl.value = '';
+      document.getElementById('edit-file').value = '';
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Chargement...';
+      modal.classList.remove('hidden');
+
+      const userId = smartWathiqaAPI.getCurrentUserId();
+      const res = await smartWathiqaAPI.request(`/documents/${encodeURIComponent(documentId)}?user_id=${encodeURIComponent(userId)}`);
+      if (!res.isOk || !res.data) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Introuvable';
+        return;
+      }
+
+      const d = res.data;
+      nameEl.value = d.name || '';
+      catEl.value = d.category_name || 'Autre';
+      descEl.value = d.description || '';
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Enregistrer';
+    }
+
+    function closeEditModal() {
+      const modal = document.getElementById('edit-modal');
+      modal.classList.add('hidden');
+      currentEditDocumentId = null;
+    }
+
+    async function saveEditModal(event) {
+      event.preventDefault();
+      if (!currentEditDocumentId) return;
+
+      const saveBtn = document.getElementById('edit-save-btn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Enregistrement...';
+
+      const payload = {
+        name: document.getElementById('edit-name').value.trim(),
+        category: document.getElementById('edit-category').value,
+        description: document.getElementById('edit-description').value.trim()
+      };
+      const fileInput = document.getElementById('edit-file');
+      const selectedFile = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+      if (selectedFile) {
+        payload.file = selectedFile;
+      }
+
+      const result = await smartWathiqaAPI.updateDocument(currentEditDocumentId, payload);
+      if (!result.isOk) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Enregistrer';
+        return;
+      }
+
+      // Optional: resubmit after correction so reviewers see it in workflow again.
+      await smartWathiqaAPI.request(`/documents/${encodeURIComponent(currentEditDocumentId)}/submit`, {
+        method: 'POST',
+        body: JSON.stringify({})
+      });
+
+      closeEditModal();
+      await loadNotifications();
+    }
+
+    async function loadNotifications() {
+      const container = document.getElementById('notifications-list');
+      container.innerHTML = '<p class="text-sm text-center py-8" style="color: #64748b;">Chargement...</p>';
+
+      const res = await smartWathiqaAPI.request('/notifications?limit=100');
+      if (!res.isOk) {
+        container.innerHTML = '<p class="text-sm text-center py-8" style="color: #ef4444;">Impossible de charger les notifications</p>';
+        return;
+      }
+
+      const all = Array.isArray(res.data) ? res.data : [];
+      const list = all.filter(isRelevantNotification);
+
+      if (!list.length) {
+        container.innerHTML = '<p class="text-sm text-center py-8" style="color: #64748b;">Aucune notification</p>';
+        return;
+      }
+
+      container.innerHTML = list.map((n) => {
+        const payload = parsePayload(n.payload_json);
+        const decision = extractDecision(n);
+        const canModify = decision === 'rejected' || decision === 'needs_correction';
+        const documentId = payload.document_id ? String(payload.document_id) : '';
+        const unread = Number(n.is_read || 0) === 0;
+        return `
+          <div class="rounded-xl border p-4" style="background:${unread ? '#eff6ff' : '#ffffff'}; border-color:${unread ? '#bfdbfe' : '#e2e8f0'};">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-sm font-semibold" style="color: #1e293b;">${n.title || 'Notification'}</p>
+                <p class="text-sm mt-1" style="color: #64748b;">${n.message || ''}</p>
+                ${canModify && documentId ? `<button class="mt-3 px-3 py-1.5 rounded-lg text-xs font-semibold text-white" style="background:#005EB8;" onclick="event.stopPropagation(); openForEdit('${documentId}')">Modifier le document</button>` : ''}
+              </div>
+              <span class="text-xs whitespace-nowrap" style="color: #94a3b8;">${relativeTime(n.created_at)}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('refresh-btn').addEventListener('click', loadNotifications);
+    document.getElementById('edit-form').addEventListener('submit', saveEditModal);
+    syncAccount();
+    loadNotifications();
+    setInterval(loadNotifications, 15000);
+  </script>
+</body>
+</html>

@@ -6,6 +6,7 @@ let editingDoc = null;
 let deletingDoc = null;
 let currentRecordCount = 0;
 let selectedDocuments = new Set();
+let handledEditQuery = false;
 
 function getStoredFavoriteIds() {
   try {
@@ -294,6 +295,28 @@ async function init() {
   }
 
   setupEventListeners();
+  handleEditFromQuery();
+}
+
+function handleEditFromQuery() {
+  if (handledEditQuery) return;
+  handledEditQuery = true;
+
+  const params = new URLSearchParams(window.location.search);
+  const editId = params.get('edit');
+  if (!editId) return;
+
+  const doc = documents.find(d =>
+    String(d.__backendId) === String(editId) || String(d.id) === String(editId)
+  );
+
+  if (!doc) {
+    showToast('Document introuvable pour modification', 'error');
+    return;
+  }
+
+  openModal(doc);
+  showToast('Modification demandée depuis notification', 'success');
 }
 
 // Get document type icon

@@ -1,0 +1,350 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Directeur - SmartWathiqa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    input, select, textarea {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border-color: #cbd5e1 !important;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #94a3b8 !important;
+    }
+    option {
+      color: #0f172a;
+      background: #ffffff;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <div class="flex min-h-screen">
+    <aside class="w-64 bg-[#005EB8] text-white p-4">
+      <div class="mb-4">
+        <h2 class="text-lg font-bold">SmartWathiqa</h2>
+      </div>
+      <div class="mb-4 border-b border-white/30 pb-4">
+        <p id="account-name" class="text-sm font-semibold">Mon Compte</p>
+        <p id="account-email" class="text-xs text-blue-100">utilisateur@example.com</p>
+      </div>
+      <nav class="space-y-1.5 text-sm">
+        <a href="dashboarddirecteur.html" class="block px-3 py-2.5 rounded-lg bg-white/20">Tableau de bord</a>
+        <a href="alldocuments.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Documents équipe</a>
+        <a href="parametreadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Paramètres</a>
+        <button onclick="logout()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/15">Déconnexion</button>
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-4 space-y-4">
+      <header class="bg-white rounded-2xl border border-slate-200 p-5">
+        <h1 class="text-xl font-bold text-slate-900">Espace Directeur</h1>
+        <p class="text-sm text-slate-600 mt-1">Validation, supervision d'équipe et conformité documentaire.</p>
+      </header>
+
+      <section class="grid grid-cols-2 lg:grid-cols-6 gap-3">
+        <div class="bg-white border rounded-xl p-3"><p class="text-xs text-slate-500">À valider</p><p id="kpi-pending" class="text-xl font-bold">0</p></div>
+        <div class="bg-white border rounded-xl p-3"><p class="text-xs text-slate-500">Validés aujourd'hui</p><p id="kpi-approved" class="text-xl font-bold">0</p></div>
+        <div class="bg-white border rounded-xl p-3"><p class="text-xs text-slate-500">Rejetés/Corrections</p><p id="kpi-rejected" class="text-xl font-bold">0</p></div>
+        <div class="bg-white border rounded-xl p-3"><p class="text-xs text-slate-500">En retard</p><p id="kpi-overdue" class="text-xl font-bold">0</p></div>
+        <div class="bg-white border rounded-xl p-3"><p class="text-xs text-slate-500">Délai moyen</p><p id="kpi-speed" class="text-xl font-bold">0h</p></div>
+        <div class="bg-white border rounded-xl p-3"><p class="text-xs text-slate-500">Taux d'approbation</p><p id="kpi-rate" class="text-xl font-bold">0%</p></div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="xl:col-span-2 bg-white border rounded-xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-semibold text-slate-900">File de validation</h2>
+            <div class="flex gap-2">
+              <select id="queue-filter" class="border rounded-lg px-2 py-1 text-sm">
+                <option value="pending">En attente</option>
+                <option value="approved">Approuvés</option>
+                <option value="rejected">Rejetés</option>
+                <option value="needs_correction">Correction demandée</option>
+                <option value="all">Tous</option>
+              </select>
+              <button onclick="loadQueue()" class="px-3 py-1 rounded bg-[#005EB8] text-white text-sm">Actualiser</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead>
+                <tr class="border-b text-slate-500 text-left">
+                  <th class="py-2">Document</th>
+                  <th class="py-2">Employé</th>
+                  <th class="py-2">Statut</th>
+                  <th class="py-2">Délégation</th>
+                  <th class="py-2">Décision</th>
+                </tr>
+              </thead>
+              <tbody id="queue-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="bg-white border rounded-xl p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">Aperçu document</h2>
+          <p id="preview-title" class="text-sm font-medium text-slate-700 mb-2">Sélectionnez un document</p>
+          <div class="h-80 border rounded-lg overflow-hidden bg-slate-50">
+            <iframe id="preview-frame" class="w-full h-full" title="Aperçu"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="bg-white border rounded-xl p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">Supervision équipe</h2>
+          <div id="team-list" class="space-y-2 text-sm"></div>
+        </div>
+
+        <div class="bg-white border rounded-xl p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">Conformité / Risques</h2>
+          <div id="risk-list" class="space-y-2 text-sm"></div>
+        </div>
+
+        <div class="bg-white border rounded-xl p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">Analytique décisions</h2>
+          <div class="text-sm text-slate-700 mb-3">
+            <p class="font-medium mb-1">Tendance 7 jours</p>
+            <div id="trend-list" class="space-y-1"></div>
+          </div>
+          <div class="text-sm text-slate-700">
+            <p class="font-medium mb-1">Raisons de rejet/correction</p>
+            <div id="reasons-list" class="space-y-1"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white border rounded-xl p-4">
+        <h2 class="font-semibold text-slate-900 mb-3">Différences d'accès</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+          <div class="border rounded-lg p-3 bg-emerald-50 border-emerald-200">
+            <p class="font-semibold text-emerald-800">Directeur</p>
+            <p class="text-emerald-700">Consulter, valider, rejeter, demander correction, déléguer, définir priorité et échéance.</p>
+          </div>
+          <div class="border rounded-lg p-3 bg-blue-50 border-blue-200">
+            <p class="font-semibold text-blue-800">Employé</p>
+            <p class="text-blue-700">Créer/modifier ses documents et suivre les retours de validation.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const API_BASES = ['http://localhost:3001/api', 'http://127.0.0.1:3001/api'];
+
+    function logout() {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = 'firstscreen.html';
+    }
+
+    function currentUser() {
+      try { return JSON.parse(localStorage.getItem('currentUser') || 'null'); } catch { return null; }
+    }
+
+    function syncAccount() {
+      const u = currentUser();
+      if (!u) return;
+      const n = document.getElementById('account-name');
+      const e = document.getElementById('account-email');
+      if (n) n.textContent = u.name || 'Mon Compte';
+      if (e) e.textContent = u.email || 'utilisateur@example.com';
+    }
+
+    async function api(path, options = {}) {
+      let last = 'Serveur indisponible';
+      const u = currentUser();
+      const authHeaders = {
+        'x-user-role': (u && u.role) ? String(u.role) : 'directeur',
+        'x-user-id': (u && u.id) ? String(u.id) : '1'
+      };
+      for (const base of API_BASES) {
+        try {
+          const mergedOptions = {
+            ...options,
+            headers: {
+              ...authHeaders,
+              ...(options.headers || {})
+            }
+          };
+          const res = await fetch(base + path, mergedOptions);
+          const txt = await res.text();
+          let json = null;
+          try { json = txt ? JSON.parse(txt) : null; } catch { json = null; }
+          if (!json || !res.ok || !json.success) {
+            last = json?.error || `HTTP ${res.status}`;
+            continue;
+          }
+          return json.data;
+        } catch (e) {
+          last = e.message;
+        }
+      }
+      throw new Error(last);
+    }
+
+    function fileUrl(path) {
+      if (!path) return '';
+      if (path.startsWith('http')) return path;
+      return 'http://localhost:3001' + path;
+    }
+
+    async function loadSummary() {
+      const s = await api('/director/summary');
+      document.getElementById('kpi-pending').textContent = s.pending ?? 0;
+      document.getElementById('kpi-approved').textContent = s.approved_today ?? 0;
+      document.getElementById('kpi-rejected').textContent = s.rejected_total ?? 0;
+      document.getElementById('kpi-overdue').textContent = s.overdue ?? 0;
+      document.getElementById('kpi-speed').textContent = `${s.avg_validation_hours ?? 0}h`;
+      document.getElementById('kpi-rate').textContent = `${s.approval_rate ?? 0}%`;
+    }
+
+    function badge(status) {
+      const map = {
+        pending: 'bg-amber-100 text-amber-800',
+        approved: 'bg-emerald-100 text-emerald-800',
+        rejected: 'bg-red-100 text-red-800',
+        needs_correction: 'bg-orange-100 text-orange-800'
+      };
+      return map[status] || 'bg-slate-100 text-slate-700';
+    }
+
+    async function loadQueue() {
+      const filter = document.getElementById('queue-filter').value;
+      const rows = await api(`/director/queue?status=${encodeURIComponent(filter)}&limit=30`);
+      const body = document.getElementById('queue-body');
+      if (!rows.length) {
+        body.innerHTML = '<tr><td colspan="5" class="py-3 text-slate-500">Aucun document.</td></tr>';
+        return;
+      }
+
+      const team = await api('/director/team-overview');
+      const options = team.map(t => `<option value="${t.id}">${t.name || t.email}</option>`).join('');
+
+      body.innerHTML = rows.map(r => `
+        <tr class="border-b align-top">
+          <td class="py-2 pr-2">
+            <button class="text-left text-[#005EB8] hover:underline" onclick="previewDoc('${(r.file_path || '').replace(/'/g, "\\'")}', '${(r.name || '').replace(/'/g, "\\'")}')">${r.name || 'Sans nom'}</button>
+            <div class="text-xs text-slate-500">${r.category_name || '-'} • ${r.file_type || '-'}</div>
+          </td>
+          <td class="py-2 pr-2 text-slate-700">${r.owner_name || '-'}<div class="text-xs text-slate-500">${r.owner_email || ''}</div></td>
+          <td class="py-2 pr-2"><span class="px-2 py-1 rounded text-xs ${badge(r.review_status)}">${r.review_status}</span></td>
+          <td class="py-2 pr-2">
+            <select id="assignee-${r.id}" class="border rounded px-2 py-1 text-xs mb-1 w-full">
+              <option value="">Assigner...</option>${options}
+            </select>
+            <input id="due-${r.id}" type="date" class="border rounded px-2 py-1 text-xs w-full mb-1" />
+            <select id="prio-${r.id}" class="border rounded px-2 py-1 text-xs w-full">
+              <option value="high">Haute</option><option value="medium" selected>Moyenne</option><option value="low">Basse</option>
+            </select>
+            <button class="mt-1 text-xs px-2 py-1 rounded bg-slate-800 text-white" onclick="assignDoc(${r.id})">Déléguer</button>
+          </td>
+          <td class="py-2">
+            <input id="comment-${r.id}" class="border rounded px-2 py-1 text-xs w-full mb-1" placeholder="Commentaire" />
+            <div class="flex gap-1">
+              <button class="text-xs px-2 py-1 rounded bg-emerald-600 text-white" onclick="decide(${r.id}, 'approved')">Valider</button>
+              <button class="text-xs px-2 py-1 rounded bg-orange-500 text-white" onclick="decide(${r.id}, 'needs_correction')">Correction</button>
+              <button class="text-xs px-2 py-1 rounded bg-red-600 text-white" onclick="decide(${r.id}, 'rejected')">Rejeter</button>
+            </div>
+          </td>
+        </tr>`).join('');
+    }
+
+    function previewDoc(path, name) {
+      document.getElementById('preview-title').textContent = name || 'Aperçu';
+      document.getElementById('preview-frame').src = fileUrl(path);
+    }
+
+    async function decide(documentId, decision) {
+      const u = currentUser();
+      const comment = (document.getElementById(`comment-${documentId}`)?.value || '').trim();
+      await api(`/director/decision/${documentId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewer_user_id: u?.id || null, decision, comment })
+      });
+      await Promise.all([loadSummary(), loadQueue(), loadAnalytics(), loadRiskAlerts()]);
+    }
+
+    async function assignDoc(documentId) {
+      const u = currentUser();
+      const assigned = document.getElementById(`assignee-${documentId}`)?.value || null;
+      const due = document.getElementById(`due-${documentId}`)?.value || null;
+      const prio = document.getElementById(`prio-${documentId}`)?.value || 'medium';
+      const comment = (document.getElementById(`comment-${documentId}`)?.value || '').trim();
+      await api(`/director/assign/${documentId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reviewer_user_id: u?.id || null, assigned_to_user_id: assigned || null, due_date: due || null, priority: prio, comment })
+      });
+      await Promise.all([loadSummary(), loadQueue(), loadTeam()]);
+    }
+
+    async function loadTeam() {
+      const rows = await api('/director/team-overview');
+      const list = document.getElementById('team-list');
+      if (!rows.length) {
+        list.innerHTML = '<p class="text-slate-500">Aucune donnée équipe.</p>';
+        return;
+      }
+      list.innerHTML = rows.slice(0, 8).map(r => `
+        <div class="border rounded p-2">
+          <p class="font-medium text-slate-900">${r.name || r.email}</p>
+          <p class="text-xs text-slate-500">En attente: ${r.pending_docs || 0} • Total: ${r.total_docs || 0}</p>
+        </div>`).join('');
+    }
+
+    async function loadRiskAlerts() {
+      const rows = await api('/director/risk-alerts');
+      const list = document.getElementById('risk-list');
+      list.innerHTML = rows.map(a => {
+        const cls = a.level === 'danger' ? 'bg-red-50 border-red-200 text-red-700' : (a.level === 'warning' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-emerald-50 border-emerald-200 text-emerald-700');
+        return `<div class="border rounded p-2 ${cls}">${a.message}</div>`;
+      }).join('');
+    }
+
+    async function loadAnalytics() {
+      const data = await api('/director/analytics');
+      const trend = document.getElementById('trend-list');
+      const reasons = document.getElementById('reasons-list');
+
+      if (!data.trend || !data.trend.length) {
+        trend.innerHTML = '<p class="text-slate-500">Pas de tendance disponible.</p>';
+      } else {
+        trend.innerHTML = data.trend.map(t => `<div class="border rounded px-2 py-1">${String(t.day).slice(0, 10)} - ✅ ${t.approved_count || 0} / ❌ ${t.rejected_count || 0}</div>`).join('');
+      }
+
+      if (!data.reasons || !data.reasons.length) {
+        reasons.innerHTML = '<p class="text-slate-500">Aucune raison enregistrée.</p>';
+      } else {
+        reasons.innerHTML = data.reasons.map(r => `<div class="border rounded px-2 py-1">${r.reason} <span class="text-slate-500">(${r.count})</span></div>`).join('');
+      }
+    }
+
+    async function init() {
+      syncAccount();
+      await Promise.all([
+        loadSummary(),
+        loadQueue(),
+        loadTeam(),
+        loadRiskAlerts(),
+        loadAnalytics()
+      ]);
+
+      setInterval(async () => {
+        try {
+          await Promise.all([loadSummary(), loadQueue(), loadTeam(), loadRiskAlerts(), loadAnalytics()]);
+        } catch (_) {}
+      }, 15000);
+    }
+
+    init().catch((e) => {
+      alert('Erreur dashboard directeur: ' + e.message);
+    });
+  </script>
+</body>
+</html>

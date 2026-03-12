@@ -490,6 +490,56 @@ function showRecentActivity() {
   }
 }
 
+async function showEmployerNotifications() {
+  const section = document.getElementById('recent-activity');
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    section.innerHTML = '<p class="text-sm text-center py-4" style="color: #64748b;">Chargement des notifications...</p>';
+  }
+
+  try {
+    const result = await smartWathiqaAPI.request('/notifications?limit=50');
+    if (!result.isOk) {
+      if (section) {
+        section.innerHTML = '<p class="text-sm text-center py-4" style="color: #64748b;">Impossible de charger les notifications</p>';
+      }
+      showToast('Impossible de charger les notifications', 'error');
+      return;
+    }
+
+    const items = Array.isArray(result.data) ? result.data : [];
+    const visible = items.filter((n) => {
+      const t = String(n.notif_type || '').toLowerCase();
+      return t.includes('review') || t.includes('comment') || t.includes('assign');
+    });
+
+    if (!section) return;
+
+    if (!visible.length) {
+      section.innerHTML = '<p class="text-sm text-center py-4" style="color: #64748b;">Aucune notification</p>';
+      return;
+    }
+
+    section.innerHTML = visible.map((n) => {
+      const msg = n.message || '';
+      const when = formatRelativeTime(n.created_at);
+      const unread = Number(n.is_read || 0) === 0;
+      return `
+        <div class="rounded-lg border p-3" style="background:${unread ? '#eff6ff' : '#ffffff'}; border-color:${unread ? '#bfdbfe' : '#e2e8f0'};">
+          <p class="text-sm font-semibold" style="color:#1e293b;">${n.title || 'Notification'}</p>
+          <p class="text-xs mt-1" style="color:#64748b;">${msg}</p>
+          <p class="text-[11px] mt-1" style="color:#94a3b8;">${when}</p>
+        </div>
+      `;
+    }).join('');
+  } catch (error) {
+    if (section) {
+      section.innerHTML = '<p class="text-sm text-center py-4" style="color: #64748b;">Erreur lors du chargement</p>';
+    }
+    showToast('Erreur de chargement des notifications', 'error');
+  }
+}
+
 function showStorageUsage() {
   const totalSize = documents.reduce((sum, doc) => {
     const size = doc.size || '0 MB';
@@ -653,18 +703,13 @@ function setupEventListeners() {
         formData.append('category', document.getElementById('doc-category').value);
         formData.append('description', document.getElementById('doc-description').value.trim());
         formData.append('file', file);
-        formData.append('user_id', 1);
+        formData.append('user_id', String(smartWathiqaAPI.getCurrentUserId()));
 
-        // Send to API with FormData
-        const endpoint = `${smartWathiqaAPI.baseURL}/documents`;
-        const response = await fetch(endpoint, {
+        // Send to API with auth headers from api-client
+        result = await smartWathiqaAPI.request('/documents', {
           method: 'POST',
           body: formData
-          // Don't set Content-Type, browser will set it with boundary
         });
-
-        const data = await response.json();
-        result = response.ok ? { isOk: true, data } : { isOk: false, error: data.error };
       }
 
       if (result.isOk) {

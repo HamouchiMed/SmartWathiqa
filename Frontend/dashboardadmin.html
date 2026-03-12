@@ -123,9 +123,15 @@
 
     async function apiGet(path) {
       let lastError = 'Serveur indisponible';
+      let user = null;
+      try { user = JSON.parse(localStorage.getItem('currentUser') || 'null'); } catch (_) { user = null; }
+      const authHeaders = {
+        'x-user-role': (user && user.role) ? String(user.role) : 'admin',
+        'x-user-id': (user && user.id) ? String(user.id) : '1'
+      };
       for (const base of API_BASES) {
         try {
-          const resp = await fetch(base + path);
+          const resp = await fetch(base + path, { headers: authHeaders });
           const txt = await resp.text();
           let json = null;
           try {
@@ -153,11 +159,17 @@
 
     async function apiPost(path, body) {
       let lastError = 'Serveur indisponible';
+      let user = null;
+      try { user = JSON.parse(localStorage.getItem('currentUser') || 'null'); } catch (_) { user = null; }
+      const authHeaders = {
+        'x-user-role': (user && user.role) ? String(user.role) : 'admin',
+        'x-user-id': (user && user.id) ? String(user.id) : '1'
+      };
       for (const base of API_BASES) {
         try {
           const resp = await fetch(base + path, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...authHeaders },
             body: JSON.stringify(body || {})
           });
           const txt = await resp.text();
@@ -187,9 +199,15 @@
 
     async function apiDelete(path) {
       let lastError = 'Serveur indisponible';
+      let user = null;
+      try { user = JSON.parse(localStorage.getItem('currentUser') || 'null'); } catch (_) { user = null; }
+      const authHeaders = {
+        'x-user-role': (user && user.role) ? String(user.role) : 'admin',
+        'x-user-id': (user && user.id) ? String(user.id) : '1'
+      };
       for (const base of API_BASES) {
         try {
-          const resp = await fetch(base + path, { method: 'DELETE' });
+          const resp = await fetch(base + path, { method: 'DELETE', headers: authHeaders });
           const txt = await resp.text();
           let json = null;
           try {

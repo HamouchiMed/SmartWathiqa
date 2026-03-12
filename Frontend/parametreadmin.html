@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paramètres Admin - SmartWathiqa</title>
+  <title>Paramètres Plateforme - SmartWathiqa</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 min-h-screen">
@@ -12,35 +12,60 @@
       <div class="mb-4">
         <h2 class="text-lg font-bold">SmartWathiqa</h2>
       </div>
+      <div class="mb-4 border-b border-white/30 pb-4">
+        <p id="account-name" class="text-sm font-semibold">Mon Compte</p>
+        <p id="account-email" class="text-xs text-blue-100">utilisateur@example.com</p>
+      </div>
       <nav class="space-y-1.5 text-sm">
-        <a href="dashboardadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Tableau de bord</a>
-        <a href="alldocuments.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Documents</a>
+        <a id="nav-dashboard" href="dashboardadmin.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Tableau de bord</a>
+        <a href="alldocuments.html" class="block px-3 py-2.5 rounded-lg hover:bg-white/15">Documents équipe</a>
         <a href="parametreadmin.html" class="block px-3 py-2.5 rounded-lg bg-white/20">Paramètres</a>
         <button onclick="logout()" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/15">Déconnexion</button>
       </nav>
     </aside>
 
-    <main class="flex-1 p-3 md:p-4 space-y-4">
-      <header class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5">
-        <h1 class="text-xl font-bold text-slate-900">Paramètres Admin</h1>
-        <p class="text-slate-600 mt-1 text-sm">Personnalisez les paramètres de l'espace administrateur.</p>
+    <main class="flex-1 p-4 space-y-4">
+      <header class="bg-white rounded-2xl border border-slate-200 p-5">
+        <h1 class="text-xl font-bold text-slate-900">Paramètres Plateforme</h1>
+        <p class="text-sm text-slate-600 mt-1">Configuration validation, sécurité, conformité, accès et sauvegarde.</p>
       </header>
 
-      <section class="grid grid-cols-1 gap-4">
+      <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <div class="bg-white rounded-xl border border-slate-200 p-4">
-          <h2 class="font-semibold text-slate-900 mb-3">Sécurité Admin</h2>
-          <div class="space-y-3 text-sm">
-            <label class="flex items-center justify-between gap-2 border rounded-lg px-3 py-2">
-              <span>Exiger confirmation suppression</span>
-              <input id="cfg-confirm-delete" type="checkbox" checked>
+          <h2 class="font-semibold text-slate-900 mb-3">1) Politique de validation</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <label class="block">SLA défaut (jours)
+              <input id="sla-days" type="number" min="1" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900" />
             </label>
-            <label class="flex items-center justify-between gap-2 border rounded-lg px-3 py-2">
-              <span>Afficher alertes sécurité</span>
-              <input id="cfg-security-alerts" type="checkbox" checked>
+            <label class="block">Priorité défaut
+              <select id="default-priority" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900">
+                <option value="high">Haute</option><option value="medium">Moyenne</option><option value="low">Basse</option>
+              </select>
             </label>
-            <label class="flex items-center justify-between gap-2 border rounded-lg px-3 py-2">
-              <span>Autoriser export CSV</span>
-              <input id="cfg-export" type="checkbox" checked>
+            <label class="block">Escalade auto (jours)
+              <input id="escalation-days" type="number" min="1" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900" />
+            </label>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">2) Règles workflow</h2>
+          <div class="space-y-2 text-sm">
+            <label class="flex items-center justify-between border rounded-lg px-3 py-2">
+              <span>Commentaire obligatoire en rejet/correction</span>
+              <input id="require-comment" type="checkbox" />
+            </label>
+            <label class="flex items-center justify-between border rounded-lg px-3 py-2">
+              <span>Catégorie obligatoire</span>
+              <input id="meta-category" type="checkbox" />
+            </label>
+            <label class="flex items-center justify-between border rounded-lg px-3 py-2">
+              <span>Description obligatoire</span>
+              <input id="meta-description" type="checkbox" />
+            </label>
+            <label class="flex items-center justify-between border rounded-lg px-3 py-2">
+              <span>Type de fichier obligatoire</span>
+              <input id="meta-type" type="checkbox" />
             </label>
           </div>
         </div>
@@ -48,109 +73,371 @@
 
       <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <div class="bg-white rounded-xl border border-slate-200 p-4">
-          <h2 class="font-semibold text-slate-900 mb-3">Système</h2>
-          <div class="space-y-2 text-sm text-slate-700">
-            <p>DB: <span id="sys-db" class="font-medium">-</span></p>
-            <p>Taille DB: <span id="sys-db-size" class="font-medium">-</span></p>
-            <p>Stockage fichiers: <span id="sys-files" class="font-medium">-</span></p>
-            <p>Uptime API: <span id="sys-uptime" class="font-medium">-</span></p>
+          <h2 class="font-semibold text-slate-900 mb-3">3) Notifications</h2>
+          <div class="space-y-2 text-sm">
+            <label class="flex items-center justify-between border rounded-lg px-3 py-2"><span>En attente > SLA</span><input id="notif-over-sla" type="checkbox" /></label>
+            <label class="flex items-center justify-between border rounded-lg px-3 py-2"><span>Alerte affectation</span><input id="notif-assignment" type="checkbox" /></label>
+            <label class="flex items-center justify-between border rounded-lg px-3 py-2"><span>Correction demandée</span><input id="notif-correction" type="checkbox" /></label>
+            <div class="border rounded-lg p-3">
+              <p class="font-medium mb-2">Destinataires</p>
+              <label class="mr-3"><input id="rec-directeur" type="checkbox" /> Directeur</label>
+              <label class="mr-3"><input id="rec-admin" type="checkbox" /> Admin</label>
+              <label><input id="rec-employer" type="checkbox" /> Employé</label>
+            </div>
           </div>
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 p-4">
-          <h2 class="font-semibold text-slate-900 mb-3">Actions</h2>
-          <div class="flex flex-wrap gap-2">
-            <button onclick="saveAdminSettings()" class="px-3 py-2 rounded bg-[#005EB8] text-white text-sm">Enregistrer</button>
-            <button onclick="resetAdminSettings()" class="px-3 py-2 rounded border border-slate-300 text-sm">Réinitialiser</button>
-            <button onclick="refreshSystemHealth()" class="px-3 py-2 rounded border border-slate-300 text-sm">Actualiser état</button>
+          <h2 class="font-semibold text-slate-900 mb-3">4) Accès équipe (RBAC)</h2>
+          <div class="space-y-2 text-sm">
+            <div class="border rounded-lg p-3">
+              <p class="font-medium mb-2">Directeur</p>
+              <label class="mr-3"><input id="perm-dir-validate" type="checkbox" /> Valider</label>
+              <label class="mr-3"><input id="perm-dir-assign" type="checkbox" /> Assigner</label>
+              <label><input id="perm-dir-view" type="checkbox" /> Voir</label>
+            </div>
+            <div class="border rounded-lg p-3">
+              <p class="font-medium mb-2">Admin</p>
+              <label class="mr-3"><input id="perm-admin-validate" type="checkbox" /> Valider</label>
+              <label class="mr-3"><input id="perm-admin-assign" type="checkbox" /> Assigner</label>
+              <label><input id="perm-admin-view" type="checkbox" /> Voir</label>
+            </div>
+            <div class="border rounded-lg p-3">
+              <p class="font-medium mb-2">Employé</p>
+              <label class="mr-3"><input id="perm-emp-validate" type="checkbox" /> Valider</label>
+              <label class="mr-3"><input id="perm-emp-assign" type="checkbox" /> Assigner</label>
+              <label><input id="perm-emp-view" type="checkbox" /> Voir</label>
+            </div>
           </div>
-          <p id="save-msg" class="text-sm text-emerald-700 mt-3"></p>
         </div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">5) Conformité</h2>
+          <div class="space-y-3 text-sm">
+            <label class="block">Catégories obligatoires (séparées par virgule)
+              <input id="mandatory-categories" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900" />
+            </label>
+            <label class="block">Types obligatoires (séparés par virgule)
+              <input id="mandatory-types" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900" />
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <label>Rétention (mois)
+                <input id="retention-months" type="number" min="1" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900" />
+              </label>
+              <label>Auto-archive (jours)
+                <input id="auto-archive-days" type="number" min="1" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900" />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">6) Sécurité</h2>
+          <div class="space-y-2 text-sm">
+            <label class="block">Timeout session (minutes)
+              <input id="session-timeout" type="number" min="5" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900" />
+            </label>
+            <label class="block">Changement MDP forcé (jours)
+              <input id="force-pass-days" type="number" min="1" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900" />
+            </label>
+            <label class="flex items-center justify-between border rounded-lg px-3 py-2">
+              <span>Restreindre les exports</span>
+              <input id="restrict-exports" type="checkbox" />
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">7) Templates & labels</h2>
+          <div class="space-y-3 text-sm">
+            <label class="block">Raisons de rejet (une par ligne)
+              <textarea id="tmpl-reject" rows="4" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900"></textarea>
+            </label>
+            <label class="block">Raisons de correction (une par ligne)
+              <textarea id="tmpl-correction" rows="4" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900"></textarea>
+            </label>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-4">
+          <h2 class="font-semibold text-slate-900 mb-3">8) Intégrations & backups</h2>
+          <div class="space-y-3 text-sm">
+            <label class="block">Fréquence backup
+              <select id="backup-schedule" class="mt-1 w-full border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900">
+                <option value="daily">Quotidien</option>
+                <option value="weekly">Hebdomadaire</option>
+                <option value="monthly">Mensuel</option>
+              </select>
+            </label>
+            <div class="border rounded-lg p-3">
+              <p>DB: <span id="health-db" class="font-medium">-</span></p>
+              <p>Taille DB: <span id="health-db-size" class="font-medium">-</span></p>
+              <p>Fichiers uploads: <span id="health-files" class="font-medium">-</span></p>
+              <p>Uptime API: <span id="health-uptime" class="font-medium">-</span></p>
+              <p>Dernier backup: <span id="last-backup" class="font-medium">-</span></p>
+            </div>
+            <div class="flex gap-2">
+              <button id="refresh-health" class="px-3 py-2 rounded border border-slate-300">Actualiser état</button>
+              <button id="backup-now" class="px-3 py-2 rounded bg-[#005EB8] text-white">Backup now</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-xl border border-slate-200 p-4 flex flex-wrap items-center gap-2">
+        <button id="save-settings" class="px-4 py-2 rounded bg-[#005EB8] text-white">Enregistrer tous les paramètres</button>
+        <button id="reset-defaults" class="px-4 py-2 rounded border border-slate-300">Réinitialiser défauts</button>
+        <p id="save-msg" class="text-sm text-emerald-700"></p>
       </section>
     </main>
   </div>
 
   <script>
     const API_BASES = ['http://localhost:3001/api', 'http://127.0.0.1:3001/api'];
-    const SETTINGS_KEY = 'adminSettingsSmartWathiqa';
 
     function logout() {
-      localStorage.removeItem('currentUser');
+      localStorage.clear();
       sessionStorage.clear();
       window.location.href = 'firstscreen.html';
     }
 
-    function fmtUptime(seconds) {
-      const s = Number(seconds || 0);
-      const h = Math.floor(s / 3600);
-      const m = Math.floor((s % 3600) / 60);
-      return `${h}h ${m}m`;
+    function currentUser() {
+      try { return JSON.parse(localStorage.getItem('currentUser') || 'null'); } catch { return null; }
     }
 
-    async function apiGet(path) {
-      let lastErr = 'Serveur indisponible';
+    function syncUserUI() {
+      const u = currentUser();
+      if (!u) return;
+      document.getElementById('account-name').textContent = u.name || 'Mon Compte';
+      document.getElementById('account-email').textContent = u.email || 'utilisateur@example.com';
+      if (u.role === 'directeur') {
+        document.getElementById('nav-dashboard').href = 'dashboarddirecteur.html';
+      } else {
+        document.getElementById('nav-dashboard').href = 'dashboardadmin.html';
+      }
+    }
+
+    async function api(path, options = {}) {
+      let last = 'Serveur indisponible';
+      const u = currentUser();
+      const authHeaders = {
+        'x-user-role': (u && u.role) ? String(u.role) : 'directeur',
+        'x-user-id': (u && u.id) ? String(u.id) : '1'
+      };
       for (const base of API_BASES) {
         try {
-          const r = await fetch(base + path);
+          const mergedOptions = {
+            ...options,
+            headers: {
+              ...authHeaders,
+              ...(options.headers || {})
+            }
+          };
+          const r = await fetch(base + path, mergedOptions);
           const t = await r.text();
-          const j = t ? JSON.parse(t) : null;
-          if (!r.ok || !j?.success) {
-            lastErr = j?.error || `HTTP ${r.status}`;
+          let j = null;
+          try { j = t ? JSON.parse(t) : null; } catch { j = null; }
+          if (!j || !r.ok || !j.success) {
+            last = j?.error || `HTTP ${r.status}`;
             continue;
           }
           return j.data;
         } catch (e) {
-          lastErr = e.message;
+          last = e.message;
         }
       }
-      throw new Error(lastErr);
+      throw new Error(last);
     }
 
-    function loadAdminSettings() {
-      const raw = localStorage.getItem(SETTINGS_KEY);
-      const cfg = raw ? JSON.parse(raw) : {
-        confirmDelete: true,
-        securityAlerts: true,
-        exportCsv: true
+    function joinArray(v) {
+      return Array.isArray(v) ? v.join(', ') : '';
+    }
+
+    function splitCsv(v) {
+      return String(v || '').split(',').map(x => x.trim()).filter(Boolean);
+    }
+
+    function joinLines(v) {
+      return Array.isArray(v) ? v.join('\n') : '';
+    }
+
+    function splitLines(v) {
+      return String(v || '').split('\n').map(x => x.trim()).filter(Boolean);
+    }
+
+    function fillForm(s) {
+      document.getElementById('sla-days').value = s.validation_policy.default_sla_days;
+      document.getElementById('default-priority').value = s.validation_policy.default_priority;
+      document.getElementById('escalation-days').value = s.validation_policy.auto_escalation_days;
+
+      document.getElementById('require-comment').checked = !!s.workflow_rules.require_comment_on_reject_or_correction;
+      document.getElementById('meta-category').checked = !!s.workflow_rules.required_metadata.category;
+      document.getElementById('meta-description').checked = !!s.workflow_rules.required_metadata.description;
+      document.getElementById('meta-type').checked = !!s.workflow_rules.required_metadata.file_type;
+
+      document.getElementById('notif-over-sla').checked = !!s.notifications.pending_over_sla;
+      document.getElementById('notif-assignment').checked = !!s.notifications.assignment_alert;
+      document.getElementById('notif-correction').checked = !!s.notifications.correction_requested;
+      document.getElementById('rec-directeur').checked = !!s.notifications.recipients.directeur;
+      document.getElementById('rec-admin').checked = !!s.notifications.recipients.admin;
+      document.getElementById('rec-employer').checked = !!s.notifications.recipients.employer;
+
+      document.getElementById('perm-dir-validate').checked = !!s.team_access.directeur.validate;
+      document.getElementById('perm-dir-assign').checked = !!s.team_access.directeur.assign;
+      document.getElementById('perm-dir-view').checked = !!s.team_access.directeur.view;
+      document.getElementById('perm-admin-validate').checked = !!s.team_access.admin.validate;
+      document.getElementById('perm-admin-assign').checked = !!s.team_access.admin.assign;
+      document.getElementById('perm-admin-view').checked = !!s.team_access.admin.view;
+      document.getElementById('perm-emp-validate').checked = !!s.team_access.employer.validate;
+      document.getElementById('perm-emp-assign').checked = !!s.team_access.employer.assign;
+      document.getElementById('perm-emp-view').checked = !!s.team_access.employer.view;
+
+      document.getElementById('mandatory-categories').value = joinArray(s.compliance.mandatory_categories);
+      document.getElementById('mandatory-types').value = joinArray(s.compliance.mandatory_types);
+      document.getElementById('retention-months').value = s.compliance.retention_months;
+      document.getElementById('auto-archive-days').value = s.compliance.auto_archive_days;
+
+      document.getElementById('session-timeout').value = s.security.session_timeout_minutes;
+      document.getElementById('force-pass-days').value = s.security.force_password_change_days;
+      document.getElementById('restrict-exports').checked = !!s.security.restrict_exports;
+
+      document.getElementById('tmpl-reject').value = joinLines(s.templates.reject_reasons);
+      document.getElementById('tmpl-correction').value = joinLines(s.templates.correction_reasons);
+
+      document.getElementById('backup-schedule').value = s.integrations.backup_schedule || 'daily';
+      document.getElementById('last-backup').textContent = s.integrations.last_backup_at || '-';
+    }
+
+    function collectForm() {
+      return {
+        validation_policy: {
+          default_sla_days: Number(document.getElementById('sla-days').value || 3),
+          default_priority: document.getElementById('default-priority').value || 'medium',
+          auto_escalation_days: Number(document.getElementById('escalation-days').value || 2)
+        },
+        workflow_rules: {
+          require_comment_on_reject_or_correction: document.getElementById('require-comment').checked,
+          required_metadata: {
+            category: document.getElementById('meta-category').checked,
+            description: document.getElementById('meta-description').checked,
+            file_type: document.getElementById('meta-type').checked
+          }
+        },
+        notifications: {
+          pending_over_sla: document.getElementById('notif-over-sla').checked,
+          assignment_alert: document.getElementById('notif-assignment').checked,
+          correction_requested: document.getElementById('notif-correction').checked,
+          recipients: {
+            directeur: document.getElementById('rec-directeur').checked,
+            admin: document.getElementById('rec-admin').checked,
+            employer: document.getElementById('rec-employer').checked
+          }
+        },
+        team_access: {
+          directeur: {
+            validate: document.getElementById('perm-dir-validate').checked,
+            assign: document.getElementById('perm-dir-assign').checked,
+            view: document.getElementById('perm-dir-view').checked
+          },
+          admin: {
+            validate: document.getElementById('perm-admin-validate').checked,
+            assign: document.getElementById('perm-admin-assign').checked,
+            view: document.getElementById('perm-admin-view').checked
+          },
+          employer: {
+            validate: document.getElementById('perm-emp-validate').checked,
+            assign: document.getElementById('perm-emp-assign').checked,
+            view: document.getElementById('perm-emp-view').checked
+          }
+        },
+        compliance: {
+          mandatory_categories: splitCsv(document.getElementById('mandatory-categories').value),
+          mandatory_types: splitCsv(document.getElementById('mandatory-types').value),
+          retention_months: Number(document.getElementById('retention-months').value || 24),
+          auto_archive_days: Number(document.getElementById('auto-archive-days').value || 90)
+        },
+        security: {
+          session_timeout_minutes: Number(document.getElementById('session-timeout').value || 60),
+          force_password_change_days: Number(document.getElementById('force-pass-days').value || 90),
+          restrict_exports: document.getElementById('restrict-exports').checked
+        },
+        templates: {
+          reject_reasons: splitLines(document.getElementById('tmpl-reject').value),
+          correction_reasons: splitLines(document.getElementById('tmpl-correction').value)
+        },
+        integrations: {
+          backup_schedule: document.getElementById('backup-schedule').value || 'daily'
+        }
       };
-
-      document.getElementById('cfg-confirm-delete').checked = !!cfg.confirmDelete;
-      document.getElementById('cfg-security-alerts').checked = !!cfg.securityAlerts;
-      document.getElementById('cfg-export').checked = !!cfg.exportCsv;
     }
 
-    function saveAdminSettings() {
-      const cfg = {
-        confirmDelete: document.getElementById('cfg-confirm-delete').checked,
-        securityAlerts: document.getElementById('cfg-security-alerts').checked,
-        exportCsv: document.getElementById('cfg-export').checked
+    async function loadSettings() {
+      const s = await api('/admin/settings');
+      fillForm(s);
+    }
+
+    async function saveSettings() {
+      const u = currentUser();
+      const payload = {
+        user_id: u?.id || null,
+        settings: collectForm()
       };
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(cfg));
-      document.getElementById('save-msg').textContent = 'Paramètres enregistrés.';
-      setTimeout(() => { document.getElementById('save-msg').textContent = ''; }, 2200);
+      await api('/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const msg = document.getElementById('save-msg');
+      msg.textContent = 'Paramètres enregistrés en base.';
+      setTimeout(() => { msg.textContent = ''; }, 2200);
     }
 
-    function resetAdminSettings() {
-      localStorage.removeItem(SETTINGS_KEY);
-      loadAdminSettings();
-      document.getElementById('save-msg').textContent = 'Paramètres réinitialisés.';
-      setTimeout(() => { document.getElementById('save-msg').textContent = ''; }, 2200);
+    async function refreshHealth() {
+      const h = await api('/admin/system-health');
+      document.getElementById('health-db').textContent = h.db_status || '-';
+      document.getElementById('health-db-size').textContent = `${h.db_size_mb ?? 0} MB`;
+      document.getElementById('health-files').textContent = `${h.uploads_size_mb ?? 0} MB`;
+      const mins = Math.floor((Number(h.api_uptime_seconds || 0) % 3600) / 60);
+      const hrs = Math.floor(Number(h.api_uptime_seconds || 0) / 3600);
+      document.getElementById('health-uptime').textContent = `${hrs}h ${mins}m`;
     }
 
-    async function refreshSystemHealth() {
-      try {
-        const data = await apiGet('/admin/system-health');
-        document.getElementById('sys-db').textContent = data.db_status || '-';
-        document.getElementById('sys-db-size').textContent = `${data.db_size_mb ?? 0} MB`;
-        document.getElementById('sys-files').textContent = `${data.uploads_size_mb ?? 0} MB`;
-        document.getElementById('sys-uptime').textContent = fmtUptime(data.api_uptime_seconds);
-      } catch (e) {
-        document.getElementById('sys-db').textContent = 'indisponible';
-      }
+    async function backupNow() {
+      const data = await api('/admin/settings/backup', { method: 'POST' });
+      document.getElementById('last-backup').textContent = data.generated_at || '-';
+      const msg = document.getElementById('save-msg');
+      msg.textContent = `Backup généré: ${data.file_name}`;
+      setTimeout(() => { msg.textContent = ''; }, 3000);
     }
 
-    loadAdminSettings();
-    refreshSystemHealth();
+    async function resetDefaults() {
+      localStorage.removeItem('adminSettingsSmartWathiqa');
+      await loadSettings();
+      const msg = document.getElementById('save-msg');
+      msg.textContent = 'Valeurs rechargées depuis la base.';
+      setTimeout(() => { msg.textContent = ''; }, 2200);
+    }
+
+    function bindEvents() {
+      document.getElementById('save-settings').addEventListener('click', () => saveSettings().catch((e) => alert('Erreur save: ' + e.message)));
+      document.getElementById('reset-defaults').addEventListener('click', () => resetDefaults().catch((e) => alert('Erreur reset: ' + e.message)));
+      document.getElementById('refresh-health').addEventListener('click', () => refreshHealth().catch((e) => alert('Erreur état: ' + e.message)));
+      document.getElementById('backup-now').addEventListener('click', () => backupNow().catch((e) => alert('Erreur backup: ' + e.message)));
+    }
+
+    async function init() {
+      syncUserUI();
+      bindEvents();
+      await Promise.all([loadSettings(), refreshHealth()]);
+    }
+
+    init().catch((e) => {
+      alert('Erreur Paramètres: ' + e.message);
+    });
   </script>
 </body>
 </html>

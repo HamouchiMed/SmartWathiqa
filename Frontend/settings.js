@@ -1,6 +1,7 @@
-// Settings Page JavaScript
+﻿// Settings Page JavaScript
 
 const STORAGE_QUOTA_BYTES = 10 * 1024 * 1024 * 1024; // 10 GB
+const API_BASES = ['http://localhost:3001/api', 'http://127.0.0.1:3001/api'];
 
 function parseSizeToBytes(sizeValue) {
   if (sizeValue === null || sizeValue === undefined) return 0;
@@ -12,7 +13,6 @@ function parseSizeToBytes(sizeValue) {
   const str = String(sizeValue).trim();
   if (!str) return 0;
 
-  // Numeric bytes string
   if (/^\d+(\.\d+)?$/.test(str)) {
     return Number(str);
   }
@@ -43,9 +43,8 @@ function formatBytes(bytes) {
 
 function getStorageBucket(fileType) {
   const t = String(fileType || '').toLowerCase();
-  if (t.includes('image') || /(jpg|jpeg|png|gif|bmp|tiff|webp|svg)/.test(t)) {
-    return 'images';
-  }
+  if (t.includes('image') || /(jpg|jpeg|png|gif|bmp|tiff|webp|svg)/.test(t)) return 'images';
+
   if (
     t.includes('pdf') ||
     t.includes('word') ||
@@ -61,6 +60,129 @@ function getStorageBucket(fileType) {
     return 'documents';
   }
   return 'others';
+}
+
+async function apiRequest(path, options = {}) {
+  let lastError = 'Serveur indisponible';
+
+  for (const base of API_BASES) {
+    try {
+      const response = await fetch(base + path, options);
+      const text = await response.text();
+      let json = null;
+      try {
+        json = text ? JSON.parse(text) : null;
+      } catch (_) {
+        json = null;
+      }
+
+      if (!json) {
+        lastError = `Réponse serveur invalide (HTTP ${response.status})`;
+        continue;
+      }
+
+      if (!response.ok || !json.success) {
+        lastError = json.error || `HTTP ${response.status}`;
+        continue;
+      }
+
+      return json.data;
+    } catch (error) {
+      lastError = error.message;
+    }
+  }
+
+  throw new Error(lastError);
+}
+
+function getCurrentUser() {
+  try {
+    const raw = localStorage.getItem('currentUser');
+    return raw ? JSON.parse(raw) : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function setCurrentUser(user) {
+  try {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  } catch (_) {}
+}
+
+function loadProfileUI() {
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const nameEl = document.getElementById('profile-name');
+  const emailEl = document.getElementById('profile-email');
+  const phoneEl = document.getElementById('profile-phone');
+  const drawerNameEl = document.getElementById('drawer-account-name');
+  const drawerEmailEl = document.getElementById('drawer-account-email');
+
+  if (nameEl) nameEl.value = user.name || '';
+  if (emailEl) emailEl.value = user.email || '';
+  if (phoneEl) phoneEl.value = localStorage.getItem(`profilePhone:${user.id}`) || '';
+
+  if (drawerNameEl) drawerNameEl.textContent = user.name || 'Mon Compte';
+  if (drawerEmailEl) drawerEmailEl.textContent = user.email || 'utilisateur@example.com';
+}
+
+async function saveProfile() {
+  const user = getCurrentUser();
+  if (!user || !user.id) {
+    alert('Utilisateur non connecté.');
+    return;
+  }
+
+  const nameEl = document.getElementById('profile-name');
+  const emailEl = document.getElementById('profile-email');
+  const phoneEl = document.getElementById('profile-phone');
+  const msgEl = document.getElementById('profile-save-msg');
+  const saveBtn = document.getElementById('save-profile-btn');
+
+  const name = (nameEl?.value || '').trim();
+  const email = (emailEl?.value || '').trim();
+  const phone = (phoneEl?.value || '').trim();
+
+  if (!name || !email) {
+    alert('Nom et email sont obligatoires.');
+    return;
+  }
+
+  try {
+    if (saveBtn) saveBtn.disabled = true;
+
+    const updated = await apiRequest(`/users/${user.id}/profile`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email })
+    });
+
+    localStorage.setItem(`profilePhone:${user.id}`, phone);
+
+    const merged = {
+      ...user,
+      ...updated,
+      id: user.id,
+      name,
+      email
+    };
+
+    setCurrentUser(merged);
+    loadProfileUI();
+
+    if (msgEl) {
+      msgEl.textContent = 'Profil mis à jour.';
+      setTimeout(() => {
+        msgEl.textContent = '';
+      }, 2200);
+    }
+  } catch (error) {
+    alert(`Erreur profil: ${error.message}`);
+  } finally {
+    if (saveBtn) saveBtn.disabled = false;
+  }
 }
 
 async function loadStorageFromDB() {
@@ -105,21 +227,20 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Logout function
 function logout() {
   if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
-    // Clear any stored session data
     localStorage.clear();
     sessionStorage.clear();
-
-    // Show logout message
     alert('Vous avez été déconnecté avec succès.');
-
-    // Redirect to login page
     window.location.href = 'firstscreen.html';
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  loadProfileUI();
+
+  const saveBtn = document.getElementById('save-profile-btn');
+  if (saveBtn) saveBtn.addEventListener('click', saveProfile);
+
   loadStorageFromDB().catch(() => {});
 });

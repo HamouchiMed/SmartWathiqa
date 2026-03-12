@@ -1,22 +1,67 @@
 // SmartWathiqa API Client
 // Replaces the local Data SDK with API calls to the backend
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = (() => {
+  // Allow manual override when needed.
+  try {
+    const q = new URLSearchParams(window.location.search);
+    const fromQuery = q.get('apiBase');
+    if (fromQuery) return fromQuery.replace(/\/$/, '');
+    const fromStorage = localStorage.getItem('SMARTWATHIQA_API_BASE');
+    if (fromStorage) return fromStorage.replace(/\/$/, '');
+  } catch (_) {}
+
+  // Auto-map devtunnels frontend (7777) to backend (3001).
+  try {
+    const host = window.location.host || '';
+    if (host.includes('devtunnels.ms') && host.includes('-7777.')) {
+      return `https://${host.replace('-7777.', '-3001.')}/api`;
+    }
+  } catch (_) {}
+
+  return 'http://localhost:3001/api';
+})();
 
 class SmartWathiqaAPI {
   constructor() {
     this.baseURL = API_BASE_URL;
   }
 
+  getCurrentUser() {
+    try {
+      const raw = localStorage.getItem('currentUser');
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  getCurrentUserId() {
+    const user = this.getCurrentUser();
+    return user && Number.isFinite(Number(user.id)) ? Number(user.id) : 1;
+  }
+
+  getCurrentUserRole() {
+    const user = this.getCurrentUser();
+    return (user && user.role) ? String(user.role) : 'employer';
+  }
+
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
+    const isFormData = (typeof FormData !== 'undefined') && (options.body instanceof FormData);
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        'x-user-role': this.getCurrentUserRole(),
+        'x-user-id': String(this.getCurrentUserId()),
         ...options.headers
       },
       ...options
     };
+    if (!isFormData) {
+      config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
+    } else {
+      delete config.headers['Content-Type'];
+    }
 
     try {
       const response = await fetch(url, config);
@@ -42,8 +87,9 @@ class SmartWathiqaAPI {
     return this.request(`/documents?${params}`);
   }
 
-  async getDocument(id, userId = 1) {
-    return this.request(`/documents/${id}?user_id=${userId}`);
+  async getDocument(id, userId = null) {
+    const uid = (userId === null || userId === undefined) ? this.getCurrentUserId() : userId;
+    return this.request(`/documents/${id}?user_id=${uid}`);
   }
 
   getFileUrl(filePath) {
@@ -62,7 +108,7 @@ class SmartWathiqaAPI {
       fileType: docData.type,
       category: docData.category,
       description: docData.description,
-      user_id: 1 // Default user for now
+      user_id: this.getCurrentUserId()
     };
 
     return this.request('/documents', {
@@ -72,28 +118,39 @@ class SmartWathiqaAPI {
   }
 
   async updateDocument(id, docData) {
-    // Transform frontend data to API format
+    if (docData && docData.file) {
+      const formData = new FormData();
+      formData.append('name', docData.name || '');
+      formData.append('category', docData.category || '');
+      formData.append('description', docData.description || '');
+      formData.append('file', docData.file);
+      formData.append('user_id', String(this.getCurrentUserId()));
+      return this.request(`/documents/${id}`, {
+        method: 'PUT',
+        body: formData
+      });
+    }
+
     const apiData = {
       name: docData.name,
       category: docData.category,
       description: docData.description,
-      user_id: 1 // Default user for now
+      user_id: this.getCurrentUserId()
     };
-
     return this.request(`/documents/${id}`, {
       method: 'PUT',
       body: JSON.stringify(apiData)
     });
   }
 
-  async deleteDocument(id, userId = 1) {
+  async deleteDocument(id, userId = this.getCurrentUserId()) {
     return this.request(`/documents/${id}`, {
       method: 'DELETE',
       body: JSON.stringify({ user_id: userId })
     });
   }
 
-  async toggleFavorite(id, favorite, userId = 1) {
+  async toggleFavorite(id, favorite, userId = this.getCurrentUserId()) {
     return this.request(`/documents/${id}/favorite`, {
       method: 'POST',
       body: JSON.stringify({ user_id: userId, favorite })
@@ -101,7 +158,7 @@ class SmartWathiqaAPI {
   }
 
   // Categories
-  async getCategories(userId = 1) {
+  async getCategories(userId = this.getCurrentUserId()) {
     return this.request(`/categories?user_id=${userId}`);
   }
 
@@ -113,7 +170,8 @@ class SmartWathiqaAPI {
   // Dashboard Statistics
   async getDashboardStats(filters = {}) {
     const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
+    const merged = { user_id: this.getCurrentUserId(), ...filters };
+    Object.entries(merged).forEach(([key, value]) => {
       if (value) params.append(key, value);
     });
     return this.request(`/dashboard/stats?${params}`);
@@ -122,7 +180,8 @@ class SmartWathiqaAPI {
   // Recent Documents for Dashboard
   async getRecentDocuments(filters = {}) {
     const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
+    const merged = { user_id: this.getCurrentUserId(), ...filters };
+    Object.entries(merged).forEach(([key, value]) => {
       if (value) params.append(key, value);
     });
     return this.request(`/dashboard/recent?${params}`);
@@ -131,7 +190,8 @@ class SmartWathiqaAPI {
   // Recent Activity for Dashboard
   async getRecentActivity(filters = {}) {
     const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
+    const merged = { user_id: this.getCurrentUserId(), ...filters };
+    Object.entries(merged).forEach(([key, value]) => {
       if (value) params.append(key, value);
     });
     return this.request(`/dashboard/activity?${params}`);
@@ -173,7 +233,10 @@ window.dataSdk = {
   },
 
   getAll: async (filters = {}) => {
-    return smartWathiqaAPI.getAllDocuments(filters);
+    return smartWathiqaAPI.getAllDocuments({
+      user_id: smartWathiqaAPI.getCurrentUserId(),
+      ...filters
+    });
   },
 
   toggleFavorite: async (id, favorite) => {

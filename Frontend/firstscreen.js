@@ -50,6 +50,11 @@ document.getElementById('login-form').addEventListener('submit', async function(
       return;
     }
 
+    if (result.data.role === 'directeur') {
+      window.location.href = 'dashboarddirecteur.html';
+      return;
+    }
+
     alert('Accès refusé pour ce rôle.');
   } catch (err) {
     alert('Impossible de se connecter au serveur (http://localhost:3001). Vérifiez que le backend est démarré.');
